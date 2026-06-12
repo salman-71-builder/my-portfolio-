@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Salman | Graphic Designer · Video Editor · Digital Marketer</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <div class="container nav-inner">
+      <a href="#" class="logo">S<span>.</span></a>
+      <nav class="nav-links">
+        <a href="#portfolio">Portfolio</a>
+        <a href="#about">About</a>
+        <a href="#contact">Contact</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+          <span class="theme-icon">☀️</span>
+        </button>
+        <a href="#contact" class="btn btn-sm">Hire Me</a>
+      </div>
+      <button class="hamburger" id="hamburger" aria-label="Open menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+    <div class="mobile-menu" id="mobileMenu">
+      <a href="#portfolio" onclick="closeMobileMenu()">Portfolio</a>
+      <a href="#about" onclick="closeMobileMenu()">About</a>
+      <a href="#contact" onclick="closeMobileMenu()">Contact</a>
+    </div>
+  </header>
+
+  <!-- ===== HERO ===== -->
+  <section class="hero" id="home">
+    <div class="container hero-inner">
+      <div class="hero-badge">Available for work ✦</div>
+      <h1 class="hero-title">
+        Hi, I'm <span class="highlight">Salman</span><br />
+        I design, edit &amp; market.
+      </h1>
+      <p class="hero-subtitle">Graphic Designer&nbsp;·&nbsp;Video Editor&nbsp;·&nbsp;Digital Marketer</p>
+      <p class="hero-bio">
+        I craft compelling visuals, cinematic videos, and data-driven marketing campaigns
+        that help brands stand out and convert. Based in Bangladesh — working globally.
+      </p>
+      <div class="hero-cta">
+        <a href="#portfolio" class="btn btn-primary">View My Work</a>
+        <a href="#contact" class="btn btn-outline">Get In Touch</a>
+      </div>
+      <div class="hero-stats">
+        <div class="stat"><span class="stat-num">50+</span><span class="stat-label">Projects Done</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">30+</span><span class="stat-label">Happy Clients</span></div>
+        <div class="stat-divider"></div>
+        <div class="stat"><span class="stat-num">3+</span><span class="stat-label">Years Experience</span></div>
+      </div>
+    </div>
+    <div class="hero-glow"></div>
+  </section>
+
+  <!-- ===== PORTFOLIO ===== -->
+  <section class="portfolio" id="portfolio">
+    <div class="container">
+      <div class="section-header">
+        <p class="section-tag">My Work</p>
+        <h2 class="section-title">Selected Projects</h2>
+        <p class="section-desc">A curated collection of my best work across design, video, and marketing.</p>
+      </div>
+
+      <!-- Filter Buttons -->
+      <div class="filter-bar" role="tablist">
+        <button class="filter-btn active" data-filter="all" role="tab" aria-selected="true">All</button>
+        <button class="filter-btn" data-filter="graphics" role="tab" aria-selected="false">Graphics Design</button>
+        <button class="filter-btn" data-filter="video" role="tab" aria-selected="false">Video Editing</button>
+        <button class="filter-btn" data-filter="marketing" role="tab" aria-selected="false">Digital Marketing</button>
+      </div>
+
+      <!-- ── Graphics Design Cards ── -->
+      <!-- HOW TO ADD: Copy one .project-card[data-category="graphics"] block and change the image src, title, tags -->
+      <div class="projects-grid" id="projectsGrid">
+
+        <div class="project-card" data-category="graphics">
+          <div class="card-image-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1561070791-2526d30994b5?w=600&q=80"
+              alt="Brand Identity – TechWave"
+              loading="lazy"
+            />
+            <div class="card-overlay">
+              <span class="card-tag">Brand Identity</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Brand Identity – TechWave</h3>
+            <p>Full brand package: logo, color palette, typography, and style guide.</p>
+            <div class="card-tags">
+              <span class="tag">Logo Design</span>
+              <span class="tag">Branding</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" data-category="graphics">
+          <div class="card-image-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=600&q=80"
+              alt="Social Media Kit – FreshBite"
+              loading="lazy"
+            />
+            <div class="card-overlay">
+              <span class="card-tag">Social Media</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Social Media Kit – FreshBite</h3>
+            <p>30-post Instagram template kit with cohesive aesthetic for a food brand.</p>
+            <div class="card-tags">
+              <span class="tag">Social Kit</span>
+              <span class="tag">Canva / Photoshop</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card" data-category="graphics">
+          <div class="card-image-wrap">
+            <img
+              src="https://images.unsplash.com/photo-1572044162444-ad60f128bdea?w=600&q=80"
+              alt="Poster Series – Urban Pulse"
+              loading="lazy"
+            />
+            <div class="card-overlay">
+              <span class="card-tag">Print Design</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Poster Series – Urban Pulse</h3>
+            <p>Event poster series with bold typography and vibrant gradient treatments.</p>
+            <div class="card-tags">
+              <span class="tag">Print</span>
+              <span class="tag">Typography</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Video Editing Cards ── -->
+        <!-- HOW TO ADD: Copy one .project-card[data-category="video"] block, change youtube-id, poster, title, tags -->
+
+        <div class="project-card video-card" data-category="video">
+          <div class="card-video-wrap">
+            <div
+              class="yt-placeholder"
+              data-youtube-id="dQw4w9WgXcQ"
+              data-poster="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"
+            >
+              <img
+                src="https://img.youtube.com/vi/dQw4w9WgXcQ/maxresdefault.jpg"
+                alt="Product Launch Reel thumbnail"
+                loading="lazy"
+              />
+              <button class="play-btn" aria-label="Play video">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Product Launch Reel</h3>
+            <p>60-second cinematic product reveal with color grading and motion graphics.</p>
+            <div class="card-tags">
+              <span class="tag">Premiere Pro</span>
+              <span class="tag">After Effects</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card video-card" data-category="video">
+          <div class="card-video-wrap">
+            <div
+              class="yt-placeholder"
+              data-youtube-id="ScMzIvxBSi4"
+              data-poster="https://img.youtube.com/vi/ScMzIvxBSi4/maxresdefault.jpg"
+            >
+              <img
+                src="https://img.youtube.com/vi/ScMzIvxBSi4/maxresdefault.jpg"
+                alt="Brand Documentary thumbnail"
+                loading="lazy"
+              />
+              <button class="play-btn" aria-label="Play video">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>Brand Documentary – GreenLeaf</h3>
+            <p>3-minute brand story film shot and edited for a sustainable cosmetics brand.</p>
+            <div class="card-tags">
+              <span class="tag">Documentary</span>
+              <span class="tag">Color Grading</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card video-card" data-category="video">
+          <div class="card-video-wrap">
+            <div
+              class="yt-placeholder"
+              data-youtube-id="M7lc1UVf-VE"
+              data-poster="https://img.youtube.com/vi/M7lc1UVf-VE/maxresdefault.jpg"
+            >
+              <img
+                src="https://img.youtube.com/vi/M7lc1UVf-VE/maxresdefault.jpg"
+                alt="YouTube Channel Intro thumbnail"
+                loading="lazy"
+              />
+              <button class="play-btn" aria-label="Play video">
+                <svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>
+              </button>
+            </div>
+          </div>
+          <div class="card-body">
+            <h3>YouTube Channel Intro</h3>
+            <p>Animated channel intro with kinetic typography and sound design.</p>
+            <div class="card-tags">
+              <span class="tag">Motion Graphics</span>
+              <span class="tag">After Effects</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ── Digital Marketing Case Studies ── -->
+        <!-- HOW TO ADD: Copy one .project-card[data-category="marketing"] block and fill in your own data -->
+
+        <div class="project-card case-card" data-category="marketing">
+          <div class="case-header">
+            <div class="case-icon">📈</div>
+            <div>
+              <h3>FB Ads – E-commerce Brand</h3>
+              <span class="case-badge">Meta Ads</span>
+            </div>
+          </div>
+          <div class="case-body">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <p>High ad spend with low ROAS (1.2x) and poor targeting on Facebook campaigns.</p>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <p>Rebuilt campaign structure with Lookalike Audiences, retargeting funnel, and A/B tested creatives.</p>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Result</span>
+              <div class="case-metrics">
+                <div class="metric"><span class="metric-val">400%</span><span class="metric-key">ROI in 30 days</span></div>
+                <div class="metric"><span class="metric-val">3.8x</span><span class="metric-key">ROAS</span></div>
+                <div class="metric"><span class="metric-val">↓42%</span><span class="metric-key">Cost per Lead</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card case-card" data-category="marketing">
+          <div class="case-header">
+            <div class="case-icon">🎯</div>
+            <div>
+              <h3>Google Ads – SaaS Startup</h3>
+              <span class="case-badge">Google Ads</span>
+            </div>
+          </div>
+          <div class="case-body">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <p>Low CTR (0.8%) on Google Search campaigns with wasted budget on irrelevant keywords.</p>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <p>Keyword restructuring with exact-match focus, negative keyword pruning, and responsive ad copy testing.</p>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Result</span>
+              <div class="case-metrics">
+                <div class="metric"><span class="metric-val">4.2%</span><span class="metric-key">CTR</span></div>
+                <div class="metric"><span class="metric-val">280%</span><span class="metric-key">Conversions ↑</span></div>
+                <div class="metric"><span class="metric-val">↓35%</span><span class="metric-key">CPC</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="project-card case-card" data-category="marketing">
+          <div class="case-header">
+            <div class="case-icon">📧</div>
+            <div>
+              <h3>Email Marketing – EdTech Platform</h3>
+              <span class="case-badge">Email / Automation</span>
+            </div>
+          </div>
+          <div class="case-body">
+            <div class="case-row">
+              <span class="case-label">Problem</span>
+              <p>Low open rates (12%) and high unsubscribe rate from generic mass email blasts.</p>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Solution</span>
+              <p>Built segmented drip sequences with personalization tokens and behaviour-triggered automations.</p>
+            </div>
+            <div class="case-row">
+              <span class="case-label">Result</span>
+              <div class="case-metrics">
+                <div class="metric"><span class="metric-val">38%</span><span class="metric-key">Open Rate</span></div>
+                <div class="metric"><span class="metric-val">12%</span><span class="metric-key">Click Rate</span></div>
+                <div class="metric"><span class="metric-val">↓60%</span><span class="metric-key">Unsubscribes</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /projects-grid -->
+
+      <p class="no-results" id="noResults" hidden>No projects found for this category.</p>
+    </div>
+  </section>
+
+  <!-- ===== VIDEO LIGHTBOX ===== -->
+  <div class="lightbox" id="videoLightbox" role="dialog" aria-modal="true" aria-label="Video player" hidden>
+    <button class="lightbox-close" id="lightboxClose" aria-label="Close video">&times;</button>
+    <div class="lightbox-inner">
+      <iframe
+        id="lightboxIframe"
+        src=""
+        title="YouTube video player"
+        frameborder="0"
+        allow="autoplay; encrypted-media; picture-in-picture"
+        allowfullscreen
+      ></iframe>
+    </div>
+  </div>
+
+  <!-- ===== ABOUT ===== -->
+  <section class="about" id="about">
+    <div class="container about-inner">
+      <div class="about-text">
+        <p class="section-tag">About Me</p>
+        <h2 class="section-title">Turning ideas into<br/>visual impact.</h2>
+        <p>
+          I'm a multi-disciplinary creative with 3+ years of experience helping brands
+          communicate their story with clarity and confidence. Whether it's a logo,
+          a YouTube reel, or a high-converting ad campaign — I obsess over the details
+          that make the difference.
+        </p>
+        <p>
+          My workflow sits at the intersection of design, storytelling, and data.
+          I don't just make things look good — I make things <em>work</em>.
+        </p>
+        <div class="skills-grid">
+          <div class="skill-group">
+            <h4>Design</h4>
+            <ul>
+              <li>Adobe Photoshop</li>
+              <li>Adobe Illustrator</li>
+              <li>Figma</li>
+              <li>Canva Pro</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h4>Video</h4>
+            <ul>
+              <li>Adobe Premiere Pro</li>
+              <li>After Effects</li>
+              <li>DaVinci Resolve</li>
+              <li>CapCut</li>
+            </ul>
+          </div>
+          <div class="skill-group">
+            <h4>Marketing</h4>
+            <ul>
+              <li>Meta Ads Manager</li>
+              <li>Google Ads</li>
+              <li>Mailchimp / ActiveCampaign</li>
+              <li>SEO &amp; Analytics</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="about-visual">
+        <div class="about-card">
+          <div class="about-avatar">S</div>
+          <div class="about-details">
+            <strong>Salman</strong>
+            <span>Creative &amp; Digital Expert</span>
+          </div>
+        </div>
+        <div class="floating-tag tag-1">🎨 Photoshop</div>
+        <div class="floating-tag tag-2">🎬 Premiere Pro</div>
+        <div class="floating-tag tag-3">📊 Meta Ads</div>
+        <div class="floating-tag tag-4">✦ Available</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== CONTACT ===== -->
+  <section class="contact" id="contact">
+    <div class="container contact-inner">
+      <div class="contact-info">
+        <p class="section-tag">Contact</p>
+        <h2 class="section-title">Let's work<br/>together.</h2>
+        <p>
+          Have a project in mind? I'd love to hear about it.
+          Fill in the form or reach out directly via social media.
+        </p>
+        <div class="social-links">
+          <!-- Replace href="#" with your actual profile URLs -->
+          <a href="#" class="social-link" aria-label="Facebook">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/></svg>
+            Facebook
+          </a>
+          <a href="#" class="social-link" aria-label="Instagram">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+            Instagram
+          </a>
+          <a href="#" class="social-link" aria-label="LinkedIn">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg>
+            LinkedIn
+          </a>
+          <a href="#" class="social-link" aria-label="YouTube">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22.54 6.42a2.78 2.78 0 0 0-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46A2.78 2.78 0 0 0 1.46 6.42 29 29 0 0 0 1 12a29 29 0 0 0 .46 5.58 2.78 2.78 0 0 0 1.95 1.96C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 0 0 1.96-1.96A29 29 0 0 0 23 12a29 29 0 0 0-.46-5.58z"/><polygon points="9.75 15.02 15.5 12 9.75 8.98 9.75 15.02" fill="white"/></svg>
+            YouTube
+          </a>
+          <a href="#" class="social-link" aria-label="Behance">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M22 7h-7V5h7v2zm1.726 10c-.442 1.297-2.029 3-5.101 3-3.074 0-5.564-1.729-5.564-5.675 0-3.91 2.325-5.92 5.466-5.92 3.082 0 4.964 1.782 5.375 4.426.078.506.109 1.188.095 2.14H15.97c.13 3.211 3.483 3.312 4.588 2.029H23zm-7.177-4h3.522c-.016-.971-.614-1.709-1.734-1.709-1.172 0-1.714.736-1.788 1.709zM7.6 12c.587 0 1.005.14 1.232.398.218.244.33.607.33 1.08 0 .476-.11.847-.334 1.102-.226.256-.644.386-1.228.386H4.742V12H7.6zM7.128 9c.504 0 .868.112 1.07.344.202.231.303.556.303.976 0 .42-.1.747-.3.986-.2.237-.559.354-1.073.354H4.742V9H7.128zM10.15 15.624c.297-.431.449-.982.449-1.646 0-.77-.169-1.386-.509-1.847-.34-.46-.832-.706-1.47-.71.668-.14 1.17-.413 1.498-.81.327-.397.49-.916.49-1.554 0-.516-.103-.967-.313-1.35-.21-.385-.51-.694-.9-.924C9.003 6.594 8.46 6.445 7.768 6.4 7.07 6.354 6.224 6.332 5.227 6.332H2v11.336h3.565c.88 0 1.643-.027 2.283-.082.64-.055 1.193-.203 1.66-.44.46-.238.821-.575 1.082-1.008l.558-.514z"/></svg>
+            Behance
+          </a>
+        </div>
+      </div>
+
+      <form class="contact-form" id="contactForm" novalidate>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="name">Your Name</label>
+            <input type="text" id="name" name="name" placeholder="Rahim Uddin" required />
+            <span class="form-error" id="nameError"></span>
+          </div>
+          <div class="form-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="rahim@example.com" required />
+            <span class="form-error" id="emailError"></span>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="subject">Subject</label>
+          <select id="subject" name="subject" required>
+            <option value="" disabled selected>Select a service…</option>
+            <option value="graphics">Graphics Design</option>
+            <option value="video">Video Editing</option>
+            <option value="marketing">Digital Marketing</option>
+            <option value="combo">Full Package (Design + Marketing)</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="message">Message</label>
+          <textarea id="message" name="message" rows="5" placeholder="Tell me about your project…" required></textarea>
+          <span class="form-error" id="messageError"></span>
+        </div>
+        <button type="submit" class="btn btn-primary btn-full" id="submitBtn">
+          <span class="btn-text">Send Message</span>
+          <span class="btn-icon">→</span>
+        </button>
+        <p class="form-success" id="formSuccess" hidden>✓ Message sent! I'll get back to you within 24 hours.</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <div class="container footer-inner">
+      <span class="logo">S<span>.</span></span>
+      <p>© 2026 Salman. Designed &amp; built with intention.</p>
+      <a href="#home" class="back-top" aria-label="Back to top">↑ Top</a>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
