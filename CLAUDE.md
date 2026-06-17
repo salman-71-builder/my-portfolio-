@@ -62,6 +62,12 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - "Try On 👓" button shows on sunglasses `ProductCard`s; a banner shows in `products-browser` when `category=sunglasses`.
 - face-api/TF.js is dynamically imported only when the modal opens; models load from `NEXT_PUBLIC_FACEAPI_MODELS` (CDN default, or self-host in `public/models`). `next.config.mjs` sets `fs/encoding/path` webpack fallbacks for the browser build.
 
+## AR Room Visualization (furniture)
+
+- `components/ar-room/`: `furniture-types` (pure metadata + `detectFurnitureType`/`isFurnitureProduct`, **no Three import** so listings stay light), `furniture-models` (Three.js procedural builders + `tintFurniture`), `ar-room-modal` (camera-overlay AR + 360 fallback, scanning/loading UI, pointer drag/pinch/twist + wheel/arrow controls, shadow-catcher, capture/share/buy, colour variants, dimensions, recommendations), `ar-room-button` (lazy entry).
+- "View In My Room 🛋️" shows on furniture `ProductCard`s and `ProductDetail`; an "AR Preview" banner shows in `products-browser` when `category=furniture`.
+- Three.js is dynamically imported only when the modal opens. No raw WebXR session (iOS Safari can't do immersive-ar) — uses a broadly-supported camera overlay with a 360° fallback.
+
 ## Admin dashboard (`/admin`)
 
 - Password-gated via `lib/admin-auth.ts` (env `ADMIN_PASSWORD`, dev default `admin123`): login sets an httpOnly HMAC cookie; `app/admin/page.tsx` redirects to `/admin/login` when unauthed.

@@ -290,6 +290,51 @@
   }
 }
 
+/* ---- AR room scanning animation ---- */
+.ar-scan-grid {
+  width: min(70vw, 420px);
+  height: min(46vw, 280px);
+  background-image:
+    linear-gradient(rgba(255, 215, 0, 0.5) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 215, 0, 0.5) 1px, transparent 1px);
+  background-size: 28px 28px;
+  transform: perspective(420px) rotateX(62deg);
+  border-radius: 8px;
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, #000 35%, transparent 72%);
+  mask-image: radial-gradient(circle at 50% 50%, #000 35%, transparent 72%);
+  animation: ar-scan 1.8s ease-in-out infinite;
+}
+@keyframes ar-scan {
+  0%,
+  100% {
+    opacity: 0.35;
+    background-position: 0 0;
+  }
+  50% {
+    opacity: 0.9;
+    background-position: 0 28px;
+  }
+}
+.ar-scan-dot {
+  display: inline-block;
+  height: 7px;
+  width: 7px;
+  border-radius: 9999px;
+  background: #ffd700;
+  animation: ar-dot 1s ease-in-out infinite;
+}
+@keyframes ar-dot {
+  0%,
+  100% {
+    transform: scale(0.6);
+    opacity: 0.4;
+  }
+  50% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
 /* ---- Route visualization country labels (projected from 3D) ---- */
 .route-country-label {
   position: absolute;

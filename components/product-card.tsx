@@ -8,6 +8,8 @@ import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/star-rating";
 import { TiltCard } from "@/components/tilt-card";
 import { TryOnButton } from "@/components/try-on/try-on-button";
+import { ArRoomButton } from "@/components/ar-room/ar-room-button";
+import { isFurnitureProduct } from "@/components/ar-room/furniture-types";
 import { useCart } from "@/components/cart-provider";
 import { formatPriceRange } from "@/lib/utils";
 import type { Product } from "@/data/products";
@@ -17,6 +19,7 @@ export function ProductCard({ product }: { product: Product }) {
   const isSunglasses =
     product.category === "sunglasses" ||
     product.tags?.includes("sunglasses");
+  const isFurniture = isFurnitureProduct(product);
 
   return (
     <TiltCard className="h-full">
@@ -75,6 +78,11 @@ export function ProductCard({ product }: { product: Product }) {
         {isSunglasses && (
           <div className="mt-2">
             <TryOnButton product={product} />
+          </div>
+        )}
+        {isFurniture && (
+          <div className="mt-2">
+            <ArRoomButton product={product} />
           </div>
         )}
       </div>

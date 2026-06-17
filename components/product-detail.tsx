@@ -23,6 +23,8 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { ImageGallery } from "@/components/image-gallery";
 import { StarRating } from "@/components/star-rating";
+import { ArRoomButton } from "@/components/ar-room/ar-room-button";
+import { isFurnitureProduct } from "@/components/ar-room/furniture-types";
 import { useCart } from "@/components/cart-provider";
 import { formatBDT, formatPriceRange } from "@/lib/utils";
 import type { Product } from "@/data/products";
@@ -36,6 +38,7 @@ export function ProductDetail({
   supplier?: Supplier;
 }) {
   const { addItem } = useCart();
+  const isFurniture = isFurnitureProduct(product);
   const [qty, setQty] = React.useState(product.moq);
   const [quoteOpen, setQuoteOpen] = React.useState(false);
   const [quoteSent, setQuoteSent] = React.useState(false);
@@ -143,6 +146,12 @@ export function ProductDetail({
               <FileText className="h-5 w-5" /> Request Quote
             </Button>
           </div>
+
+          {isFurniture && (
+            <div className="mt-3">
+              <ArRoomButton product={product} variant="detail" className="w-full sm:w-auto" />
+            </div>
+          )}
 
           {/* Supplier card */}
           {supplier && (

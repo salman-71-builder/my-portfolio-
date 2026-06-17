@@ -2,12 +2,20 @@
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, X, PackageSearch, Loader2, Glasses } from "lucide-react";
+import {
+  SlidersHorizontal,
+  X,
+  PackageSearch,
+  Loader2,
+  Glasses,
+  Sofa,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet } from "@/components/ui/sheet";
 import { ProductCard } from "@/components/product-card";
 import { TryOnButton } from "@/components/try-on/try-on-button";
+import { ArRoomButton } from "@/components/ar-room/ar-room-button";
 import {
   FilterSidebar,
   type Filters,
@@ -204,6 +212,28 @@ export function ProductsBrowser({ categories }: { categories: Category[] }) {
             </div>
           </div>
           <TryOnButton variant="banner" />
+        </div>
+      )}
+
+      {filters.category === "furniture" && (
+        <div className="mb-6 flex flex-col items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#0a1230] p-5 text-white sm:flex-row">
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gold to-brand text-black">
+              <Sofa className="h-6 w-6" />
+            </span>
+            <div>
+              <h2 className="flex items-center gap-2 text-lg font-extrabold">
+                AR Room Preview
+                <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-bold uppercase text-black">
+                  AR
+                </span>
+              </h2>
+              <p className="text-sm text-white/70">
+                Place any piece in your room with your camera before you buy.
+              </p>
+            </div>
+          </div>
+          <ArRoomButton variant="banner" />
         </div>
       )}
 

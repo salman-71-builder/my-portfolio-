@@ -77,6 +77,30 @@ Browser-based try-on — no app, works in Chrome/Safari/Firefox:
 > composite cleanly on the face. To use real background-removed product PNGs,
 > add them as a style in `components/try-on/glasses-styles.ts`.
 
+## 🛋️ AR Room Visualization (furniture)
+
+"View In My Room 🛋️" on furniture product cards, the product page, and an
+**AR Preview banner** on the furniture category view.
+
+- Full-screen modal: polite camera prompt → **live back-camera** view → scanning
+  animation ("Detecting floor…") → procedural **3D furniture** placed on the floor
+  with a realistic soft shadow.
+- **Drag** to move/place, **pinch** to resize, **two-finger twist** to rotate;
+  desktop: **mouse drag**, **scroll** to resize, **arrow keys** to rotate. On-screen
+  rotate buttons + size slider too.
+- Colour variants, live **dimensions** readout, matching-furniture suggestions,
+  **Take Photo** (watermarked "I found this on ChinaCart!"), **Share**, **Save**,
+  **Buy Now**.
+- **360° fallback** automatically when the camera is unavailable/denied (spinning
+  3D model you can drag to rotate). Loading screen with progress + rotating tips.
+- Three.js is lazy-loaded only when the modal opens — listing pages stay light.
+
+> Furniture is built procedurally (recognisable low-poly models with real
+> dimensions + tintable surfaces) since the catalog has no GLTF assets. Drop a
+> `.glb` per type into `furniture-models.ts` to use real models. True WebXR
+> plane-detection (Android Chrome only; unsupported on iOS Safari) can be layered
+> on top of this camera-based experience later.
+
 ## 🛰️ Product data (DummyJSON → CJ Dropshipping)
 
 Products and categories are served through a single abstraction layer in
