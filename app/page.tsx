@@ -11,6 +11,7 @@ import { WhyChooseUs } from "@/components/sections/why-choose-us";
 import { TestimonialSlider } from "@/components/sections/testimonial-slider";
 import { SuppliersShowcase } from "@/components/sections/suppliers-showcase";
 import { Newsletter } from "@/components/sections/newsletter";
+import { RouteVisualization } from "@/components/sections/route-visualization";
 import { PinnedShowcase } from "@/components/sections/pinned-showcase";
 import { Reveal } from "@/components/reveal";
 import { ProductCard } from "@/components/product-card";
@@ -35,6 +36,9 @@ export default async function HomePage() {
     <>
       <HeroSection />
       <StatsBar />
+
+      {/* China → Bangladesh route visualization */}
+      <RouteVisualization />
 
       {/* Categories */}
       <section className="container py-12 sm:py-16">

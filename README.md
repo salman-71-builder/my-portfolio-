@@ -33,6 +33,10 @@ Apple-inspired 3D experience, built to stay smooth and lazy-loaded:
   pointer (`components/tilt-card.tsx`).
 - **Scroll animations** — GSAP ScrollTrigger reveals (`components/reveal.tsx`)
   and an Apple-style **pinned** scroll section (`sections/pinned-showcase.tsx`).
+- **Route visualization** — cinematic China→Bangladesh flight scene
+  (`sections/route-visualization.tsx` + `three/route-scene.tsx`): starfield,
+  3D waving flags, a GSAP-driven airplane on a curved arc with contrail and
+  blinking lights, and an animated golden route line.
 
 **Performance & a11y:** Three.js is dynamically imported (never blocks first
 paint), capped device-pixel-ratio + particle counts, render loops pause when

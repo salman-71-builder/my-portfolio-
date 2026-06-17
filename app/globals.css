@@ -290,6 +290,26 @@
   }
 }
 
+/* ---- Route visualization country labels (projected from 3D) ---- */
+.route-country-label {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+  font-weight: 800;
+  font-size: 0.8rem;
+  letter-spacing: 0.18em;
+  color: #fff;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+  white-space: nowrap;
+  will-change: transform;
+}
+@media (min-width: 640px) {
+  .route-country-label {
+    font-size: 0.95rem;
+  }
+}
+
 /* ---- 3D text effect ---- */
 .text-3d {
   text-shadow:
