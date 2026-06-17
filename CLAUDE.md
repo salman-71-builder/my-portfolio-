@@ -56,6 +56,12 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - Pages: `app/checkout/page.tsx` → `app/orders/[id]/page.tsx` (server component reading via Prisma).
 - Prices/totals are always recomputed server-side from `data/products.ts`; the client never sets prices.
 
+## AR Virtual Try-On (sunglasses)
+
+- `components/try-on/`: `try-on-button` (lazy entry, opens the modal), `try-on-modal` (camera + `@vladmandic/face-api` 68-landmark detection, decoupled detect/render loops with smoothing, canvas overlay, capture/share/buy/recommendations), `glasses-styles` (vector sunglasses drawn on canvas).
+- "Try On 👓" button shows on sunglasses `ProductCard`s; a banner shows in `products-browser` when `category=sunglasses`.
+- face-api/TF.js is dynamically imported only when the modal opens; models load from `NEXT_PUBLIC_FACEAPI_MODELS` (CDN default, or self-host in `public/models`). `next.config.mjs` sets `fs/encoding/path` webpack fallbacks for the browser build.
+
 ## Admin dashboard (`/admin`)
 
 - Password-gated via `lib/admin-auth.ts` (env `ADMIN_PASSWORD`, dev default `admin123`): login sets an httpOnly HMAC cookie; `app/admin/page.tsx` redirects to `/admin/login` when unauthed.

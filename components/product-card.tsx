@@ -7,12 +7,16 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/star-rating";
 import { TiltCard } from "@/components/tilt-card";
+import { TryOnButton } from "@/components/try-on/try-on-button";
 import { useCart } from "@/components/cart-provider";
 import { formatPriceRange } from "@/lib/utils";
 import type { Product } from "@/data/products";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const isSunglasses =
+    product.category === "sunglasses" ||
+    product.tags?.includes("sunglasses");
 
   return (
     <TiltCard className="h-full">
@@ -67,6 +71,12 @@ export function ProductCard({ product }: { product: Product }) {
           <ShoppingCart className="h-4 w-4" />
           Add to Cart
         </Button>
+
+        {isSunglasses && (
+          <div className="mt-2">
+            <TryOnButton product={product} />
+          </div>
+        )}
       </div>
       </div>
     </TiltCard>

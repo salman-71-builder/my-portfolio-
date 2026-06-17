@@ -10,6 +10,16 @@ const nextConfig = {
       { protocol: "https", hostname: "i.dummyjson.com" },
     ],
   },
+  webpack: (config) => {
+    // face-api / tfjs reference optional Node built-ins in their browser build
+    config.resolve.fallback = {
+      ...config.resolve.fallback,
+      fs: false,
+      encoding: false,
+      path: false,
+    };
+    return config;
+  },
 };
 
 export default nextConfig;

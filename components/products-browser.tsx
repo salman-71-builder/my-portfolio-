@@ -2,11 +2,12 @@
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, X, PackageSearch, Loader2 } from "lucide-react";
+import { SlidersHorizontal, X, PackageSearch, Loader2, Glasses } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet } from "@/components/ui/sheet";
 import { ProductCard } from "@/components/product-card";
+import { TryOnButton } from "@/components/try-on/try-on-button";
 import {
   FilterSidebar,
   type Filters,
@@ -188,6 +189,23 @@ export function ProductsBrowser({ categories }: { categories: Category[] }) {
             : `${filtered.length} product${filtered.length !== 1 ? "s" : ""} found`}
         </p>
       </div>
+
+      {filters.category === "sunglasses" && (
+        <div className="mb-6 flex flex-col items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#0a1230] p-5 text-white sm:flex-row">
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gold to-brand text-black">
+              <Glasses className="h-6 w-6" />
+            </span>
+            <div>
+              <h2 className="text-lg font-extrabold">Virtual Try-On 👓</h2>
+              <p className="text-sm text-white/70">
+                See how any pair looks on you — live, right in your browser.
+              </p>
+            </div>
+          </div>
+          <TryOnButton variant="banner" />
+        </div>
+      )}
 
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* Sidebar (desktop) */}

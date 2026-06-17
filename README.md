@@ -58,6 +58,25 @@ Password-protected order management:
 
 Set in `.env` / Vercel env vars: `ADMIN_PASSWORD`, and optionally `RESEND_API_KEY` + `ADMIN_EMAIL` + `EMAIL_FROM` for notifications.
 
+## 👓 AR Virtual Try-On (sunglasses)
+
+Browser-based try-on — no app, works in Chrome/Safari/Firefox:
+
+- **"Try On 👓"** button on every sunglasses product card, plus a **Virtual
+  Try-On banner** on the sunglasses category view (`/products?category=sunglasses`).
+- Full-screen modal: polite camera-permission prompt → live front-camera view →
+  face detection via **face-api.js** (`@vladmandic/face-api`, 68 landmarks) →
+  sunglasses locked to the eyes in real time, smoothed for jitter-free tracking.
+- Switch styles, size/position sliders, **Take Photo**, **Share** (Web Share API /
+  WhatsApp), **Save**, **Buy Now**, similar-style recommendations, "You look great!".
+- Lazy-loaded: the face-api/TF.js bundle only downloads when the modal opens, so
+  it never affects normal page load. Models load from a CDN by default
+  (`NEXT_PUBLIC_FACEAPI_MODELS`); self-host in `public/models` for production.
+
+> Glasses are drawn as crisp vector overlays (tinted lenses + frame) so they
+> composite cleanly on the face. To use real background-removed product PNGs,
+> add them as a style in `components/try-on/glasses-styles.ts`.
+
 ## 🛰️ Product data (DummyJSON → CJ Dropshipping)
 
 Products and categories are served through a single abstraction layer in
