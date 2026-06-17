@@ -11,6 +11,8 @@ import { WhyChooseUs } from "@/components/sections/why-choose-us";
 import { TestimonialSlider } from "@/components/sections/testimonial-slider";
 import { SuppliersShowcase } from "@/components/sections/suppliers-showcase";
 import { Newsletter } from "@/components/sections/newsletter";
+import { PinnedShowcase } from "@/components/sections/pinned-showcase";
+import { Reveal } from "@/components/reveal";
 import { ProductCard } from "@/components/product-card";
 import {
   getFeaturedProducts,
@@ -62,26 +64,33 @@ export default async function HomePage() {
         </section>
       )}
 
+      {/* Apple-style pinned scroll showcase */}
+      <PinnedShowcase />
+
       {/* How It Works */}
       <section className="bg-accent/40 py-12 sm:py-16">
         <div className="container">
-          <SectionHeading
-            title="How It Works"
-            subtitle="From China to your doorstep in 4 simple steps"
-            center
-          />
-          <HowItWorks />
+          <Reveal direction="rotate">
+            <SectionHeading
+              title="How It Works"
+              subtitle="From China to your doorstep in 4 simple steps"
+              center
+            />
+            <HowItWorks />
+          </Reveal>
         </div>
       </section>
 
       {/* Why Choose Us */}
       <section className="container py-12 sm:py-16">
-        <SectionHeading
-          title="Why Choose Import China"
-          subtitle="The smartest way to source wholesale from China"
-          center
-        />
-        <WhyChooseUs />
+        <Reveal direction="up">
+          <SectionHeading
+            title="Why Choose Import China"
+            subtitle="The smartest way to source wholesale from China"
+            center
+          />
+          <WhyChooseUs />
+        </Reveal>
       </section>
 
       {/* New Arrivals */}

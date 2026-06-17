@@ -33,6 +33,8 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - `components/ui/` — dependency-light shadcn-style primitives (Button, Card, Badge, Input, Label, Separator, Tabs, Slider, Sheet, Dialog).
 - `components/sections/` — home page sections (hero, stats, category grid, featured/flash/new products, how-it-works, why-choose-us, suppliers showcase, testimonials, newsletter).
 - `components/` — shared pieces: navbar, footer, search-bar (text + image search), product-card, cart-provider/cart-drawer (localStorage), product-detail, image-gallery, filter-sidebar, products-browser, etc.
+- `components/three/` — lazy, client-only Three.js scenes: `intro-overlay` (3D loading intro) and `floating-shapes` (hero background). Imported via `next/dynamic` with `ssr:false`; render loops pause offscreen/hidden and respect reduced-motion.
+- 3D/motion helpers: `site-intro` (once-per-session intro gate), `logo-3d` (CSS 3D cube), `tilt-card` (flip-in + pointer tilt), `reveal` + `sections/pinned-showcase` (GSAP ScrollTrigger reveals & Apple-style pinned scroll).
 - `data/` — sample/fallback data: `products.ts` (30 products), `categories.ts` (12), `suppliers.ts`, `testimonials.ts`. Used as the offline fallback when the product API is unreachable.
 - `lib/utils.ts` — `cn()` and BDT currency formatting.
 

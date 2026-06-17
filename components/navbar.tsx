@@ -3,17 +3,11 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  Menu,
-  ShoppingCart,
-  User,
-  Phone,
-  Boxes,
-  ChevronRight,
-} from "lucide-react";
+import { Menu, ShoppingCart, User, Phone, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { SearchBar } from "@/components/search-bar";
+import { Logo3D } from "@/components/logo-3d";
 import { useCart } from "@/components/cart-provider";
 import { useCategories } from "@/components/use-categories";
 import { cn } from "@/lib/utils";
@@ -55,9 +49,7 @@ export function Navbar() {
         <div className="container flex h-16 items-center gap-4">
           {/* Logo */}
           <Link href="/" className="flex shrink-0 items-center gap-2">
-            <div className="gradient-brand flex h-10 w-10 items-center justify-center rounded-lg shadow-md ring-2 ring-gold">
-              <Boxes className="h-6 w-6 text-gold" />
-            </div>
+            <Logo3D />
             <div className="leading-none">
               <span className="block text-lg font-extrabold tracking-tight text-brand">
                 Import<span className="text-gold-600">China</span>

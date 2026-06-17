@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { motion } from "framer-motion";
 import { ShoppingCart, Package } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/star-rating";
+import { TiltCard } from "@/components/tilt-card";
 import { useCart } from "@/components/cart-provider";
 import { formatPriceRange } from "@/lib/utils";
 import type { Product } from "@/data/products";
@@ -15,11 +15,8 @@ export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
 
   return (
-    <motion.div
-      whileHover={{ y: -6 }}
-      transition={{ type: "spring", stiffness: 300, damping: 22 }}
-      className="group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-xl"
-    >
+    <TiltCard className="h-full">
+      <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-2xl">
       <Link href={`/products/${product.id}`} className="relative block">
         <div className="relative aspect-square overflow-hidden bg-muted">
           <Image
@@ -71,6 +68,7 @@ export function ProductCard({ product }: { product: Product }) {
           Add to Cart
         </Button>
       </div>
-    </motion.div>
+      </div>
+    </TiltCard>
   );
 }

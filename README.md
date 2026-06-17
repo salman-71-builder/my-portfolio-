@@ -20,6 +20,27 @@ A modern, fully responsive B2B wholesale e-commerce website inspired by chinacar
 - Primary: `#CC0000` (red) · Accent: `#FFD700` (gold) · Background: `#FFFFFF`
 - Inter font, bold headings, Chinese-inspired pattern motifs
 
+## ✨ Premium 3D & motion
+
+Apple-inspired 3D experience, built to stay smooth and lazy-loaded:
+
+- **3D intro** — full-screen Three.js loading scene (rotating gold gem + red/gold
+  particle field) that fades into the site. Shows once per session.
+- **3D hero** — dark, premium hero with floating Three.js shapes, pointer
+  parallax and a 3D-animated heading.
+- **3D logo** — continuously rotating CSS 3D cube in the navbar.
+- **Tilt + flip cards** — product cards flip in on scroll and tilt toward the
+  pointer (`components/tilt-card.tsx`).
+- **Scroll animations** — GSAP ScrollTrigger reveals (`components/reveal.tsx`)
+  and an Apple-style **pinned** scroll section (`sections/pinned-showcase.tsx`).
+
+**Performance & a11y:** Three.js is dynamically imported (never blocks first
+paint), capped device-pixel-ratio + particle counts, render loops pause when
+offscreen or the tab is hidden, fewer objects on mobile, and everything honours
+`prefers-reduced-motion` (intro skipped, animations disabled). The catalog/listing
+pages stay on the light theme for readability; the intro, hero and pinned
+showcase are dark.
+
 ## 🛰️ Product data (DummyJSON → CJ Dropshipping)
 
 Products and categories are served through a single abstraction layer in
@@ -66,7 +87,7 @@ npm run db:push            # sync schema → Postgres
 
 ## 🛠️ Tech Stack
 
-Next.js 14 · TypeScript · Tailwind CSS · Prisma · PostgreSQL (Neon) · Framer Motion · Lucide React · next/image
+Next.js 14 · TypeScript · Tailwind CSS · Three.js · GSAP ScrollTrigger · Framer Motion · Prisma · PostgreSQL (Neon) · Lucide React · next/image
 
 ## 🚀 Getting Started
 

@@ -6,6 +6,7 @@ import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CartDrawer } from "@/components/cart-drawer";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
+import { SiteIntro } from "@/components/site-intro";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -39,6 +40,7 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen font-sans">
         <CartProvider>
+          <SiteIntro />
           <Navbar />
           <main className="pb-16 lg:pb-0">{children}</main>
           <Footer />
