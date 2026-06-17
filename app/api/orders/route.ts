@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { getOrCreateCart, serializeCart } from "@/lib/cart-server";
+import { sendNewOrderEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,22 @@ export async function POST(req: NextRequest) {
 
   // empty the cart now that it's been converted to an order
   await prisma.cartItem.deleteMany({ where: { cartId } });
+
+  // notify admin of the new order (no-op if email isn't configured)
+  await sendNewOrderEmail({
+    id: order.id,
+    name: order.name,
+    email: order.email,
+    phone: order.phone,
+    address: order.address,
+    city: order.city,
+    total: order.total,
+    items: cart.items.map((i) => ({
+      name: i.name,
+      quantity: i.quantity,
+      unitPrice: i.price,
+    })),
+  });
 
   return NextResponse.json({ id: order.id }, { status: 201 });
 }

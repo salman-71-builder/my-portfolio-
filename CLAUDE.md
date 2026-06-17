@@ -55,6 +55,13 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - Pages: `app/checkout/page.tsx` → `app/orders/[id]/page.tsx` (server component reading via Prisma).
 - Prices/totals are always recomputed server-side from `data/products.ts`; the client never sets prices.
 
+## Admin dashboard (`/admin`)
+
+- Password-gated via `lib/admin-auth.ts` (env `ADMIN_PASSWORD`, dev default `admin123`): login sets an httpOnly HMAC cookie; `app/admin/page.tsx` redirects to `/admin/login` when unauthed.
+- `app/admin/page.tsx` (server, `force-dynamic`) shows sales/revenue stats + `components/admin/orders-table.tsx` (client: search, status filter, expandable details, inline status updater). DB errors degrade to a friendly notice.
+- API: `app/api/admin/login`, `app/api/admin/logout`, `app/api/admin/orders` (PATCH status, admin-only). Statuses in `lib/order-status.ts`.
+- New-order email via `lib/email.ts` (Resend HTTP API if `RESEND_API_KEY`+`ADMIN_EMAIL` set; safe no-op otherwise), called from `app/api/orders`.
+
 ## Conventions
 
 - Brand colors via Tailwind: `brand` (#CC0000) and `gold` (#FFD700); CSS variables in `app/globals.css`.

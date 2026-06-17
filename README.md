@@ -41,6 +41,19 @@ offscreen or the tab is hidden, fewer objects on mobile, and everything honours
 pages stay on the light theme for readability; the intro, hero and pinned
 showcase are dark.
 
+## 🔐 Admin dashboard (`/admin`)
+
+Password-protected order management:
+
+- **Login** at `/admin/login` (password = `ADMIN_PASSWORD`, default `admin123` for dev).
+  Sets an httpOnly HMAC session cookie; `/admin` redirects to login when unauthed.
+- **Stats** — total revenue, total orders, average order value, units sold, pending & delivered counts.
+- **Orders table** — every order with customer name, phone, email, address, payment method and full line items (expandable), searchable and filterable by status.
+- **Status updates** — change any order between `pending / processing / shipped / delivered / cancelled` (saved via `PATCH /api/admin/orders`, admin-only).
+- **Email on new orders** — `lib/email.ts` notifies the admin via [Resend](https://resend.com) when configured; otherwise it's skipped (checkout still works).
+
+Set in `.env` / Vercel env vars: `ADMIN_PASSWORD`, and optionally `RESEND_API_KEY` + `ADMIN_EMAIL` + `EMAIL_FROM` for notifications.
+
 ## 🛰️ Product data (DummyJSON → CJ Dropshipping)
 
 Products and categories are served through a single abstraction layer in
