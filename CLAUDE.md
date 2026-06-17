@@ -13,10 +13,11 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 
 ## Commands
 
-- `npm install` — install dependencies
+- `npm install` — install dependencies (runs `prisma generate` via postinstall)
 - `npm run dev` — start dev server (http://localhost:3000)
-- `npm run build` — production build
+- `npm run build` — `prisma generate && prisma db push && next build`
 - `npm run lint` — ESLint (`next lint`)
+- `npm run db:push` — sync the Prisma schema to the SQLite database
 
 ## Architecture
 
@@ -26,6 +27,15 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - `components/` — shared pieces: navbar, footer, search-bar (text + image search), product-card, cart-provider/cart-drawer (localStorage), product-detail, image-gallery, filter-sidebar, products-browser, etc.
 - `data/` — dummy data: `products.ts` (30 products + `searchProducts`), `categories.ts` (12), `suppliers.ts`, `testimonials.ts`.
 - `lib/utils.ts` — `cn()` and BDT currency formatting.
+
+## Backend (cart & orders)
+
+- **Prisma + SQLite** — schema in `prisma/schema.prisma` (`Cart`, `CartItem`, `Order`, `OrderItem`); DB file `prisma/dev.db` (gitignored).
+- `lib/prisma.ts` — singleton client. `lib/cart-server.ts` — cookie-based cart session (`cartId` httpOnly cookie) + serialization enriched from the product catalog.
+- API route handlers: `app/api/cart/route.ts` (GET/POST/PATCH/DELETE) and `app/api/orders/route.ts` (POST). Both `force-dynamic`.
+- `components/cart-provider.tsx` is server-backed (optimistic updates + `/api/cart` sync); catalog still lives in `data/*.ts`.
+- Pages: `app/checkout/page.tsx` → `app/orders/[id]/page.tsx` (server component reading via Prisma).
+- Prices/totals are always recomputed server-side from `data/products.ts`; the client never sets prices.
 
 ## Conventions
 

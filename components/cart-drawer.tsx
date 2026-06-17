@@ -133,8 +133,10 @@ export function CartDrawer() {
               </span>
             </div>
             <Separator className="mb-3" />
-            <Button className="w-full" size="lg">
-              Proceed to Checkout
+            <Button className="w-full" size="lg" asChild>
+              <Link href="/checkout" onClick={() => setOpen(false)}>
+                Proceed to Checkout
+              </Link>
             </Button>
             <Button
               variant="ghost"

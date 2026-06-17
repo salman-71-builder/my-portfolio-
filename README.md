@@ -20,9 +20,29 @@ A modern, fully responsive B2B wholesale e-commerce website inspired by chinacar
 - Primary: `#CC0000` (red) · Accent: `#FFD700` (gold) · Background: `#FFFFFF`
 - Inter font, bold headings, Chinese-inspired pattern motifs
 
+## 🔌 Backend (cart & orders)
+
+A real persistence layer backs the cart and checkout:
+
+- **Prisma + SQLite** (`prisma/schema.prisma`, file DB at `prisma/dev.db`)
+- **Server cart** keyed by an httpOnly `cartId` cookie — survives reloads and devices on the same browser. Models: `Cart`, `CartItem`.
+- **Orders** persisted on checkout with denormalized line-item snapshots. Models: `Order`, `OrderItem`.
+- **API routes** (`app/api/*`):
+  - `GET/POST/PATCH/DELETE /api/cart` — read / add / set quantity / remove (or clear)
+  - `POST /api/orders` — create an order from the current cart (totals computed server-side, cart cleared)
+- **Pages**: `/checkout` (shipping + payment form) → `/orders/[id]` (confirmation).
+
+The product catalog stays in `data/*.ts`; the cart/order APIs validate product IDs and prices against it server-side, so all the static product pages keep prerendering.
+
+```bash
+npm run db:push   # sync schema → SQLite (also run automatically in `npm run build`)
+```
+
+> SQLite is self-contained but file-based — data resets if the deployment's filesystem is ephemeral. Swap the datasource to Postgres in `prisma/schema.prisma` for durable hosting.
+
 ## 🛠️ Tech Stack
 
-Next.js 14 · TypeScript · Tailwind CSS · Framer Motion · Lucide React · next/image
+Next.js 14 · TypeScript · Tailwind CSS · Prisma · SQLite · Framer Motion · Lucide React · next/image
 
 ## 🚀 Getting Started
 
