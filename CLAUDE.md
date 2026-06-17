@@ -62,6 +62,12 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - "Try On 👓" button shows on sunglasses `ProductCard`s; a banner shows in `products-browser` when `category=sunglasses`.
 - face-api/TF.js is dynamically imported only when the modal opens; models load from `NEXT_PUBLIC_FACEAPI_MODELS` (CDN default, or self-host in `public/models`). `next.config.mjs` sets `fs/encoding/path` webpack fallbacks for the browser build.
 
+## AR Phone Case Try-On
+
+- `components/try-case/`: `phone-case-types` (pure: models, designs, colours, `isPhoneCaseProduct`; no TF import), `case-render` (canvas 2D case drawing per material), `try-case-modal` (camera + TF.js COCO-SSD `cell phone` detection, decoupled detect/render loops + smoothing, overlay tracked to the bbox, scanning/loading UI, design/colour/model switchers, camera flip, capture/share/buy, 360 mockup fallback, EN+BN instructions), `try-case-button` (lazy entry).
+- "Try On Case 📱" on phone-case `ProductCard`s + `ProductDetail`; "AR Case Try-On" banner in `products-browser` when `category=mobile-accessories`.
+- TF.js + COCO-SSD dynamically imported only when the modal opens. No phone-model identification (not possible client-side) — user selects the model; detection locates the phone region only.
+
 ## AR Room Visualization (furniture)
 
 - `components/ar-room/`: `furniture-types` (pure metadata + `detectFurnitureType`/`isFurnitureProduct`, **no Three import** so listings stay light), `furniture-models` (Three.js procedural builders + `tintFurniture`), `ar-room-modal` (camera-overlay AR + 360 fallback, scanning/loading UI, pointer drag/pinch/twist + wheel/arrow controls, shadow-catcher, capture/share/buy, colour variants, dimensions, recommendations), `ar-room-button` (lazy entry).

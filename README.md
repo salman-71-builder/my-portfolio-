@@ -77,6 +77,26 @@ Browser-based try-on — no app, works in Chrome/Safari/Firefox:
 > composite cleanly on the face. To use real background-removed product PNGs,
 > add them as a style in `components/try-on/glasses-styles.ts`.
 
+## 📱 AR Phone Case Try-On
+
+"Try On Case 📱" on phone-case product cards + product page, and an **AR Try-On
+badge** on the mobile-accessories category view.
+
+- Full-screen modal with bilingual (English + Bengali) instructions → camera →
+  **TensorFlow.js COCO-SSD** detects the phone (the "cell phone" object) → the
+  case is overlaid and tracked to it in real time, smoothed for stability.
+- Material-accurate procedural cases (silicone / glossy / clear / leather /
+  rugged) with camera cutout, switchable **designs + colours**, **phone-model
+  picker** (fit label + drop-protection rating), **front/back camera flip**,
+  Take Photo (watermarked "ChinaCart") / Share / Save / Buy Now, recommendations.
+- **360° mockup fallback** (phone model dropdown + front/back view) when the
+  camera is denied or unsupported. Fun loading screen with a spinning case.
+- TF.js loads only when the modal opens — listing pages stay light.
+
+> Phone *model* can't be identified client-side (no such model exists), so the
+> user picks their model for accurate sizing/labels; detection finds the phone
+> region (COCO-SSD), not the brand. Cases are procedural overlays.
+
 ## 🛋️ AR Room Visualization (furniture)
 
 "View In My Room 🛋️" on furniture product cards, the product page, and an

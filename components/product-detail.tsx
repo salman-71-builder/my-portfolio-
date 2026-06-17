@@ -25,6 +25,8 @@ import { ImageGallery } from "@/components/image-gallery";
 import { StarRating } from "@/components/star-rating";
 import { ArRoomButton } from "@/components/ar-room/ar-room-button";
 import { isFurnitureProduct } from "@/components/ar-room/furniture-types";
+import { TryCaseButton } from "@/components/try-case/try-case-button";
+import { isPhoneCaseProduct } from "@/components/try-case/phone-case-types";
 import { useCart } from "@/components/cart-provider";
 import { formatBDT, formatPriceRange } from "@/lib/utils";
 import type { Product } from "@/data/products";
@@ -39,6 +41,7 @@ export function ProductDetail({
 }) {
   const { addItem } = useCart();
   const isFurniture = isFurnitureProduct(product);
+  const isPhoneCase = isPhoneCaseProduct(product);
   const [qty, setQty] = React.useState(product.moq);
   const [quoteOpen, setQuoteOpen] = React.useState(false);
   const [quoteSent, setQuoteSent] = React.useState(false);
@@ -150,6 +153,11 @@ export function ProductDetail({
           {isFurniture && (
             <div className="mt-3">
               <ArRoomButton product={product} variant="detail" className="w-full sm:w-auto" />
+            </div>
+          )}
+          {isPhoneCase && (
+            <div className="mt-3">
+              <TryCaseButton product={product} variant="detail" className="w-full sm:w-auto" />
             </div>
           )}
 

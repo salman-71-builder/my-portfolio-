@@ -9,6 +9,7 @@ import {
   Loader2,
   Glasses,
   Sofa,
+  Smartphone,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -16,6 +17,7 @@ import { Sheet } from "@/components/ui/sheet";
 import { ProductCard } from "@/components/product-card";
 import { TryOnButton } from "@/components/try-on/try-on-button";
 import { ArRoomButton } from "@/components/ar-room/ar-room-button";
+import { TryCaseButton } from "@/components/try-case/try-case-button";
 import {
   FilterSidebar,
   type Filters,
@@ -234,6 +236,28 @@ export function ProductsBrowser({ categories }: { categories: Category[] }) {
             </div>
           </div>
           <ArRoomButton variant="banner" />
+        </div>
+      )}
+
+      {filters.category === "mobile-accessories" && (
+        <div className="mb-6 flex flex-col items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#0a1230] p-5 text-white sm:flex-row">
+          <div className="flex items-center gap-3">
+            <span className="flex h-12 w-12 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-gold to-brand text-black">
+              <Smartphone className="h-6 w-6" />
+            </span>
+            <div>
+              <h2 className="flex items-center gap-2 text-lg font-extrabold">
+                AR Case Try-On
+                <span className="rounded-full bg-gold px-2 py-0.5 text-[10px] font-bold uppercase text-black">
+                  AR
+                </span>
+              </h2>
+              <p className="text-sm text-white/70">
+                Hold your phone to the camera and see the case fit in real time.
+              </p>
+            </div>
+          </div>
+          <TryCaseButton variant="banner" />
         </div>
       )}
 

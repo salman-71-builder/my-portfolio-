@@ -10,6 +10,8 @@ import { TiltCard } from "@/components/tilt-card";
 import { TryOnButton } from "@/components/try-on/try-on-button";
 import { ArRoomButton } from "@/components/ar-room/ar-room-button";
 import { isFurnitureProduct } from "@/components/ar-room/furniture-types";
+import { TryCaseButton } from "@/components/try-case/try-case-button";
+import { isPhoneCaseProduct } from "@/components/try-case/phone-case-types";
 import { useCart } from "@/components/cart-provider";
 import { formatPriceRange } from "@/lib/utils";
 import type { Product } from "@/data/products";
@@ -20,6 +22,7 @@ export function ProductCard({ product }: { product: Product }) {
     product.category === "sunglasses" ||
     product.tags?.includes("sunglasses");
   const isFurniture = isFurnitureProduct(product);
+  const isPhoneCase = isPhoneCaseProduct(product);
 
   return (
     <TiltCard className="h-full">
@@ -83,6 +86,11 @@ export function ProductCard({ product }: { product: Product }) {
         {isFurniture && (
           <div className="mt-2">
             <ArRoomButton product={product} />
+          </div>
+        )}
+        {isPhoneCase && (
+          <div className="mt-2">
+            <TryCaseButton product={product} />
           </div>
         )}
       </div>
