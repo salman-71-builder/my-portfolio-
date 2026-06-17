@@ -15,9 +15,17 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 
 - `npm install` — install dependencies (runs `prisma generate` via postinstall)
 - `npm run dev` — start dev server (http://localhost:3000)
-- `npm run build` — `prisma generate && prisma db push && next build`
+- `npm run build` — `prisma generate && next build` (no DB connection needed at build)
+- `npm run vercel-build` — Vercel build hook: also runs `prisma db push` to sync the schema to Postgres
 - `npm run lint` — ESLint (`next lint`)
-- `npm run db:push` — sync the Prisma schema to the SQLite database
+- `npm run db:push` — sync the Prisma schema to the database (needs `DATABASE_URL`)
+
+## Deployment (Vercel)
+
+- Import the repo at vercel.com; framework auto-detects Next.js.
+- Set a **`DATABASE_URL`** env var to a serverless Postgres connection string (e.g. [Neon](https://neon.tech)).
+- Vercel runs `vercel-build`, which `prisma db push`es the schema to Postgres before `next build`.
+- DummyJSON works with no extra config — Vercel's runtime has no egress allowlist.
 
 ## Architecture
 
@@ -38,7 +46,7 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 
 ## Backend (cart & orders)
 
-- **Prisma + SQLite** — schema in `prisma/schema.prisma` (`Cart`, `CartItem`, `Order`, `OrderItem`); DB file `prisma/dev.db` (gitignored).
+- **Prisma + PostgreSQL** — schema in `prisma/schema.prisma` (`Cart`, `CartItem`, `Order`, `OrderItem`); connection via `DATABASE_URL` (Neon in production). Local dev needs a Postgres `DATABASE_URL` (see `.env.example`).
 - `lib/prisma.ts` — singleton client. `lib/cart-server.ts` — cookie-based cart session (`cartId` httpOnly cookie) + serialization enriched from the product catalog.
 - API route handlers: `app/api/cart/route.ts` (GET/POST/PATCH/DELETE) and `app/api/orders/route.ts` (POST). Both `force-dynamic`.
 - `components/cart-provider.tsx` is server-backed (optimistic updates + `/api/cart` sync); catalog still lives in `data/*.ts`.

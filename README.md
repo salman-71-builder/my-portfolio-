@@ -43,7 +43,7 @@ of the app consumes the same `Product` / `Category` shapes and needs no changes.
 
 A real persistence layer backs the cart and checkout:
 
-- **Prisma + SQLite** (`prisma/schema.prisma`, file DB at `prisma/dev.db`)
+- **Prisma + PostgreSQL** (`prisma/schema.prisma`), connected via `DATABASE_URL`
 - **Server cart** keyed by an httpOnly `cartId` cookie — survives reloads and devices on the same browser. Models: `Cart`, `CartItem`.
 - **Orders** persisted on checkout with denormalized line-item snapshots. Models: `Order`, `OrderItem`.
 - **API routes** (`app/api/*`):
@@ -51,25 +51,32 @@ A real persistence layer backs the cart and checkout:
   - `POST /api/orders` — create an order from the current cart (totals computed server-side, cart cleared)
 - **Pages**: `/checkout` (shipping + payment form) → `/orders/[id]` (confirmation).
 
-The product catalog stays in `data/*.ts`; the cart/order APIs validate product IDs and prices against it server-side, so all the static product pages keep prerendering.
+The cart/order APIs validate product IDs and prices server-side against the
+catalog (`lib/catalog.ts`), so the client never sets prices.
 
 ```bash
-npm run db:push   # sync schema → SQLite (also run automatically in `npm run build`)
+# Local dev / production need a Postgres DATABASE_URL (see .env.example)
+cp .env.example .env       # then paste your Neon connection string
+npm run db:push            # sync schema → Postgres
 ```
 
-> SQLite is self-contained but file-based — data resets if the deployment's filesystem is ephemeral. Swap the datasource to Postgres in `prisma/schema.prisma` for durable hosting.
+> On **Vercel**, set `DATABASE_URL` to a serverless Postgres (e.g. [Neon](https://neon.tech)).
+> The `vercel-build` script runs `prisma db push` automatically before `next build`,
+> so tables are created on first deploy.
 
 ## 🛠️ Tech Stack
 
-Next.js 14 · TypeScript · Tailwind CSS · Prisma · SQLite · Framer Motion · Lucide React · next/image
+Next.js 14 · TypeScript · Tailwind CSS · Prisma · PostgreSQL (Neon) · Framer Motion · Lucide React · next/image
 
 ## 🚀 Getting Started
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
-npm run build    # production build
-npm run lint     # eslint
+cp .env.example .env   # add your Postgres DATABASE_URL
+npm run db:push        # create tables
+npm run dev            # http://localhost:3000
+npm run build          # production build
+npm run lint           # eslint
 ```
 
 ## 📁 Structure
