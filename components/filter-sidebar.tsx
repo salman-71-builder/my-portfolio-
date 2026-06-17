@@ -3,7 +3,7 @@
 import { Star } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
-import { categories } from "@/data/categories";
+import type { Category } from "@/data/categories";
 import { formatBDT, cn } from "@/lib/utils";
 
 export interface Filters {
@@ -14,7 +14,7 @@ export interface Filters {
   shipping: string;
 }
 
-export const PRICE_BOUNDS: [number, number] = [0, 15000];
+export const PRICE_BOUNDS: [number, number] = [0, 300000];
 
 const moqOptions = [
   { label: "Any", value: 0 },
@@ -33,9 +33,11 @@ const shippingOptions = [
 export function FilterSidebar({
   filters,
   onChange,
+  categories,
 }: {
   filters: Filters;
   onChange: (next: Filters) => void;
+  categories: Category[];
 }) {
   const set = <K extends keyof Filters>(key: K, value: Filters[K]) =>
     onChange({ ...filters, [key]: value });
@@ -86,7 +88,7 @@ export function FilterSidebar({
         <Slider
           min={PRICE_BOUNDS[0]}
           max={PRICE_BOUNDS[1]}
-          step={100}
+          step={1000}
           value={filters.price}
           onValueChange={(v) => set("price", v)}
         />

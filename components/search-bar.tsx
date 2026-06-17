@@ -4,7 +4,7 @@ import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Search, Camera, ImageIcon, Paperclip, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { categories } from "@/data/categories";
+import { useCategories } from "@/components/use-categories";
 import { cn } from "@/lib/utils";
 
 /**
@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils";
  */
 export function SearchBar({ className }: { className?: string }) {
   const router = useRouter();
+  const categories = useCategories();
   const [query, setQuery] = React.useState("");
   const [category, setCategory] = React.useState("all");
   const [imageMenuOpen, setImageMenuOpen] = React.useState(false);

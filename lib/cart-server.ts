@@ -1,6 +1,6 @@
 import { cookies } from "next/headers";
 import { prisma } from "@/lib/prisma";
-import { getProductById } from "@/data/products";
+import { getProductById } from "@/lib/catalog";
 
 export const CART_COOKIE = "cartId";
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30; // 30 days
@@ -59,7 +59,7 @@ export async function serializeCart(cartId: string): Promise<SerializedCart> {
 
   const items: SerializedCartItem[] = [];
   for (const row of rows) {
-    const product = getProductById(row.productId);
+    const product = await getProductById(row.productId);
     if (!product) continue; // skip stale references
     items.push({
       id: product.id,

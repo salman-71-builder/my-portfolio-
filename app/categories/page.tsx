@@ -3,15 +3,18 @@ import Image from "next/image";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
 import { DynamicIcon } from "@/components/dynamic-icon";
-import { categories } from "@/data/categories";
+import { getCategories } from "@/lib/catalog";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Categories",
   description:
-    "Browse all 12 wholesale product categories — Electronics, Fashion, Home & Kitchen, Tools and more.",
+    "Browse all wholesale product categories — Electronics, Fashion, Home & Kitchen, Beauty, Tools and more.",
 };
 
-export default function CategoriesPage() {
+export default async function CategoriesPage() {
+  const categories = await getCategories();
   const total = categories.reduce((s, c) => s + c.productCount, 0);
 
   return (

@@ -1,10 +1,13 @@
+"use client";
+
 import Link from "next/link";
 import { Boxes, Facebook, Youtube, MessageCircle, MapPin, Mail, Phone } from "lucide-react";
-import { categories } from "@/data/categories";
+import { useCategories } from "@/components/use-categories";
 
 const paymentMethods = ["bKash", "Nagad", "Visa", "Mastercard", "Bank"];
 
 export function Footer() {
+  const categories = useCategories();
   return (
     <footer className="border-t bg-neutral-950 text-neutral-300">
       <div className="container py-12">

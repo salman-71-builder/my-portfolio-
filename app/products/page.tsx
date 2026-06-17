@@ -1,14 +1,18 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { ProductsBrowser } from "@/components/products-browser";
+import { getCategories } from "@/lib/catalog";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "All Products",
   description:
-    "Browse 10,000+ wholesale products from verified Chinese suppliers. Filter by category, price, MOQ, rating and shipping time.",
+    "Browse thousands of wholesale products from verified suppliers. Filter by category, price, MOQ, rating and shipping time.",
 };
 
-export default function ProductsPage() {
+export default async function ProductsPage() {
+  const categories = await getCategories();
   return (
     <Suspense
       fallback={
@@ -17,7 +21,7 @@ export default function ProductsPage() {
         </div>
       }
     >
-      <ProductsBrowser />
+      <ProductsBrowser categories={categories} />
     </Suspense>
   );
 }

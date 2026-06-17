@@ -6,7 +6,7 @@ import {
   cartCookieOptions,
   CART_COOKIE,
 } from "@/lib/cart-server";
-import { getProductById } from "@/data/products";
+import { getProductById } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
@@ -26,7 +26,7 @@ export async function GET() {
 // POST /api/cart — add item { productId, quantity? } (increments)
 export async function POST(req: NextRequest) {
   const { productId, quantity } = await req.json().catch(() => ({}));
-  const product = getProductById(productId);
+  const product = await getProductById(productId);
   if (!product) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
@@ -45,7 +45,7 @@ export async function POST(req: NextRequest) {
 // PATCH /api/cart — set quantity { productId, quantity }
 export async function PATCH(req: NextRequest) {
   const { productId, quantity } = await req.json().catch(() => ({}));
-  if (!getProductById(productId)) {
+  if (!(await getProductById(productId))) {
     return NextResponse.json({ error: "Product not found" }, { status: 404 });
   }
   const { cartId, isNew } = await getOrCreateCart();

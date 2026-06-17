@@ -25,8 +25,16 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - `components/ui/` — dependency-light shadcn-style primitives (Button, Card, Badge, Input, Label, Separator, Tabs, Slider, Sheet, Dialog).
 - `components/sections/` — home page sections (hero, stats, category grid, featured/flash/new products, how-it-works, why-choose-us, suppliers showcase, testimonials, newsletter).
 - `components/` — shared pieces: navbar, footer, search-bar (text + image search), product-card, cart-provider/cart-drawer (localStorage), product-detail, image-gallery, filter-sidebar, products-browser, etc.
-- `data/` — dummy data: `products.ts` (30 products + `searchProducts`), `categories.ts` (12), `suppliers.ts`, `testimonials.ts`.
+- `data/` — sample/fallback data: `products.ts` (30 products), `categories.ts` (12), `suppliers.ts`, `testimonials.ts`. Used as the offline fallback when the product API is unreachable.
 - `lib/utils.ts` — `cn()` and BDT currency formatting.
+
+## Product data source (`lib/catalog.ts`)
+
+- **Single abstraction layer** for all product/category data. Currently backed by the free, no-key **DummyJSON API** (`https://dummyjson.com`), mapped into our `Product`/`Category` shapes (prices converted USD→BDT). To switch to **CJ Dropshipping** later, only this file changes — swap `BASE_URL`, the fetch paths and `mapProduct`/`mapCategory`.
+- Falls back to bundled sample data in `data/*.ts` if the API is unreachable (e.g. host not allow-listed for egress), so the site never breaks.
+- Async functions: `getAllProducts`, `getProductById`, `getProductsByCategory`, `getRelatedProducts`, `searchProducts`, `getFeaturedProducts`, `getNewProducts`, `getFlashDeals`, `getCategories`, `getCategoryBySlug`.
+- API routes: `app/api/products` (`?q=`, `?category=`) and `app/api/categories` feed client components (products browser, navbar/footer search). Pages that render catalog data are `force-dynamic` so fetching happens at request time.
+- **Egress**: the deployment must allow-list `dummyjson.com` (and later the CJ API host) in its network egress settings for live data; otherwise the sample fallback is served.
 
 ## Backend (cart & orders)
 

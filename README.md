@@ -20,6 +20,25 @@ A modern, fully responsive B2B wholesale e-commerce website inspired by chinacar
 - Primary: `#CC0000` (red) · Accent: `#FFD700` (gold) · Background: `#FFFFFF`
 - Inter font, bold headings, Chinese-inspired pattern motifs
 
+## 🛰️ Product data (DummyJSON → CJ Dropshipping)
+
+Products and categories are served through a single abstraction layer in
+**`lib/catalog.ts`**, currently backed by the free, no-API-key
+[DummyJSON](https://dummyjson.com) API:
+
+- Real-looking products with images, prices (converted USD→BDT), ratings and specs
+- Working **search** (`/products?q=…`), **categories** and **product detail** pages
+- `app/api/products` and `app/api/categories` expose the mapped data to the client
+- Graceful **fallback** to bundled sample data (`data/*.ts`) if the API is unreachable
+
+**Swapping to CJ Dropshipping later:** change only `lib/catalog.ts` — the
+`BASE_URL`, fetch paths and the `mapProduct` / `mapCategory` functions. The rest
+of the app consumes the same `Product` / `Category` shapes and needs no changes.
+
+> ⚠️ **Egress allow-list:** for live data, the host (`dummyjson.com`, and later
+> your CJ API host) must be allowed in your deployment's network egress
+> settings. If it's blocked, the site automatically serves the sample fallback.
+
 ## 🔌 Backend (cart & orders)
 
 A real persistence layer backs the cart and checkout:

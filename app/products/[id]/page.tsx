@@ -6,23 +6,20 @@ import { ProductDetail } from "@/components/product-detail";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import {
-  products,
   getProductById,
   getRelatedProducts,
-} from "@/data/products";
+  getCategoryBySlug,
+} from "@/lib/catalog";
 import { getSupplierById } from "@/data/suppliers";
-import { getCategoryBySlug } from "@/data/categories";
 
-export function generateStaticParams() {
-  return products.map((p) => ({ id: p.id }));
-}
+export const dynamic = "force-dynamic";
 
-export function generateMetadata({
+export async function generateMetadata({
   params,
 }: {
   params: { id: string };
-}): Metadata {
-  const product = getProductById(params.id);
+}): Promise<Metadata> {
+  const product = await getProductById(params.id);
   if (!product) return { title: "Product Not Found" };
   return {
     title: product.name,
@@ -30,17 +27,19 @@ export function generateMetadata({
   };
 }
 
-export default function ProductDetailPage({
+export default async function ProductDetailPage({
   params,
 }: {
   params: { id: string };
 }) {
-  const product = getProductById(params.id);
+  const product = await getProductById(params.id);
   if (!product) notFound();
 
-  const supplier = getSupplierById(product.supplierId);
-  const category = getCategoryBySlug(product.category);
-  const related = getRelatedProducts(product);
+  const [supplier, category, related] = await Promise.all([
+    Promise.resolve(getSupplierById(product.supplierId)),
+    getCategoryBySlug(product.category),
+    getRelatedProducts(product),
+  ]);
 
   return (
     <div className="container py-6">

@@ -12,12 +12,22 @@ import { TestimonialSlider } from "@/components/sections/testimonial-slider";
 import { SuppliersShowcase } from "@/components/sections/suppliers-showcase";
 import { Newsletter } from "@/components/sections/newsletter";
 import { ProductCard } from "@/components/product-card";
-import { products, hotProducts, newProducts } from "@/data/products";
+import {
+  getFeaturedProducts,
+  getFlashDeals,
+  getNewProducts,
+  getCategories,
+} from "@/lib/catalog";
 
-export default function HomePage() {
-  const featured = products.slice(0, 12);
-  const flashDeals = products.filter((p) => p.discount >= 20).slice(0, 6);
-  const arrivals = newProducts.slice(0, 8);
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const [categories, featured, flashDeals, arrivals] = await Promise.all([
+    getCategories(),
+    getFeaturedProducts(12),
+    getFlashDeals(6),
+    getNewProducts(8),
+  ]);
 
   return (
     <>
@@ -28,17 +38,17 @@ export default function HomePage() {
       <section className="container py-12 sm:py-16">
         <SectionHeading
           title="Shop by Category"
-          subtitle="Explore 12 categories of wholesale products"
+          subtitle="Explore wholesale products across every category"
           viewAllHref="/categories"
         />
-        <CategoryGrid />
+        <CategoryGrid categories={categories} />
       </section>
 
       {/* Featured Products */}
       <section className="container py-12 sm:py-16">
         <SectionHeading
           title="Featured Products"
-          subtitle="Top-selling wholesale items from verified suppliers"
+          subtitle="Top-rated wholesale items from verified suppliers"
           viewAllHref="/products"
           viewAllLabel="View All Products"
         />
@@ -46,9 +56,11 @@ export default function HomePage() {
       </section>
 
       {/* Flash Deals */}
-      <section className="container py-6 sm:py-8">
-        <FlashDeals products={flashDeals.length ? flashDeals : hotProducts} />
-      </section>
+      {flashDeals.length > 0 && (
+        <section className="container py-6 sm:py-8">
+          <FlashDeals products={flashDeals} />
+        </section>
+      )}
 
       {/* How It Works */}
       <section className="bg-accent/40 py-12 sm:py-16">
@@ -73,18 +85,20 @@ export default function HomePage() {
       </section>
 
       {/* New Arrivals */}
-      <section className="container py-12 sm:py-16">
-        <SectionHeading
-          title="New Arrivals"
-          subtitle="Freshly added products this week"
-          viewAllHref="/products?sort=newest"
-        />
-        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
-          {arrivals.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      </section>
+      {arrivals.length > 0 && (
+        <section className="container py-12 sm:py-16">
+          <SectionHeading
+            title="New Arrivals"
+            subtitle="Freshly added products"
+            viewAllHref="/products?sort=newest"
+          />
+          <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            {arrivals.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        </section>
+      )}
 
       {/* Suppliers */}
       <section className="container py-12 sm:py-16">

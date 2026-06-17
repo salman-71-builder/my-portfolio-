@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { motion } from "framer-motion";
-import { categories } from "@/data/categories";
+import type { Category } from "@/data/categories";
 import { DynamicIcon } from "@/components/dynamic-icon";
 
-export function CategoryGrid() {
+export function CategoryGrid({ categories }: { categories: Category[] }) {
   return (
     <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-6">
       {categories.map((cat, i) => (

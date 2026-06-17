@@ -15,7 +15,7 @@ import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { SearchBar } from "@/components/search-bar";
 import { useCart } from "@/components/cart-provider";
-import { categories } from "@/data/categories";
+import { useCategories } from "@/components/use-categories";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
@@ -30,6 +30,7 @@ const navLinks = [
 export function Navbar() {
   const pathname = usePathname();
   const { totalItems, setOpen } = useCart();
+  const categories = useCategories();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
   return (

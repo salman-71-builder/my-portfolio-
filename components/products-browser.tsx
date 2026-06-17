@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useSearchParams } from "next/navigation";
-import { SlidersHorizontal, X, PackageSearch } from "lucide-react";
+import { SlidersHorizontal, X, PackageSearch, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Sheet } from "@/components/ui/sheet";
@@ -12,8 +12,8 @@ import {
   type Filters,
   PRICE_BOUNDS,
 } from "@/components/filter-sidebar";
-import { products, searchProducts } from "@/data/products";
-import { getCategoryBySlug } from "@/data/categories";
+import type { Product } from "@/data/products";
+import type { Category } from "@/data/categories";
 
 const PAGE_SIZE = 12;
 
@@ -34,7 +34,7 @@ const defaultFilters = (category: string): Filters => ({
   shipping: "any",
 });
 
-export function ProductsBrowser() {
+export function ProductsBrowser({ categories }: { categories: Category[] }) {
   const searchParams = useSearchParams();
   const q = searchParams.get("q") ?? "";
   const urlCategory = searchParams.get("category") ?? "all";
@@ -47,6 +47,37 @@ export function ProductsBrowser() {
   const [page, setPage] = React.useState(1);
   const [mobileFilters, setMobileFilters] = React.useState(false);
 
+  const [base, setBase] = React.useState<Product[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  const categoryName = React.useCallback(
+    (slug: string) =>
+      categories.find((c) => c.slug === slug)?.name ?? slug,
+    [categories]
+  );
+
+  // Fetch products from the data-source API whenever the search query changes.
+  React.useEffect(() => {
+    let active = true;
+    setLoading(true);
+    const params = new URLSearchParams();
+    if (q) params.set("q", q);
+    fetch(`/api/products?${params.toString()}`, { cache: "no-store" })
+      .then((r) => r.json())
+      .then((data) => {
+        if (active && Array.isArray(data.products)) setBase(data.products);
+      })
+      .catch(() => {
+        if (active) setBase([]);
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
+  }, [q]);
+
   // sync when URL params change
   React.useEffect(() => {
     setFilters((f) => ({ ...f, category: urlCategory }));
@@ -56,8 +87,6 @@ export function ProductsBrowser() {
   React.useEffect(() => {
     setSort(urlSort);
   }, [urlSort]);
-
-  const base = React.useMemo(() => (q ? searchProducts(q) : products), [q]);
 
   const filtered = React.useMemo(() => {
     let list = base.filter((p) => {
@@ -89,6 +118,11 @@ export function ProductsBrowser() {
     return list;
   }, [base, filters, sort]);
 
+  // keep the current page in range when results shrink
+  React.useEffect(() => {
+    setPage(1);
+  }, [filters, sort]);
+
   const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
   const current = Math.min(page, totalPages);
   const pageItems = filtered.slice(
@@ -100,7 +134,7 @@ export function ProductsBrowser() {
   const tags: { label: string; clear: () => void }[] = [];
   if (filters.category !== "all") {
     tags.push({
-      label: getCategoryBySlug(filters.category)?.name ?? filters.category,
+      label: categoryName(filters.category),
       clear: () => setFilters({ ...filters, category: "all" }),
     });
   }
@@ -143,13 +177,15 @@ export function ProductsBrowser() {
               <span className="text-brand">&ldquo;{q}&rdquo;</span>
             </>
           ) : filters.category !== "all" ? (
-            getCategoryBySlug(filters.category)?.name
+            categoryName(filters.category)
           ) : (
             "All Products"
           )}
         </h1>
         <p className="mt-1 text-sm text-muted-foreground">
-          {filtered.length} product{filtered.length !== 1 && "s"} found
+          {loading
+            ? "Loading products…"
+            : `${filtered.length} product${filtered.length !== 1 ? "s" : ""} found`}
         </p>
       </div>
 
@@ -166,7 +202,11 @@ export function ProductsBrowser() {
                 Reset
               </button>
             </div>
-            <FilterSidebar filters={filters} onChange={setFilters} />
+            <FilterSidebar
+              filters={filters}
+              onChange={setFilters}
+              categories={categories}
+            />
           </div>
         </aside>
 
@@ -215,7 +255,11 @@ export function ProductsBrowser() {
           )}
 
           {/* Grid */}
-          {pageItems.length === 0 ? (
+          {loading ? (
+            <div className="flex items-center justify-center gap-2 py-20 text-muted-foreground">
+              <Loader2 className="h-6 w-6 animate-spin" /> Loading products…
+            </div>
+          ) : pageItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center gap-3 rounded-xl border border-dashed py-20 text-center">
               <PackageSearch className="h-12 w-12 text-muted-foreground" />
               <p className="text-lg font-semibold">No products found</p>
@@ -232,8 +276,8 @@ export function ProductsBrowser() {
           )}
 
           {/* Pagination */}
-          {totalPages > 1 && (
-            <div className="mt-8 flex items-center justify-center gap-1">
+          {!loading && totalPages > 1 && (
+            <div className="mt-8 flex flex-wrap items-center justify-center gap-1">
               <Button
                 variant="outline"
                 size="sm"
@@ -242,19 +286,30 @@ export function ProductsBrowser() {
               >
                 Prev
               </Button>
-              {Array.from({ length: totalPages }, (_, i) => i + 1).map((n) => (
-                <button
-                  key={n}
-                  onClick={() => setPage(n)}
-                  className={`h-9 w-9 rounded-lg text-sm font-semibold transition-colors ${
-                    n === current
-                      ? "bg-brand text-white"
-                      : "border hover:bg-muted"
-                  }`}
-                >
-                  {n}
-                </button>
-              ))}
+              {Array.from({ length: totalPages }, (_, i) => i + 1)
+                .filter(
+                  (n) =>
+                    n === 1 ||
+                    n === totalPages ||
+                    Math.abs(n - current) <= 2
+                )
+                .map((n, idx, arr) => (
+                  <React.Fragment key={n}>
+                    {idx > 0 && n - arr[idx - 1] > 1 && (
+                      <span className="px-1 text-muted-foreground">…</span>
+                    )}
+                    <button
+                      onClick={() => setPage(n)}
+                      className={`h-9 w-9 rounded-lg text-sm font-semibold transition-colors ${
+                        n === current
+                          ? "bg-brand text-white"
+                          : "border hover:bg-muted"
+                      }`}
+                    >
+                      {n}
+                    </button>
+                  </React.Fragment>
+                ))}
               <Button
                 variant="outline"
                 size="sm"
@@ -276,7 +331,11 @@ export function ProductsBrowser() {
         title="Filters"
       >
         <div className="p-4">
-          <FilterSidebar filters={filters} onChange={setFilters} />
+          <FilterSidebar
+            filters={filters}
+            onChange={setFilters}
+            categories={categories}
+          />
           <Button
             className="mt-6 w-full"
             onClick={() => setMobileFilters(false)}
