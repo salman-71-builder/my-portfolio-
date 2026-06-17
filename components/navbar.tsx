@@ -7,7 +7,7 @@ import { Menu, ShoppingCart, User, Phone, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { SearchBar } from "@/components/search-bar";
-import { Logo3D } from "@/components/logo-3d";
+import { ChinaCartLogo } from "@/components/chinacart-logo";
 import { useCart } from "@/components/cart-provider";
 import { useCategories } from "@/components/use-categories";
 import { cn } from "@/lib/utils";
@@ -48,16 +48,15 @@ export function Navbar() {
       <div className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
         <div className="container flex h-16 items-center gap-4">
           {/* Logo */}
-          <Link href="/" className="flex shrink-0 items-center gap-2">
-            <Logo3D />
-            <div className="leading-none">
-              <span className="block text-lg font-extrabold tracking-tight text-brand">
-                Import<span className="text-gold-600">China</span>
-              </span>
-              <span className="hidden text-[10px] font-medium text-muted-foreground sm:block">
-                B2B Wholesale Sourcing
-              </span>
-            </div>
+          <Link
+            href="/"
+            aria-label="ChinaCart home"
+            className="flex shrink-0 items-center gap-2"
+          >
+            <ChinaCartLogo variant="nav" />
+            <span className="hidden text-[10px] font-medium text-muted-foreground sm:block">
+              B2B Wholesale Sourcing
+            </span>
           </Link>
 
           {/* Search (desktop) */}

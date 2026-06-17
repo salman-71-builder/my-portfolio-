@@ -1,7 +1,8 @@
 "use client";
 
 import Link from "next/link";
-import { Boxes, Facebook, Youtube, MessageCircle, MapPin, Mail, Phone } from "lucide-react";
+import { Facebook, Youtube, MessageCircle, MapPin, Mail, Phone } from "lucide-react";
+import { ChinaCartLogo } from "@/components/chinacart-logo";
 import { useCategories } from "@/components/use-categories";
 
 const paymentMethods = ["bKash", "Nagad", "Visa", "Mastercard", "Bank"];
@@ -14,13 +15,8 @@ export function Footer() {
         <div className="grid gap-10 md:grid-cols-2 lg:grid-cols-5">
           {/* Brand */}
           <div className="lg:col-span-1">
-            <Link href="/" className="flex items-center gap-2">
-              <div className="gradient-brand flex h-10 w-10 items-center justify-center rounded-lg ring-2 ring-gold">
-                <Boxes className="h-6 w-6 text-gold" />
-              </div>
-              <span className="text-lg font-extrabold text-white">
-                Import<span className="text-gold">China</span>
-              </span>
+            <Link href="/" aria-label="ChinaCart home" className="inline-flex">
+              <ChinaCartLogo variant="nav" />
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-neutral-400">
               Bangladesh&apos;s #1 B2B wholesale sourcing platform. Source

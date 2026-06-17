@@ -5,6 +5,7 @@ import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight, Store, ShieldCheck, Truck, BadgePercent } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { HeroLogo } from "@/components/hero-logo";
 
 // Lazy, client-only 3D background.
 const FloatingShapes = dynamic(
@@ -40,6 +41,10 @@ export function HeroSection() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
+          <div className="mb-6">
+            <HeroLogo />
+          </div>
+
           <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold backdrop-blur">
             <span className="h-2 w-2 animate-pulse rounded-full bg-gold" />
             Bangladesh&apos;s #1 B2B Wholesale Sourcing Platform

@@ -34,7 +34,8 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - `components/sections/` — home page sections (hero, stats, category grid, featured/flash/new products, how-it-works, why-choose-us, suppliers showcase, testimonials, newsletter).
 - `components/` — shared pieces: navbar, footer, search-bar (text + image search), product-card, cart-provider/cart-drawer (localStorage), product-detail, image-gallery, filter-sidebar, products-browser, etc.
 - `components/three/` — lazy, client-only Three.js scenes: `intro-overlay` (3D loading intro) and `floating-shapes` (hero background). Imported via `next/dynamic` with `ssr:false`; render loops pause offscreen/hidden and respect reduced-motion.
-- 3D/motion helpers: `site-intro` (once-per-session intro gate), `logo-3d` (CSS 3D cube), `tilt-card` (flip-in + pointer tilt), `reveal` + `sections/pinned-showcase` (GSAP ScrollTrigger reveals & Apple-style pinned scroll).
+- Logo: `chinacart-logo` (CSS 3D "CHINA"#1a2f5e + cart + "CART"#c0392b wordmark on a black plate; `variant="nav"|"hero"`) used in navbar/footer; `hero-logo` adds scroll-driven scale/fade for the large homepage version. (`logo-3d` cube is retained but unused.)
+- 3D/motion helpers: `site-intro` (once-per-session intro gate), `tilt-card` (flip-in + pointer tilt), `reveal` + `sections/pinned-showcase` (GSAP ScrollTrigger reveals & Apple-style pinned scroll).
 - `data/` — sample/fallback data: `products.ts` (30 products), `categories.ts` (12), `suppliers.ts`, `testimonials.ts`. Used as the offline fallback when the product API is unreachable.
 - `lib/utils.ts` — `cn()` and BDT currency formatting.
 
