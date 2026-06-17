@@ -222,10 +222,20 @@ export default function RouteScene({ reduced = false }: { reduced?: boolean }) {
     let width = mount.clientWidth;
     let height = mount.clientHeight;
 
+    // tighter framing + 3D angle; pull elements inward a touch on mobile
+    const spread = isMobile ? 0.78 : 1;
+    const camRadius = isMobile ? 10.5 : 8.6;
+    const camTarget = new THREE.Vector3(0, 0.1, 0.4);
+
     const scene = new THREE.Scene();
-    const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
-    camera.position.set(0, 0.4, 13);
-    camera.lookAt(0, 0.3, 0);
+    const camera = new THREE.PerspectiveCamera(
+      isMobile ? 54 : 47,
+      width / height,
+      0.1,
+      100
+    );
+    camera.position.set(0, 2.2, camRadius);
+    camera.lookAt(camTarget);
 
     const renderer = new THREE.WebGLRenderer({
       alpha: true,
@@ -268,19 +278,20 @@ export default function RouteScene({ reduced = false }: { reduced?: boolean }) {
 
     // flags
     const chinaFlag = makeFlag("china", "#de2910");
-    chinaFlag.group.position.set(-4.6, 0.9, -0.5);
-    chinaFlag.group.rotation.y = 0.25;
+    chinaFlag.group.position.set(-4.0 * spread, 1.2, -0.3);
+    chinaFlag.group.rotation.y = 0.32;
     const bdFlag = makeFlag("bangladesh", "#00b36a");
-    bdFlag.group.position.set(3.0, 0.9, -0.5);
-    bdFlag.group.rotation.y = -0.25;
+    bdFlag.group.position.set(1.6 * spread, 1.2, -0.3);
+    bdFlag.group.rotation.y = -0.32;
     scene.add(chinaFlag.group, bdFlag.group);
-    const chinaFlagWorld = new THREE.Vector3(-3.4, 0.2, -0.5);
-    const bdFlagWorld = new THREE.Vector3(4.2, 0.2, -0.5);
+    // cloth centres (pole + W/2) — used to anchor the DOM country labels
+    const chinaFlagWorld = new THREE.Vector3(-2.8 * spread, 0.5, -0.3);
+    const bdFlagWorld = new THREE.Vector3(2.8 * spread, 0.5, -0.3);
 
     // route curve + nodes
-    const left = new THREE.Vector3(-4.8, -1.4, 0.3);
-    const right = new THREE.Vector3(4.8, -1.4, 0.3);
-    const control = new THREE.Vector3(0, 1.6, 2.2);
+    const left = new THREE.Vector3(-3.6 * spread, -1.5, 0.3);
+    const right = new THREE.Vector3(3.6 * spread, -1.5, 0.3);
+    const control = new THREE.Vector3(0, 1.5, 2.6);
     const curve = new THREE.QuadraticBezierCurve3(left, control, right);
 
     // pins at both ends
@@ -322,6 +333,50 @@ export default function RouteScene({ reduced = false }: { reduced?: boolean }) {
     routeLine.computeLineDistances();
     routeLine.geometry.setDrawRange(0, 0);
     scene.add(routeLine);
+
+    // flowing gold arrow chevrons that travel China -> Bangladesh
+    const CHEV = isMobile ? 4 : 6;
+    const chevMat = new THREE.MeshBasicMaterial({
+      color: 0xffd700,
+      transparent: true,
+      opacity: 0.95,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false,
+    });
+    const chevrons: THREE.Group[] = [];
+    for (let i = 0; i < CHEV; i++) {
+      const g = new THREE.Group();
+      const cone = new THREE.Mesh(
+        new THREE.ConeGeometry(0.13, 0.4, 14),
+        chevMat
+      );
+      cone.rotation.x = -Math.PI / 2; // apex -> group -Z (travel direction)
+      g.add(cone);
+      g.visible = false;
+      scene.add(g);
+      chevrons.push(g);
+    }
+
+    // destination arrowhead at Bangladesh
+    const destArrow = new THREE.Group();
+    const destCone = new THREE.Mesh(
+      new THREE.ConeGeometry(0.28, 0.7, 18),
+      new THREE.MeshStandardMaterial({
+        color: 0xffd700,
+        emissive: 0x6a5200,
+        metalness: 0.7,
+        roughness: 0.3,
+      })
+    );
+    destCone.rotation.x = -Math.PI / 2;
+    destArrow.add(destCone);
+    {
+      const endTan = curve.getTangentAt(0.999).normalize();
+      destArrow.position.copy(right);
+      destArrow.lookAt(right.clone().add(endTan));
+    }
+    destArrow.visible = false;
+    scene.add(destArrow);
 
     // airplane + trail
     const plane = makeAirplane();
@@ -404,6 +459,13 @@ export default function RouteScene({ reduced = false }: { reduced?: boolean }) {
     function renderFrame() {
       const t = clock.getElapsedTime();
 
+      // gentle 3D orbit + bob for depth
+      const orbit = Math.sin(t * 0.28) * 0.22;
+      camera.position.x = Math.sin(orbit) * camRadius;
+      camera.position.z = Math.cos(orbit) * camRadius;
+      camera.position.y = 2.2 + Math.sin(t * 0.4) * 0.3;
+      camera.lookAt(camTarget);
+
       waveFlag(chinaFlag, t);
       waveFlag(bdFlag, t);
       stars.rotation.y = t * 0.01;
@@ -434,6 +496,22 @@ export default function RouteScene({ reduced = false }: { reduced?: boolean }) {
       plane.redLight.visible = blink;
       plane.whiteLight.visible = !blink;
       plane.strobe.visible = Math.sin(t * 16) > 0.6;
+
+      // flowing arrow chevrons toward Bangladesh (appear as the line draws)
+      for (let i = 0; i < CHEV; i++) {
+        const ct = ((t * 0.12 + i / CHEV) % 1 + 1) % 1;
+        const show = ct <= state.draw + 0.02;
+        chevrons[i].visible = show;
+        if (show) {
+          const cp = curve.getPointAt(ct);
+          const ctan = curve
+            .getTangentAt(THREE.MathUtils.clamp(ct, 0.001, 0.999))
+            .normalize();
+          chevrons[i].position.copy(cp);
+          chevrons[i].lookAt(cp.clone().add(ctan));
+        }
+      }
+      destArrow.visible = state.draw > 0.98;
 
       updateLabel(chinaLabelRef.current, chinaFlagWorld);
       updateLabel(bdLabelRef.current, bdFlagWorld);
