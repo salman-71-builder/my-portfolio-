@@ -1,0 +1,10 @@
+# Local SQLite database — must never be deployed (Vercel FS is ephemeral/read-only)
+prisma/dev.db
+prisma/dev.db-journal
+*.db
+
+# Local env / build artifacts
+.env
+.env*.local
+.next
+node_modules
