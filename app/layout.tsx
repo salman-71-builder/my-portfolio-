@@ -7,6 +7,7 @@ import { Footer } from "@/components/footer";
 import { CartDrawer } from "@/components/cart-drawer";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { SiteIntro } from "@/components/site-intro";
+import { ChatWidget } from "@/components/chatbot/chat-widget";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -46,6 +47,7 @@ export default function RootLayout({
           <Footer />
           <CartDrawer />
           <MobileBottomNav />
+          <ChatWidget />
         </CartProvider>
       </body>
     </html>

@@ -58,6 +58,22 @@ Password-protected order management:
 
 Set in `.env` / Vercel env vars: `ADMIN_PASSWORD`, and optionally `RESEND_API_KEY` + `ADMIN_EMAIL` + `EMAIL_FROM` for notifications.
 
+## 🤖 CartBot — AI shopping assistant
+
+Floating chat assistant (bottom-right, red/gold, "online" dot) that recommends
+real products from the catalog.
+
+- **Claude API** (`claude-sonnet-4-6`) via `app/api/chat` with a `search_products`
+  **tool** that runs against `lib/catalog`, so CartBot recommends actual products
+  (cards with image, price, Add-to-Cart, View) — never invented ones.
+- Speaks **English + Bengali + Banglish** ("amar ekta chair lagbe"), quick-reply
+  chips (Trending, Best Deals, Gift Ideas, Talk to Human…), typing indicator,
+  session chat history, clear-chat, full-screen on mobile.
+- **Graceful fallback**: with no `ANTHROPIC_API_KEY` (or if the API is
+  unreachable) it falls back to keyword product search, so the bot always works.
+
+Set `ANTHROPIC_API_KEY` in `.env` / Vercel env vars to enable the AI brain.
+
 ## 👓 AR Virtual Try-On (sunglasses)
 
 Browser-based try-on — no app, works in Chrome/Safari/Firefox:

@@ -62,6 +62,12 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - "Try On 👓" button shows on sunglasses `ProductCard`s; a banner shows in `products-browser` when `category=sunglasses`.
 - face-api/TF.js is dynamically imported only when the modal opens; models load from `NEXT_PUBLIC_FACEAPI_MODELS` (CDN default, or self-host in `public/models`). `next.config.mjs` sets `fs/encoding/path` webpack fallbacks for the browser build.
 
+## CartBot AI assistant
+
+- `components/chatbot/chat-widget.tsx` (client, mounted in root layout): floating chat, quick replies, product cards (Add-to-Cart/View), typing indicator, sessionStorage history, clear-chat, mobile full-screen.
+- `app/api/chat/route.ts` (`force-dynamic`): Anthropic SDK, model `claude-sonnet-4-6`, with a `search_products` tool executed server-side against `lib/catalog` (manual tool loop, ≤3 iterations). Returns `{reply, products}`.
+- Bilingual (EN/BN/Banglish) via the system prompt. **Keyword fallback** (`keywordFallback`) runs when `ANTHROPIC_API_KEY` is unset or the API errors, so the bot always responds with real catalog products.
+
 ## AR Phone Case Try-On
 
 - `components/try-case/`: `phone-case-types` (pure: models, designs, colours, `isPhoneCaseProduct`; no TF import), `case-render` (canvas 2D case drawing per material), `try-case-modal` (camera + TF.js COCO-SSD `cell phone` detection, decoupled detect/render loops + smoothing, overlay tracked to the bbox, scanning/loading UI, design/colour/model switchers, camera flip, capture/share/buy, 360 mockup fallback, EN+BN instructions), `try-case-button` (lazy entry).
