@@ -43,6 +43,8 @@ const ROOMS: Room[] = [
 export function ShowroomExperience() {
   const { addItem } = useCart();
   const [roomId, setRoomId] = React.useState("electronics");
+  const [entryFrom, setEntryFrom] = React.useState<"left" | "right" | null>(null);
+  const [transitioning, setTransitioning] = React.useState(false);
   const [products, setProducts] = React.useState<Product[]>([]);
   const [loading, setLoading] = React.useState(true);
   const [selectedId, setSelectedId] = React.useState<string | null>(null);
@@ -50,7 +52,31 @@ export function ShowroomExperience() {
   const [people, setPeople] = React.useState(0);
   const mountWrapRef = React.useRef<HTMLDivElement>(null);
 
-  const room = ROOMS.find((r) => r.id === roomId)!;
+  const idx = ROOMS.findIndex((r) => r.id === roomId);
+  const room = ROOMS[idx];
+  const nextRoom = ROOMS[(idx + 1) % ROOMS.length];
+  const prevRoom = ROOMS[(idx - 1 + ROOMS.length) % ROOMS.length];
+
+  // walk through a doorway → move to the adjacent room, entering from its
+  // matching doorway for a continuous feel.
+  const goThroughDoor = React.useCallback((dir: "next" | "prev") => {
+    setTransitioning(true);
+    setSelectedId(null);
+    window.setTimeout(() => {
+      setRoomId((cur) => {
+        const i = ROOMS.findIndex((r) => r.id === cur);
+        const ni = dir === "next" ? (i + 1) % ROOMS.length : (i - 1 + ROOMS.length) % ROOMS.length;
+        return ROOMS[ni].id;
+      });
+      setEntryFrom(dir === "next" ? "left" : "right");
+      setTransitioning(false);
+    }, 400);
+  }, []);
+
+  function selectRoom(id: string) {
+    setEntryFrom(null);
+    setRoomId(id);
+  }
 
   // simulated live shopper count, refreshed per room
   React.useEffect(() => {
@@ -114,9 +140,20 @@ export function ShowroomExperience() {
             products={products}
             accent={room.accent}
             onSelect={setSelectedId}
+            onDoor={goThroughDoor}
+            entryFrom={entryFrom}
+            prevRoomName={`${prevRoom.name} Room`}
+            nextRoomName={`${nextRoom.name} Room`}
           />
         )}
       </div>
+
+      {/* doorway transition fade */}
+      <div
+        className={`pointer-events-none absolute inset-0 z-40 bg-black transition-opacity duration-300 ${
+          transitioning ? "opacity-100" : "opacity-0"
+        }`}
+      />
 
       {loading && (
         <div className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-3 bg-[#0a0f1e]">
@@ -152,7 +189,7 @@ export function ShowroomExperience() {
         {ROOMS.map((r) => (
           <button
             key={r.id}
-            onClick={() => setRoomId(r.id)}
+            onClick={() => selectRoom(r.id)}
             className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-bold backdrop-blur transition-colors ${
               r.id === roomId ? "bg-gold text-black" : "bg-white/10 text-white hover:bg-white/20"
             }`}
@@ -168,6 +205,7 @@ export function ShowroomExperience() {
           <Gamepad2 className="h-3.5 w-3.5" /> Controls
         </p>
         <p>Click to look · WASD/arrows to move · click a product</p>
+        <p className="mt-0.5 text-gold/90">🚪 Walk through a glowing doorway → next room</p>
       </div>
 
       {/* Product detail panel */}

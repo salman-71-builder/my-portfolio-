@@ -65,7 +65,7 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 ## 3D Virtual Showroom (`/showroom`)
 
 - `components/showroom/showroom-scene.tsx` (heavy, lazy `ssr:false`): raw three.js first-person room — floor/walls/ceiling, lights, product image displays (raycast click → `onSelect`), simulated avatars, synthesized WebAudio ambient pad (attached as `__audio` on the mount), WebXR immersive-vr entry. Controls: pointer-lock + WASD (desktop), drag-look + on-screen D-pad (touch).
-- `components/showroom/showroom-experience.tsx`: room selector (Electronics/Furniture/Fashion/Gadgets), per-room product fetch from `/api/products`, product detail panel (Add to Cart / View), simulated "N people now" badge, music toggle. Full-screen `z-[60]` over the navbar. Linked from navbar + a homepage CTA.
+- `components/showroom/showroom-experience.tsx`: room selector (Electronics/Furniture/Fashion/Gadgets) + **walkable doorways** between rooms (left wall = prev, right wall = next; stepping through swaps the room and spawns you at the matching doorway, with a fade), per-room product fetch from `/api/products`, product detail panel (Add to Cart / View), simulated "N people now" badge, music toggle. Full-screen `z-[60]` over the navbar. Linked from navbar + a homepage CTA.
 
 ## Engagement features
 

@@ -20,10 +20,18 @@ export default function ShowroomScene({
   products,
   accent,
   onSelect,
+  onDoor,
+  entryFrom = null,
+  prevRoomName,
+  nextRoomName,
 }: {
   products: Product[];
   accent: string;
   onSelect: (id: string) => void;
+  onDoor: (dir: "next" | "prev") => void;
+  entryFrom?: "left" | "right" | null;
+  prevRoomName: string;
+  nextRoomName: string;
 }) {
   const mountRef = React.useRef<HTMLDivElement>(null);
   const moveRef = React.useRef({ f: false, b: false, l: false, r: false });
@@ -42,8 +50,18 @@ export default function ShowroomScene({
     scene.fog = new THREE.Fog(0x0a0f1e, 10, 30);
 
     const camera = new THREE.PerspectiveCamera(70, width / height, 0.05, 100);
+    const DOOR_HALF = 1.1;
+    const DOOR_H = 2.7;
+    // spawn at the doorway you came through (continuous feel), else at the front
     const pos = new THREE.Vector3(0, EYE, ROOM_D / 2 - 1.5);
     let yaw = Math.PI; // face into the room (-Z)
+    if (entryFrom === "left") {
+      pos.set(-ROOM_W / 2 + 1.3, EYE, 0);
+      yaw = -Math.PI / 2; // face +X (into room)
+    } else if (entryFrom === "right") {
+      pos.set(ROOM_W / 2 - 1.3, EYE, 0);
+      yaw = Math.PI / 2; // face -X (into room)
+    }
     let pitch = 0;
     camera.rotation.order = "YXZ";
 
@@ -99,13 +117,77 @@ export default function ShowroomScene({
     const front = mkWall(ROOM_W, ROOM_H, wallMat);
     front.position.set(0, ROOM_H / 2, ROOM_D / 2);
     front.rotation.y = Math.PI;
-    const left = mkWall(ROOM_D, ROOM_H, wallMat);
-    left.position.set(-ROOM_W / 2, ROOM_H / 2, 0);
-    left.rotation.y = Math.PI / 2;
-    const right = mkWall(ROOM_D, ROOM_H, wallMat);
-    right.position.set(ROOM_W / 2, ROOM_H / 2, 0);
-    right.rotation.y = -Math.PI / 2;
-    scene.add(back, front, left, right);
+    scene.add(back, front);
+
+    // text label sprite (for doorways)
+    const makeLabel = (text: string) => {
+      const c = document.createElement("canvas");
+      c.width = 512;
+      c.height = 128;
+      const cx = c.getContext("2d")!;
+      cx.font = "bold 52px sans-serif";
+      cx.textAlign = "center";
+      cx.textBaseline = "middle";
+      cx.fillStyle = "#ffffff";
+      cx.fillText(text, 256, 64);
+      const tx = new THREE.CanvasTexture(c);
+      tx.colorSpace = THREE.SRGBColorSpace;
+      const sp = new THREE.Sprite(
+        new THREE.SpriteMaterial({ map: tx, transparent: true, depthTest: false })
+      );
+      sp.scale.set(3, 0.75, 1);
+      return sp;
+    };
+
+    // Side walls with a centred doorway opening (left = prev room, right = next)
+    const buildSideWall = (side: "left" | "right", label: string) => {
+      const x = side === "left" ? -ROOM_W / 2 : ROOM_W / 2;
+      const ry = side === "left" ? Math.PI / 2 : -Math.PI / 2;
+      const segW = ROOM_D / 2 - DOOR_HALF;
+      const segMag = (ROOM_D / 2 + DOOR_HALF) / 2;
+      [-1, 1].forEach((s) => {
+        const seg = new THREE.Mesh(new THREE.PlaneGeometry(segW, ROOM_H), wallMat);
+        seg.position.set(x, ROOM_H / 2, s * segMag);
+        seg.rotation.y = ry;
+        scene.add(seg);
+      });
+      // lintel above the door
+      const lintel = new THREE.Mesh(
+        new THREE.PlaneGeometry(DOOR_HALF * 2, ROOM_H - DOOR_H),
+        wallMat
+      );
+      lintel.position.set(x, (DOOR_H + ROOM_H) / 2, 0);
+      lintel.rotation.y = ry;
+      scene.add(lintel);
+      // glowing portal in the opening
+      const portal = new THREE.Mesh(
+        new THREE.PlaneGeometry(DOOR_HALF * 2 - 0.1, DOOR_H - 0.05),
+        new THREE.MeshBasicMaterial({
+          color: accentColor,
+          transparent: true,
+          opacity: 0.22,
+          side: THREE.DoubleSide,
+          blending: THREE.AdditiveBlending,
+          depthWrite: false,
+        })
+      );
+      portal.position.set(x, DOOR_H / 2, 0);
+      portal.rotation.y = ry;
+      scene.add(portal);
+      // doorframe glow strips
+      const frameG = new THREE.MeshBasicMaterial({ color: accentColor });
+      [-DOOR_HALF, DOOR_HALF].forEach((dz) => {
+        const post = new THREE.Mesh(new THREE.BoxGeometry(0.08, DOOR_H, 0.12), frameG);
+        post.position.set(x, DOOR_H / 2, dz);
+        scene.add(post);
+      });
+      // label above the door
+      const lab = makeLabel(label);
+      lab.position.set(x + (side === "left" ? 0.1 : -0.1), DOOR_H + 0.55, 0);
+      scene.add(lab);
+    };
+    buildSideWall("left", `← ${prevRoomName}`);
+    buildSideWall("right", `${nextRoomName} →`);
 
     // --- product displays ---
     const loader = new THREE.TextureLoader();
@@ -113,18 +195,16 @@ export default function ShowroomScene({
     const displays: THREE.Mesh[] = [];
     const frameMat = new THREE.MeshStandardMaterial({ color: 0x0b0e18, metalness: 0.6, roughness: 0.4 });
 
-    // positions along left, back, right walls
+    // positions along side walls (clear of the centred doorways) + back wall
     const slots: { x: number; z: number; ry: number }[] = [];
-    const perSide = 3;
-    for (let i = 0; i < perSide; i++) {
-      const t = (i + 1) / (perSide + 1);
-      slots.push({ x: -ROOM_W / 2 + 0.15, z: (t - 0.5) * (ROOM_D - 2), ry: Math.PI / 2 }); // left
-      slots.push({ x: ROOM_W / 2 - 0.15, z: (t - 0.5) * (ROOM_D - 2), ry: -Math.PI / 2 }); // right
-    }
-    for (let i = 0; i < 2; i++) {
-      const t = (i + 1) / 3;
+    [0.24, 0.76].forEach((t) => {
+      const z = (t - 0.5) * (ROOM_D - 1.5);
+      slots.push({ x: -ROOM_W / 2 + 0.15, z, ry: Math.PI / 2 }); // left
+      slots.push({ x: ROOM_W / 2 - 0.15, z, ry: -Math.PI / 2 }); // right
+    });
+    [0.2, 0.5, 0.8].forEach((t) => {
       slots.push({ x: (t - 0.5) * (ROOM_W - 3), z: -ROOM_D / 2 + 0.15, ry: 0 }); // back
-    }
+    });
 
     products.slice(0, slots.length).forEach((p, i) => {
       const s = slots[i];
@@ -308,6 +388,7 @@ export default function ShowroomScene({
     };
 
     // --- render loop ---
+    let doorTriggered = false;
     const clock = new THREE.Clock();
     renderer.setAnimationLoop(() => {
       const dt = Math.min(clock.getDelta(), 0.05);
@@ -322,8 +403,25 @@ export default function ShowroomScene({
         const rgt = new THREE.Vector3(Math.cos(yaw), 0, -Math.sin(yaw));
         pos.addScaledVector(fwd, mz * speed);
         pos.addScaledVector(rgt, mx * speed);
-        pos.x = Math.max(-ROOM_W / 2 + 0.6, Math.min(ROOM_W / 2 - 0.6, pos.x));
-        pos.z = Math.max(-ROOM_D / 2 + 0.6, Math.min(ROOM_D / 2 - 0.6, pos.z));
+        const margin = 0.6;
+        const inDoor = Math.abs(pos.z) < DOOR_HALF;
+        // left / right walls: walk through the doorway gap to change room
+        if (pos.x < -ROOM_W / 2 + margin) {
+          if (inDoor && !doorTriggered) {
+            doorTriggered = true;
+            onDoor("prev");
+          } else if (!inDoor) {
+            pos.x = -ROOM_W / 2 + margin;
+          }
+        } else if (pos.x > ROOM_W / 2 - margin) {
+          if (inDoor && !doorTriggered) {
+            doorTriggered = true;
+            onDoor("next");
+          } else if (!inDoor) {
+            pos.x = ROOM_W / 2 - margin;
+          }
+        }
+        pos.z = Math.max(-ROOM_D / 2 + margin, Math.min(ROOM_D / 2 - margin, pos.z));
         camera.position.copy(pos);
         camera.rotation.y = yaw;
         camera.rotation.x = pitch;
@@ -374,7 +472,7 @@ export default function ShowroomScene({
       renderer.dispose();
       if (renderer.domElement.parentNode === mount) mount.removeChild(renderer.domElement);
     };
-  }, [products, accent, onSelect]);
+  }, [products, accent, onSelect, onDoor, entryFrom, prevRoomName, nextRoomName]);
 
   return (
     <div ref={mountRef} className="absolute inset-0">

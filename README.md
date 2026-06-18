@@ -63,7 +63,9 @@ Set in `.env` / Vercel env vars: `ADMIN_PASSWORD`, and optionally `RESEND_API_KE
 A first-person, walkable 3D store (Three.js).
 
 - **Walk through** category rooms — Electronics, Furniture, Fashion, Gadgets —
-  each with products mounted on the walls.
+  each with products mounted on the walls. **Walkable doorways** connect the
+  rooms: step through a glowing doorway (left = previous, right = next) and you
+  enter the adjacent room at its matching doorway, with a smooth fade.
 - Desktop: **click to look** (pointer lock) + **WASD/arrows** to move. Touch:
   **drag to look** + on-screen **D-pad**. **Click/tap a product** → details panel
   (Add to Cart / View).
