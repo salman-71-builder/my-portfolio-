@@ -36,6 +36,7 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - `components/three/` — lazy, client-only Three.js scenes: `intro-overlay` (3D loading intro), `floating-shapes` (hero background), and `route-scene` (China→Bangladesh flight visualization: starfield, CPU-waved flags, GSAP-driven plane on a curved arc with contrail + blinking lights, dashed gold route line, projected DOM country labels). Wrapped by `sections/route-visualization` and placed on the homepage between hero and products. Imported via `next/dynamic` with `ssr:false`; render loops pause offscreen/hidden and respect reduced-motion.
 - Logo: `chinacart-logo` (CSS 3D "CHINA"#1a2f5e + cart + "CART"#c0392b wordmark on a black plate; `variant="nav"|"hero"`) used in navbar/footer; `hero-logo` adds scroll-driven scale/fade for the large homepage version. (`logo-3d` cube is retained but unused.)
 - 3D/motion helpers: `site-intro` (once-per-session intro gate), `tilt-card` (flip-in + pointer tilt), `reveal` + `sections/pinned-showcase` (GSAP ScrollTrigger reveals & Apple-style pinned scroll).
+- Futuristic engagement layer (mounted in root layout): `cursor-glow` (custom gold-dot cursor + trailing ring, fine-pointer/non-reduced-motion only), `social-proof` (rotating "just ordered" toasts bottom-left + live-viewer counter, pure client-side simulation, no PII/network), `count-up` (IntersectionObserver count-up), `typed-text` (typewriter w/ blinking gold caret). Hero uses these for the typed tagline + count-up stat trio + animated `.grid-bg` overlay + bouncing scroll cue.
 - `data/` — sample/fallback data: `products.ts` (30 products), `categories.ts` (12), `suppliers.ts`, `testimonials.ts`. Used as the offline fallback when the product API is unreachable.
 - `lib/utils.ts` — `cn()` and BDT currency formatting.
 
@@ -102,6 +103,8 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 
 ## Conventions
 
+- **Futuristic dark theme**: the design tokens in `app/globals.css` `:root` are a deep-dark palette — `--background` #0a0a0f, `--foreground` white, `--muted-foreground` #a0a0b0, gold `--secondary`/`--ring`, red `--primary`, plus a `--neon` (#00d4ff) accent. Because components use semantic tokens (`bg-card`, `text-foreground`, `bg-muted`…) they follow the dark theme automatically — **avoid hardcoding `bg-white`/light surfaces with `text-foreground`** (it renders white-on-white); use `.glass`/`.glass-gold` utilities or explicit `text-neutral-900` instead.
+- Reusable utilities in `globals.css`: `.glass`, `.glass-gold` (frosted cards), `.glow-gold|blue|red` (neon shadows), `.grid-bg` (animated grid), `.holo` (hover shine sweep via `.group`), `.neon-link` (animated underline), `.text-gradient-hero`/`.text-gradient-gold`.
 - Brand colors via Tailwind: `brand` (#CC0000) and `gold` (#FFD700); CSS variables in `app/globals.css`.
 - `@/*` path alias maps to repo root (see `tsconfig.json`).
 - Remote image hosts are allow-listed in `next.config.mjs`.

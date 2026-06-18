@@ -27,7 +27,7 @@ export function SuppliersShowcase() {
             {logos.map((s, i) => (
               <div
                 key={`${s.id}-${i}`}
-                className="flex w-44 shrink-0 items-center gap-3 rounded-xl border bg-white px-4 py-3"
+                className="glass flex w-44 shrink-0 items-center gap-3 rounded-xl px-4 py-3"
               >
                 <Image
                   src={s.logo}

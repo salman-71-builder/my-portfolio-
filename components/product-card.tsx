@@ -31,7 +31,7 @@ export function ProductCard({ product }: { product: Product }) {
     <TiltCard className="h-full">
       <div className="group relative flex h-full flex-col overflow-hidden rounded-xl border bg-card shadow-sm transition-shadow hover:shadow-2xl">
       <Link href={`/products/${product.id}`} className="relative block">
-        <div className="relative aspect-square overflow-hidden bg-muted">
+        <div className="holo relative aspect-square overflow-hidden bg-muted">
           <Image
             src={product.images[0]}
             alt={product.name}
@@ -39,12 +39,12 @@ export function ProductCard({ product }: { product: Product }) {
             sizes="(max-width: 768px) 50vw, 25vw"
             className="object-cover transition-transform duration-500 group-hover:scale-110"
           />
-          <div className="absolute left-2 top-2 flex flex-col gap-1">
+          <div className="absolute left-2 top-2 z-10 flex flex-col gap-1">
             {product.discount > 0 && (
-              <Badge variant="hot">-{product.discount}%</Badge>
+              <Badge variant="hot" className="animate-pulse glow-red">-{product.discount}%</Badge>
             )}
-            {product.isNew && <Badge variant="gold">NEW</Badge>}
-            {product.isHot && !product.isNew && <Badge>HOT</Badge>}
+            {product.isNew && <Badge variant="gold" className="glow-gold">NEW</Badge>}
+            {product.isHot && !product.isNew && <Badge className="glow-red">HOT</Badge>}
           </div>
           <button
             type="button"
@@ -78,7 +78,7 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         <div className="mt-2">
-          <p className="text-base font-extrabold text-brand">
+          <p className="text-base font-extrabold text-gold">
             {formatPriceRange(product.priceMin, product.priceMax)}
           </p>
           <p className="text-[11px] text-muted-foreground">per piece</p>

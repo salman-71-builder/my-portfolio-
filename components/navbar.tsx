@@ -49,7 +49,7 @@ export function Navbar() {
       </div>
 
       {/* Main bar */}
-      <div className="border-b bg-white/95 backdrop-blur supports-[backdrop-filter]:bg-white/80">
+      <div className="glass border-b border-white/10 supports-[backdrop-filter]:bg-white/5">
         <div className="container flex h-16 items-center gap-4">
           {/* Logo */}
           <Link
@@ -132,17 +132,15 @@ export function Navbar() {
         </div>
 
         {/* Nav links (desktop) */}
-        <nav className="hidden border-t lg:block">
-          <div className="container flex h-11 items-center gap-1">
+        <nav className="hidden border-t border-white/10 lg:block">
+          <div className="container flex h-11 items-center gap-2">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-accent hover:text-brand",
-                  pathname === link.href
-                    ? "text-brand"
-                    : "text-foreground/80"
+                  "neon-link px-2 py-1.5 text-sm font-medium transition-colors hover:text-gold",
+                  pathname === link.href ? "text-gold" : "text-white/80"
                 )}
               >
                 {link.label}

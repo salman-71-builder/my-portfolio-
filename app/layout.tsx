@@ -10,6 +10,8 @@ import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { SiteIntro } from "@/components/site-intro";
 import { ChatWidget } from "@/components/chatbot/chat-widget";
 import { FlashMob } from "@/components/flash-mob";
+import { SocialProof } from "@/components/social-proof";
+import { CursorGlow } from "@/components/cursor-glow";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -45,13 +47,17 @@ export default function RootLayout({
         <CartProvider>
           <WishlistProvider>
             <SiteIntro />
+            <CursorGlow />
             <Navbar />
-            <main className="pb-16 lg:pb-0">{children}</main>
+            <main id="main-content" className="pb-16 lg:pb-0">
+              {children}
+            </main>
             <Footer />
             <CartDrawer />
             <MobileBottomNav />
             <ChatWidget />
             <FlashMob />
+            <SocialProof />
           </WishlistProvider>
         </CartProvider>
       </body>

@@ -70,7 +70,7 @@ export function TestimonialSlider() {
       <div className="mt-6 flex items-center justify-center gap-4">
         <button
           onClick={() => go(-1)}
-          className="flex h-9 w-9 items-center justify-center rounded-full border bg-white shadow-sm hover:bg-brand hover:text-white"
+          className="glass flex h-9 w-9 items-center justify-center rounded-full text-white shadow-sm hover:bg-brand hover:text-white"
           aria-label="Previous testimonial"
         >
           <ChevronLeft className="h-5 w-5" />
@@ -89,7 +89,7 @@ export function TestimonialSlider() {
         </div>
         <button
           onClick={() => go(1)}
-          className="flex h-9 w-9 items-center justify-center rounded-full border bg-white shadow-sm hover:bg-brand hover:text-white"
+          className="glass flex h-9 w-9 items-center justify-center rounded-full text-white shadow-sm hover:bg-brand hover:text-white"
           aria-label="Next testimonial"
         >
           <ChevronRight className="h-5 w-5" />

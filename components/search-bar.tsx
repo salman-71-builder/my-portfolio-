@@ -115,7 +115,7 @@ export function SearchBar({ className }: { className?: string }) {
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "flex w-full items-stretch rounded-full border-2 border-brand bg-white shadow-sm",
+        "glass-gold flex w-full items-stretch rounded-full text-white shadow-sm transition-shadow focus-within:glow-gold",
         className
       )}
     >
@@ -186,7 +186,7 @@ export function SearchBar({ className }: { className?: string }) {
         </button>
 
         {imageMenuOpen && (
-          <div className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border bg-white py-1 shadow-xl">
+          <div className="glass absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl py-1 text-white shadow-xl">
             <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               Search by image
             </p>

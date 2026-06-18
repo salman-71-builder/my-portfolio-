@@ -3,9 +3,11 @@
 import Link from "next/link";
 import dynamic from "next/dynamic";
 import { motion, useReducedMotion } from "framer-motion";
-import { ArrowRight, Store, ShieldCheck, Truck, BadgePercent } from "lucide-react";
+import { ArrowRight, Store, ShieldCheck, Truck, BadgePercent, ChevronDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { HeroLogo } from "@/components/hero-logo";
+import { TypedText } from "@/components/typed-text";
+import { CountUp } from "@/components/count-up";
 
 // Lazy, client-only 3D background.
 const FloatingShapes = dynamic(
@@ -34,6 +36,8 @@ export function HeroSection() {
         }}
       />
       <div className="pointer-events-none absolute inset-0 bg-chinese-pattern opacity-[0.07]" />
+      {/* animated futuristic grid */}
+      <div className="grid-bg pointer-events-none absolute inset-0 opacity-40" />
 
       <div className="container relative z-10 grid items-center gap-10 py-20 lg:grid-cols-2 lg:py-28">
         <motion.div
@@ -63,7 +67,14 @@ export function HeroSection() {
             </span>
           </motion.h1>
 
-          <p className="mt-5 max-w-xl text-base text-white/75 sm:text-lg">
+          <p className="mt-4 text-lg font-semibold sm:text-xl">
+            <TypedText
+              text="Bangladesh's #1 Chinese Wholesale Platform"
+              className="text-gradient-hero"
+            />
+          </p>
+
+          <p className="mt-4 max-w-xl text-base text-white/75 sm:text-lg">
             Connect with 500+ verified suppliers and import wholesale products
             straight to your doorstep in Bangladesh. Transparent BDT pricing, no
             hidden fees.
@@ -96,6 +107,22 @@ export function HeroSection() {
             <span className="flex items-center gap-2">
               <BadgePercent className="h-4 w-4 text-gold" /> Factory Prices
             </span>
+          </div>
+
+          {/* live count-up stats */}
+          <div className="mt-8 grid max-w-md grid-cols-3 gap-4">
+            {[
+              { value: 10000, suffix: "+", label: "Products" },
+              { value: 500, suffix: "+", label: "Suppliers" },
+              { value: 50000, suffix: "+", label: "Buyers" },
+            ].map((s) => (
+              <div key={s.label} className="glass rounded-xl px-3 py-3 text-center">
+                <p className="text-xl font-extrabold text-gold sm:text-2xl">
+                  <CountUp value={s.value} suffix={s.suffix} />
+                </p>
+                <p className="mt-0.5 text-[11px] text-white/65">{s.label}</p>
+              </div>
+            ))}
           </div>
         </motion.div>
 
@@ -149,6 +176,16 @@ export function HeroSection() {
           </div>
         </motion.div>
       </div>
+
+      {/* bouncing scroll-down cue */}
+      <a
+        href="#main-content"
+        aria-label="Scroll down"
+        className="absolute bottom-5 left-1/2 z-10 hidden -translate-x-1/2 flex-col items-center gap-1 text-white/60 transition-colors hover:text-gold lg:flex"
+      >
+        <span className="text-[10px] font-semibold uppercase tracking-widest">Scroll</span>
+        <ChevronDown className="h-5 w-5 animate-bounce" />
+      </a>
     </section>
   );
 }

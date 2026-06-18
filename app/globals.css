@@ -4,26 +4,28 @@
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 0 0% 9%;
-    --card: 0 0% 100%;
-    --card-foreground: 0 0% 9%;
-    --popover: 0 0% 100%;
-    --popover-foreground: 0 0% 9%;
-    --primary: 0 100% 40%;
+    /* Futuristic dark theme — deep near-black + gold/red/neon-blue accents */
+    --background: 240 24% 4%; /* #0a0a0f */
+    --foreground: 0 0% 100%;
+    --card: 240 16% 8%; /* dark panel */
+    --card-foreground: 0 0% 100%;
+    --popover: 240 18% 7%;
+    --popover-foreground: 0 0% 100%;
+    --primary: 6 63% 46%; /* #c0392b */
     --primary-foreground: 0 0% 100%;
-    --secondary: 51 100% 50%;
-    --secondary-foreground: 0 0% 9%;
-    --muted: 0 0% 96%;
-    --muted-foreground: 0 0% 45%;
-    --accent: 51 100% 96%;
-    --accent-foreground: 0 100% 40%;
+    --secondary: 51 100% 50%; /* gold */
+    --secondary-foreground: 0 0% 6%;
+    --muted: 240 12% 14%;
+    --muted-foreground: 240 10% 67%; /* #a0a0b0 */
+    --accent: 45 70% 11%; /* dark gold wash */
+    --accent-foreground: 51 100% 55%;
     --destructive: 0 84% 60%;
     --destructive-foreground: 0 0% 100%;
-    --border: 0 0% 90%;
-    --input: 0 0% 90%;
-    --ring: 0 100% 40%;
-    --radius: 0.75rem;
+    --border: 240 12% 18%;
+    --input: 240 12% 16%;
+    --ring: 51 100% 50%;
+    --radius: 0.85rem;
+    --neon: 191 100% 50%; /* #00d4ff */
   }
 }
 
@@ -67,6 +69,152 @@
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+  }
+  /* premium hero gradient text (gold → white → neon) */
+  .text-gradient-hero {
+    background-image: linear-gradient(120deg, #ffd700 0%, #ffffff 45%, #00d4ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+
+  /* glassmorphism */
+  .glass {
+    background: rgba(255, 255, 255, 0.05);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  .glass-gold {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 215, 0, 0.22);
+  }
+
+  /* neon glows */
+  .glow-gold {
+    box-shadow: 0 0 22px rgba(255, 215, 0, 0.35);
+  }
+  .glow-blue {
+    box-shadow: 0 0 22px rgba(0, 212, 255, 0.4);
+  }
+  .glow-red {
+    box-shadow: 0 0 22px rgba(192, 57, 43, 0.45);
+  }
+
+  /* animated grid background */
+  .grid-bg {
+    background-image:
+      linear-gradient(rgba(0, 212, 255, 0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 212, 255, 0.08) 1px, transparent 1px);
+    background-size: 44px 44px;
+    animation: grid-pan 14s linear infinite;
+  }
+  @keyframes grid-pan {
+    to {
+      background-position: 44px 44px;
+    }
+  }
+
+  /* holographic shine sweep (use on hover via group) */
+  .holo::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+      115deg,
+      transparent 35%,
+      rgba(255, 255, 255, 0.18) 48%,
+      rgba(0, 212, 255, 0.25) 52%,
+      transparent 65%
+    );
+    transform: translateX(-130%);
+    transition: transform 0.7s ease;
+    pointer-events: none;
+  }
+  .group:hover .holo::after {
+    transform: translateX(130%);
+  }
+
+  /* neon underline for nav links */
+  .neon-link {
+    position: relative;
+  }
+  .neon-link::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: -2px;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(90deg, #ffd700, #00d4ff);
+    transform: scaleX(0);
+    transform-origin: left;
+    transition: transform 0.3s ease;
+    box-shadow: 0 0 8px rgba(0, 212, 255, 0.6);
+  }
+  .neon-link:hover::after {
+    transform: scaleX(1);
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(14px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+/* ---- custom gold cursor ---- */
+.cursor-dot,
+.cursor-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 9999px;
+  will-change: transform;
+  margin-left: -4px;
+  margin-top: -4px;
+}
+.cursor-dot {
+  height: 8px;
+  width: 8px;
+  background: #ffd700;
+  box-shadow: 0 0 10px rgba(255, 215, 0, 0.9);
+}
+.cursor-ring {
+  height: 34px;
+  width: 34px;
+  margin-left: -17px;
+  margin-top: -17px;
+  border: 1.5px solid rgba(255, 215, 0, 0.5);
+  box-shadow: 0 0 14px rgba(0, 212, 255, 0.25);
+  transition: height 0.2s ease, width 0.2s ease, border-color 0.2s ease,
+    margin 0.2s ease, background 0.2s ease;
+}
+.cursor-ring--active {
+  height: 48px;
+  width: 48px;
+  margin-left: -24px;
+  margin-top: -24px;
+  border-color: rgba(0, 212, 255, 0.7);
+  background: rgba(0, 212, 255, 0.08);
+}
+/* hide the native cursor only when our custom one is active (fine pointers) */
+@media (pointer: fine) {
+  body:has(.cursor-dot) {
+    cursor: none;
+  }
+  body:has(.cursor-dot) a,
+  body:has(.cursor-dot) button {
+    cursor: none;
   }
 }
 
@@ -403,12 +551,12 @@ html {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #f5f5f5;
+  background: #0a0a0f;
 }
 ::-webkit-scrollbar-thumb {
-  background: #cc0000;
+  background: linear-gradient(#ffd700, #c0392b);
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #a50505;
+  background: linear-gradient(#ffe23d, #d9442f);
 }
