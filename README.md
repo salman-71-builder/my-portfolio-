@@ -58,6 +58,24 @@ Password-protected order management:
 
 Set in `.env` / Vercel env vars: `ADMIN_PASSWORD`, and optionally `RESEND_API_KEY` + `ADMIN_EMAIL` + `EMAIL_FROM` for notifications.
 
+## 🏬 3D Virtual Showroom (`/showroom`)
+
+A first-person, walkable 3D store (Three.js).
+
+- **Walk through** category rooms — Electronics, Furniture, Fashion, Gadgets —
+  each with products mounted on the walls.
+- Desktop: **click to look** (pointer lock) + **WASD/arrows** to move. Touch:
+  **drag to look** + on-screen **D-pad**. **Click/tap a product** → details panel
+  (Add to Cart / View).
+- Synthesized **ambient audio** (toggle), simulated shopper **avatars** + a live
+  "**N people in this room now**" badge, and **WebXR "Enter VR"** when the
+  device supports immersive-vr.
+- Lazy-loaded (`ssr:false`); products per room fetched from `/api/products`.
+
+> Avatars and the live count are **simulated** (no realtime backend), and the
+> ambient track is synthesized (no copyrighted audio). VR is view-only where a
+> headset/browser supports it.
+
 ## ✨ Engagement features
 
 - **Smart Wishlist** — heart any product; persistent (localStorage), organised into

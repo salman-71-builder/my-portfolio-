@@ -62,6 +62,11 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - "Try On 👓" button shows on sunglasses `ProductCard`s; a banner shows in `products-browser` when `category=sunglasses`.
 - face-api/TF.js is dynamically imported only when the modal opens; models load from `NEXT_PUBLIC_FACEAPI_MODELS` (CDN default, or self-host in `public/models`). `next.config.mjs` sets `fs/encoding/path` webpack fallbacks for the browser build.
 
+## 3D Virtual Showroom (`/showroom`)
+
+- `components/showroom/showroom-scene.tsx` (heavy, lazy `ssr:false`): raw three.js first-person room — floor/walls/ceiling, lights, product image displays (raycast click → `onSelect`), simulated avatars, synthesized WebAudio ambient pad (attached as `__audio` on the mount), WebXR immersive-vr entry. Controls: pointer-lock + WASD (desktop), drag-look + on-screen D-pad (touch).
+- `components/showroom/showroom-experience.tsx`: room selector (Electronics/Furniture/Fashion/Gadgets), per-room product fetch from `/api/products`, product detail panel (Add to Cart / View), simulated "N people now" badge, music toggle. Full-screen `z-[60]` over the navbar. Linked from navbar + a homepage CTA.
+
 ## Engagement features
 
 - `wishlist-provider` (localStorage, collections) + heart on `ProductCard`; `app/wishlist` → `wishlist-view` (own list grouped by collection + shared `?ids=` view that fetches `/api/products`). Navbar/mobile-menu entry with count.
