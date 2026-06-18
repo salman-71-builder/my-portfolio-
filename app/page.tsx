@@ -12,6 +12,7 @@ import { TestimonialSlider } from "@/components/sections/testimonial-slider";
 import { SuppliersShowcase } from "@/components/sections/suppliers-showcase";
 import { Newsletter } from "@/components/sections/newsletter";
 import { RouteVisualization } from "@/components/sections/route-visualization";
+import { MoodShopping } from "@/components/sections/mood-shopping";
 import { PinnedShowcase } from "@/components/sections/pinned-showcase";
 import { Reveal } from "@/components/reveal";
 import { ProductCard } from "@/components/product-card";
@@ -39,6 +40,9 @@ export default async function HomePage() {
 
       {/* China → Bangladesh route visualization */}
       <RouteVisualization />
+
+      {/* Mood-based shopping */}
+      <MoodShopping />
 
       {/* Categories */}
       <section className="container py-12 sm:py-16">

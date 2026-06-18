@@ -2,12 +2,14 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { CartProvider } from "@/components/cart-provider";
+import { WishlistProvider } from "@/components/wishlist-provider";
 import { Navbar } from "@/components/navbar";
 import { Footer } from "@/components/footer";
 import { CartDrawer } from "@/components/cart-drawer";
 import { MobileBottomNav } from "@/components/mobile-bottom-nav";
 import { SiteIntro } from "@/components/site-intro";
 import { ChatWidget } from "@/components/chatbot/chat-widget";
+import { FlashMob } from "@/components/flash-mob";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -41,13 +43,16 @@ export default function RootLayout({
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen font-sans">
         <CartProvider>
-          <SiteIntro />
-          <Navbar />
-          <main className="pb-16 lg:pb-0">{children}</main>
-          <Footer />
-          <CartDrawer />
-          <MobileBottomNav />
-          <ChatWidget />
+          <WishlistProvider>
+            <SiteIntro />
+            <Navbar />
+            <main className="pb-16 lg:pb-0">{children}</main>
+            <Footer />
+            <CartDrawer />
+            <MobileBottomNav />
+            <ChatWidget />
+            <FlashMob />
+          </WishlistProvider>
         </CartProvider>
       </body>
     </html>

@@ -3,12 +3,14 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Menu, ShoppingCart, User, Phone, ChevronRight } from "lucide-react";
+import { Menu, ShoppingCart, User, Phone, ChevronRight, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet } from "@/components/ui/sheet";
 import { SearchBar } from "@/components/search-bar";
 import { ChinaCartLogo } from "@/components/chinacart-logo";
+import { SpinWheelButton } from "@/components/spin-wheel";
 import { useCart } from "@/components/cart-provider";
+import { useWishlist } from "@/components/wishlist-provider";
 import { useCategories } from "@/components/use-categories";
 import { cn } from "@/lib/utils";
 
@@ -24,6 +26,7 @@ const navLinks = [
 export function Navbar() {
   const pathname = usePathname();
   const { totalItems, setOpen } = useCart();
+  const { count: wishCount } = useWishlist();
   const categories = useCategories();
   const [mobileOpen, setMobileOpen] = React.useState(false);
 
@@ -66,6 +69,8 @@ export function Navbar() {
 
           {/* Actions */}
           <div className="ml-auto flex items-center gap-1 lg:gap-2">
+            <SpinWheelButton variant="nav" />
+
             <Button
               variant="ghost"
               size="sm"
@@ -83,6 +88,19 @@ export function Navbar() {
             >
               <Link href="/auth?tab=register">Register</Link>
             </Button>
+
+            <Link
+              href="/wishlist"
+              aria-label="Wishlist"
+              className="relative flex h-10 w-10 items-center justify-center rounded-lg text-foreground transition-colors hover:bg-muted"
+            >
+              <Heart className="h-5 w-5" />
+              {wishCount > 0 && (
+                <span className="absolute -right-0.5 -top-0.5 flex h-5 min-w-[1.25rem] items-center justify-center rounded-full bg-brand px-1 text-[10px] font-bold text-white">
+                  {wishCount}
+                </span>
+              )}
+            </Link>
 
             <button
               onClick={() => setOpen(true)}
@@ -152,6 +170,19 @@ export function Navbar() {
               <ChevronRight className="h-4 w-4 text-muted-foreground" />
             </Link>
           ))}
+          <Link
+            href="/wishlist"
+            onClick={() => setMobileOpen(false)}
+            className="flex items-center justify-between rounded-lg px-3 py-3 text-sm font-medium hover:bg-muted"
+          >
+            <span className="flex items-center gap-2">
+              <Heart className="h-4 w-4" /> Wishlist {wishCount > 0 && `(${wishCount})`}
+            </span>
+            <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          </Link>
+          <div onClick={() => setMobileOpen(false)}>
+            <SpinWheelButton variant="menu" />
+          </div>
           <div className="my-2 border-t" />
           <p className="px-3 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
             Categories

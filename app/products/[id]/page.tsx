@@ -3,6 +3,7 @@ import Link from "next/link";
 import type { Metadata } from "next";
 import { ChevronRight } from "lucide-react";
 import { ProductDetail } from "@/components/product-detail";
+import { BulkCalculator } from "@/components/bulk-calculator";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import {
@@ -68,6 +69,10 @@ export default async function ProductDetailPage({
       </nav>
 
       <ProductDetail product={product} supplier={supplier} />
+
+      <section className="mt-12 lg:max-w-md">
+        <BulkCalculator product={product} />
+      </section>
 
       {related.length > 0 && (
         <section className="mt-16">

@@ -58,6 +58,23 @@ Password-protected order management:
 
 Set in `.env` / Vercel env vars: `ADMIN_PASSWORD`, and optionally `RESEND_API_KEY` + `ADMIN_EMAIL` + `EMAIL_FROM` for notifications.
 
+## ✨ Engagement features
+
+- **Smart Wishlist** — heart any product; persistent (localStorage), organised into
+  collections (Eid / Shop Stock / Gifts), with a total, add-all-to-cart and a
+  **shareable link** (`/wishlist?ids=…`). Navbar + mobile-menu entry with count.
+- **Voice Search** — mic button in the search bar (Web Speech API; Chrome/Edge).
+- **Mood Shopping** — "How are you feeling?" homepage section → curated results.
+- **Bulk Order Calculator** (on every product page) — quantity slider with tiered
+  pricing, savings vs retail, shipping + import-duty estimate, landed cost, and a
+  profit projection; share quote on WhatsApp or print as PDF.
+- **Spin-to-Win** ("Rewards" in navbar) — spin wheel awarding a discount code, with
+  confetti.
+- **Flash Mob Deals** — a surprise timed deal pop-up (countdown + confetti) once per session.
+- **PWA manifest** — installable to home screen.
+
+All client-side (no backend), confetti respects `prefers-reduced-motion`.
+
 ## 🤖 CartBot — AI shopping assistant
 
 Floating chat assistant (bottom-right, red/gold, "online" dot) that recommends

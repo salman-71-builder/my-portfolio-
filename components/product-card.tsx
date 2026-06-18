@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { ShoppingCart, Package } from "lucide-react";
+import { ShoppingCart, Package, Heart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { StarRating } from "@/components/star-rating";
@@ -13,11 +13,14 @@ import { isFurnitureProduct } from "@/components/ar-room/furniture-types";
 import { TryCaseButton } from "@/components/try-case/try-case-button";
 import { isPhoneCaseProduct } from "@/components/try-case/phone-case-types";
 import { useCart } from "@/components/cart-provider";
-import { formatPriceRange } from "@/lib/utils";
+import { useWishlist } from "@/components/wishlist-provider";
+import { formatPriceRange, cn } from "@/lib/utils";
 import type { Product } from "@/data/products";
 
 export function ProductCard({ product }: { product: Product }) {
   const { addItem } = useCart();
+  const { has, toggle } = useWishlist();
+  const wished = has(product.id);
   const isSunglasses =
     product.category === "sunglasses" ||
     product.tags?.includes("sunglasses");
@@ -43,6 +46,23 @@ export function ProductCard({ product }: { product: Product }) {
             {product.isNew && <Badge variant="gold">NEW</Badge>}
             {product.isHot && !product.isNew && <Badge>HOT</Badge>}
           </div>
+          <button
+            type="button"
+            aria-label={wished ? "Remove from wishlist" : "Add to wishlist"}
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              toggle(product);
+            }}
+            className="absolute right-2 top-2 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-white/85 shadow backdrop-blur transition-transform hover:scale-110"
+          >
+            <Heart
+              className={cn(
+                "h-4 w-4 transition-colors",
+                wished ? "fill-brand text-brand" : "text-neutral-500"
+              )}
+            />
+          </button>
         </div>
       </Link>
 

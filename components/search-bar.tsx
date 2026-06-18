@@ -2,7 +2,7 @@
 
 import * as React from "react";
 import { useRouter } from "next/navigation";
-import { Search, Camera, ImageIcon, Paperclip, X } from "lucide-react";
+import { Search, Camera, ImageIcon, Paperclip, X, Mic } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useCategories } from "@/components/use-categories";
 import { cn } from "@/lib/utils";
@@ -21,8 +21,47 @@ export function SearchBar({ className }: { className?: string }) {
   const [category, setCategory] = React.useState("all");
   const [imageMenuOpen, setImageMenuOpen] = React.useState(false);
   const [imageHint, setImageHint] = React.useState<string | null>(null);
+  const [listening, setListening] = React.useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
   const menuRef = React.useRef<HTMLDivElement>(null);
+
+  function startVoice() {
+    type RecResult = { results: ArrayLike<ArrayLike<{ transcript: string }>> };
+    type Rec = {
+      lang: string;
+      interimResults: boolean;
+      maxAlternatives: number;
+      onstart: (() => void) | null;
+      onerror: (() => void) | null;
+      onend: (() => void) | null;
+      onresult: ((e: RecResult) => void) | null;
+      start: () => void;
+    };
+    const w = window as unknown as {
+      SpeechRecognition?: new () => Rec;
+      webkitSpeechRecognition?: new () => Rec;
+    };
+    const Ctor = w.SpeechRecognition || w.webkitSpeechRecognition;
+    if (!Ctor) {
+      alert("Voice search isn't supported in this browser. Try Chrome 🙂");
+      return;
+    }
+    const rec = new Ctor();
+    rec.lang = "en-US";
+    rec.interimResults = false;
+    rec.maxAlternatives = 1;
+    rec.onstart = () => setListening(true);
+    rec.onerror = () => setListening(false);
+    rec.onend = () => setListening(false);
+    rec.onresult = (e: RecResult) => {
+      const transcript = e.results?.[0]?.[0]?.transcript ?? "";
+      if (transcript) {
+        setQuery(transcript);
+        runSearch(transcript);
+      }
+    };
+    rec.start();
+  }
 
   React.useEffect(() => {
     const onClick = (e: MouseEvent) => {
@@ -119,6 +158,20 @@ export function SearchBar({ className }: { className?: string }) {
           </button>
         )}
       </div>
+
+      {/* Voice search */}
+      <button
+        type="button"
+        onClick={startVoice}
+        className={cn(
+          "flex h-11 items-center px-2 transition-colors",
+          listening ? "animate-pulse text-brand" : "text-brand hover:text-brand-800"
+        )}
+        aria-label="Search by voice"
+        title="Search by voice"
+      >
+        <Mic className="h-5 w-5" />
+      </button>
 
       {/* Image / photo / file search */}
       <div className="relative flex items-center" ref={menuRef}>
