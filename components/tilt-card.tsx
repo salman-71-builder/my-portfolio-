@@ -18,12 +18,10 @@ export function TiltCard({
   children,
   className,
   strength = 10,
-  hoverOnly = false,
 }: {
   children: React.ReactNode;
   className?: string;
   strength?: number;
-  hoverOnly?: boolean;
 }) {
   const reduce = useReducedMotion();
   const ref = React.useRef<HTMLDivElement>(null);
@@ -49,23 +47,6 @@ export function TiltCard({
 
   if (reduce) {
     return <div className={className}>{children}</div>;
-  }
-
-  // pointer-tilt only (no scroll-reveal) — keeps Amazon-like normal scrolling
-  if (hoverOnly) {
-    return (
-      <div className={className} style={{ perspective: 900 }}>
-        <motion.div
-          ref={ref}
-          onPointerMove={handleMove}
-          onPointerLeave={reset}
-          style={{ rotateX: rx, rotateY: ry, transformStyle: "preserve-3d" }}
-          className="h-full [&>*]:h-full"
-        >
-          {children}
-        </motion.div>
-      </div>
-    );
   }
 
   return (

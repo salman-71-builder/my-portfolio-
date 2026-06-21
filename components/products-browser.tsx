@@ -196,12 +196,7 @@ export function ProductsBrowser({ categories }: { categories: Category[] }) {
         <p className="mt-1 text-sm text-muted-foreground">
           {loading
             ? "Loading products…"
-            : filtered.length === 0
-              ? "0 results"
-              : `${(current - 1) * PAGE_SIZE + 1}–${Math.min(
-                  current * PAGE_SIZE,
-                  filtered.length
-                )} of ${filtered.length.toLocaleString()} results`}
+            : `${filtered.length} product${filtered.length !== 1 ? "s" : ""} found`}
         </p>
       </div>
 
@@ -345,7 +340,7 @@ export function ProductsBrowser({ categories }: { categories: Category[] }) {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+            <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 xl:grid-cols-4">
               {pageItems.map((p) => (
                 <ProductCard key={p.id} product={p} />
               ))}
