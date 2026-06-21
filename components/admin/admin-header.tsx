@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   Users,
   Truck,
+  Image as ImageIcon,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderBell } from "@/components/admin/order-bell";
@@ -24,6 +25,7 @@ const navLinks = [
   { href: "/admin/finance", label: "Finance", icon: LineChart },
   { href: "/admin/products", label: "Cost Prices", icon: Tags },
   { href: "/admin/shipping", label: "Shipping", icon: Truck },
+  { href: "/admin/banners", label: "Banners", icon: ImageIcon },
 ];
 
 export function AdminHeader() {

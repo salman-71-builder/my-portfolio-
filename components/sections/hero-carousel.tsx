@@ -3,114 +3,136 @@
 import * as React from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { BANNER_GRADIENTS, type Banner } from "@/lib/banners";
 
-interface Slide {
-  title: string;
-  subtitle: string;
-  cta: string;
-  href: string;
-  bg: string; // tailwind gradient classes
-  emoji: string;
-}
-
-const SLIDES: Slide[] = [
-  {
-    title: "Wholesale from China, delivered to Bangladesh",
-    subtitle: "10,000+ products from verified suppliers · transparent BDT pricing",
-    cta: "Shop all products",
-    href: "/products",
-    bg: "from-[#1a2f5e] to-[#22407a]",
-    emoji: "🚢",
-  },
-  {
-    title: "Today's Deals — up to 60% off",
-    subtitle: "Limited-time wholesale discounts across every category",
-    cta: "See today's deals",
-    href: "/products?sort=popular",
-    bg: "from-[#7a1f17] to-[#c0392b]",
-    emoji: "🔥",
-  },
-  {
-    title: "Factory-direct prices, no middlemen",
-    subtitle: "Source straight from 500+ verified Chinese manufacturers",
-    cta: "Browse suppliers",
-    href: "/suppliers",
-    bg: "from-[#0f3d2e] to-[#1b7a52]",
-    emoji: "🏭",
-  },
-];
-
-export function HeroCarousel() {
+export function HeroCarousel({ banners }: { banners: Banner[] }) {
+  const slides = banners.length ? banners : [];
   const [index, setIndex] = React.useState(0);
   const [paused, setPaused] = React.useState(false);
+  const [tilt, setTilt] = React.useState({ x: 0, y: 0 });
 
   React.useEffect(() => {
-    if (paused) return;
+    if (paused || slides.length <= 1) return;
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    const id = setInterval(() => setIndex((i) => (i + 1) % SLIDES.length), 5000);
+    const id = setInterval(() => setIndex((i) => (i + 1) % slides.length), 5000);
     return () => clearInterval(id);
-  }, [paused]);
+  }, [paused, slides.length]);
 
+  if (slides.length === 0) return null;
   const go = (dir: number) =>
-    setIndex((i) => (i + dir + SLIDES.length) % SLIDES.length);
+    setIndex((i) => (i + dir + slides.length) % slides.length);
 
-  const s = SLIDES[index];
+  function onMove(e: React.MouseEvent) {
+    const r = e.currentTarget.getBoundingClientRect();
+    setTilt({
+      x: ((e.clientX - r.left) / r.width - 0.5) * 12,
+      y: ((e.clientY - r.top) / r.height - 0.5) * 8,
+    });
+  }
 
   return (
     <div
-      className="relative overflow-hidden"
+      className="relative overflow-hidden bg-navy"
       onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
+      onMouseLeave={() => {
+        setPaused(false);
+        setTilt({ x: 0, y: 0 });
+      }}
+      onMouseMove={onMove}
     >
-      <div className={`bg-gradient-to-r ${s.bg} transition-colors duration-500`}>
-        <div className="container flex min-h-[180px] items-center justify-between gap-6 py-8 sm:min-h-[240px] sm:py-12">
-          <div className="max-w-2xl text-white">
-            <h1 className="text-2xl font-bold leading-tight sm:text-4xl">
-              {s.title}
-            </h1>
-            <p className="mt-2 text-sm text-white/80 sm:text-base">{s.subtitle}</p>
-            <Link
-              href={s.href}
-              className="mt-5 inline-flex rounded-full bg-amber-400 px-6 py-2.5 text-sm font-semibold text-navy transition-colors hover:bg-amber-500"
+      <div className="relative h-[220px] sm:h-[300px] lg:h-[380px]">
+        {slides.map((s, i) => {
+          const active = i === index;
+          const grad = BANNER_GRADIENTS[i % BANNER_GRADIENTS.length];
+          return (
+            <div
+              key={s.id}
+              className={`absolute inset-0 transition-opacity duration-700 ${
+                active ? "opacity-100" : "pointer-events-none opacity-0"
+              }`}
             >
-              {s.cta}
-            </Link>
-          </div>
-          <span className="hidden text-7xl sm:block lg:text-8xl" aria-hidden>
-            {s.emoji}
-          </span>
-        </div>
+              {s.imageUrl ? (
+                // eslint-disable-next-line @next/next/no-img-element
+                <img
+                  src={s.imageUrl}
+                  alt={s.title ?? "banner"}
+                  loading={i === 0 ? "eager" : "lazy"}
+                  className="absolute inset-0 h-full w-full object-cover"
+                  style={{
+                    transform: active
+                      ? `scale(1.06) translate(${tilt.x}px, ${tilt.y}px)`
+                      : "scale(1.06)",
+                    transition: "transform 0.3s ease-out",
+                  }}
+                />
+              ) : (
+                <div className={`absolute inset-0 bg-gradient-to-r ${grad}`} />
+              )}
+              {/* readability scrim */}
+              <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+
+              <div className="container relative flex h-full flex-col justify-center">
+                <div
+                  className="max-w-xl text-white"
+                  style={{
+                    transform: active ? `translateX(${tilt.x * 0.5}px)` : undefined,
+                  }}
+                >
+                  {s.title && (
+                    <h1 className="text-2xl font-bold leading-tight drop-shadow sm:text-4xl lg:text-5xl">
+                      {s.title}
+                    </h1>
+                  )}
+                  {s.subtitle && (
+                    <p className="mt-2 text-sm text-white/90 drop-shadow sm:text-base">
+                      {s.subtitle}
+                    </p>
+                  )}
+                  {s.ctaText && s.ctaHref && (
+                    <Link
+                      href={s.ctaHref}
+                      className="mt-5 inline-flex rounded-full bg-amber-400 px-6 py-2.5 text-sm font-semibold text-navy shadow-lg transition-transform hover:scale-105 hover:bg-amber-500"
+                    >
+                      {s.ctaText}
+                    </Link>
+                  )}
+                </div>
+              </div>
+            </div>
+          );
+        })}
       </div>
 
-      {/* arrows */}
-      <button
-        onClick={() => go(-1)}
-        aria-label="Previous slide"
-        className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-navy shadow hover:bg-white"
-      >
-        <ChevronLeft className="h-5 w-5" />
-      </button>
-      <button
-        onClick={() => go(1)}
-        aria-label="Next slide"
-        className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-navy shadow hover:bg-white"
-      >
-        <ChevronRight className="h-5 w-5" />
-      </button>
-
-      {/* dots */}
-      <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
-        {SLIDES.map((_, i) => (
+      {slides.length > 1 && (
+        <>
           <button
-            key={i}
-            onClick={() => setIndex(i)}
-            aria-label={`Go to slide ${i + 1}`}
-            className={`h-2 rounded-full transition-all ${
-              i === index ? "w-6 bg-white" : "w-2 bg-white/50"
-            }`}
-          />
-        ))}
-      </div>
+            onClick={() => go(-1)}
+            aria-label="Previous slide"
+            className="absolute left-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-navy shadow hover:bg-white"
+          >
+            <ChevronLeft className="h-5 w-5" />
+          </button>
+          <button
+            onClick={() => go(1)}
+            aria-label="Next slide"
+            className="absolute right-2 top-1/2 flex h-9 w-9 -translate-y-1/2 items-center justify-center rounded-full bg-white/80 text-navy shadow hover:bg-white"
+          >
+            <ChevronRight className="h-5 w-5" />
+          </button>
+          <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-2">
+            {slides.map((_, i) => (
+              <button
+                key={i}
+                onClick={() => setIndex(i)}
+                aria-label={`Go to slide ${i + 1}`}
+                className={`h-2 rounded-full transition-all ${
+                  i === index ? "w-6 bg-white" : "w-2 bg-white/50"
+                }`}
+              />
+            ))}
+          </div>
+        </>
+      )}
     </div>
   );
 }
