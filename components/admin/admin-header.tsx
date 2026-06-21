@@ -3,13 +3,14 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Boxes, LogOut, LayoutDashboard, LineChart } from "lucide-react";
+import { Boxes, LogOut, LayoutDashboard, LineChart, Tags } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/finance", label: "Finance", icon: LineChart },
+  { href: "/admin/products", label: "Cost Prices", icon: Tags },
 ];
 
 export function AdminHeader() {
