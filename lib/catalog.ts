@@ -1,5 +1,6 @@
 import type { Product } from "@/data/products";
 import type { Category } from "@/data/categories";
+import { estimateWeight, detectShipClass } from "@/lib/shipping";
 import {
   products as localProducts,
   getProductById as localGetProductById,
@@ -173,6 +174,8 @@ function mapProduct(raw: DJProduct): Product {
     description: raw.description,
     specs,
     tags: raw.tags ?? [],
+    weight: estimateWeight(raw.category, raw.title),
+    shipClass: detectShipClass(raw.category, raw.title, raw.tags ?? []),
   };
 }
 

@@ -11,6 +11,7 @@ import {
   Tags,
   ShoppingBag,
   Users,
+  Truck,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderBell } from "@/components/admin/order-bell";
@@ -22,6 +23,7 @@ const navLinks = [
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/finance", label: "Finance", icon: LineChart },
   { href: "/admin/products", label: "Cost Prices", icon: Tags },
+  { href: "/admin/shipping", label: "Shipping", icon: Truck },
 ];
 
 export function AdminHeader() {

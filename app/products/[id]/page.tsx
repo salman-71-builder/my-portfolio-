@@ -11,6 +11,7 @@ import {
   getRelatedProducts,
   getCategoryBySlug,
 } from "@/lib/catalog";
+import { getShippingRates } from "@/lib/shipping-server";
 import { getSupplierById } from "@/data/suppliers";
 
 export const dynamic = "force-dynamic";
@@ -36,10 +37,11 @@ export default async function ProductDetailPage({
   const product = await getProductById(params.id);
   if (!product) notFound();
 
-  const [supplier, category, related] = await Promise.all([
+  const [supplier, category, related, rates] = await Promise.all([
     Promise.resolve(getSupplierById(product.supplierId)),
     getCategoryBySlug(product.category),
     getRelatedProducts(product),
+    getShippingRates(),
   ]);
 
   return (
@@ -71,7 +73,7 @@ export default async function ProductDetailPage({
       <ProductDetail product={product} supplier={supplier} />
 
       <section className="mt-12 lg:max-w-md">
-        <BulkCalculator product={product} />
+        <BulkCalculator product={product} rates={rates} />
       </section>
 
       {related.length > 0 && (

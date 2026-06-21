@@ -73,7 +73,14 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 
 - `wishlist-provider` (localStorage, collections) + heart on `ProductCard`; `app/wishlist` → `wishlist-view` (own list grouped by collection + shared `?ids=` view that fetches `/api/products`). Navbar/mobile-menu entry with count.
 - Voice search: Web Speech API mic in `search-bar`.
-- `sections/mood-shopping` on the homepage. `bulk-calculator` on `app/products/[id]` (tiered pricing, duty/shipping/landed cost, profit, WhatsApp/print).
+- `sections/mood-shopping` on the homepage. `bulk-calculator` on `app/products/[id]` (tiered pricing, **weight × per-kg shipping** with By Air/By Ship selection + side-by-side compare, landed cost, profit, WhatsApp/print).
+
+## Shipping rates & product weight (`lib/shipping.ts`)
+
+- **Pure module**: two methods (air/ship), product shipping classes — Category A (৳780/kg air), B (৳1180/kg), and C item-wise fixed rates (sunglasses ৳3500, smart watch ৳1220, clothing ৳800, etc. per spec). Ship rates default to `air × SHIP_RATIO` (0.4) as an editable placeholder. `DEFAULT_RATES` is a flat `Record<key,perKg>` keyed `"<method>_<class>"` (e.g. `air_A`, `ship_sunglasses`).
+- `detectShipClass(category,name,tags)` auto-classifies; `estimateWeight(category,name)` gives a realistic per-unit kg (sunglasses 0.1, phone case 0.05, smart watch 0.15, headphone 0.3, shoes 0.8, furniture 12, …). `Product` has optional `weight`/`shipClass`; `resolveWeight`/`resolveShipClass` use the explicit field else auto-detect. `lib/catalog.ts` `mapProduct` sets both for DummyJSON products.
+- `calcShipping(rates, method, class, totalKg)` → `{ ratePerKg, cost, category, deliveryTime }`. Delivery: air 7–15 days, ship 30–45 days.
+- **Admin-editable rates**: `ShippingRate` DB model (key→perKg). `lib/shipping-server.ts` `getShippingRates()` merges DB overrides over `DEFAULT_RATES` (DB-fail → defaults). `/admin/shipping` (`shipping-rates-manager.tsx`) edits every air/ship/category-C rate; `/api/admin/shipping-rates` GET (public) + POST (admin upsert). The product page passes current rates into `BulkCalculator`; product weight + category shown on the detail page.
 - `spin-wheel` (`SpinWheelButton` in navbar/menu) + `flash-mob` (layout-mounted) use `lib/confetti` (dependency-free, reduced-motion aware).
 - `app/manifest.ts` — PWA manifest.
 

@@ -13,7 +13,13 @@ import {
   ShieldCheck,
   MapPin,
   CheckCircle2,
+  Weight,
 } from "lucide-react";
+import {
+  resolveWeight,
+  resolveShipClass,
+  categoryOf,
+} from "@/lib/shipping";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
@@ -79,10 +85,14 @@ export function ProductDetail({
             <p className="text-sm text-muted-foreground">per piece</p>
           </div>
 
-          <div className="mt-4 flex items-center gap-3">
+          <div className="mt-4 flex flex-wrap items-center gap-3">
             <Badge variant="outline" className="gap-1 px-3 py-1 text-sm">
               <Package className="h-4 w-4" />
               Minimum Order: {product.moq} pcs
+            </Badge>
+            <Badge variant="outline" className="gap-1 px-3 py-1 text-sm">
+              <Weight className="h-4 w-4" />
+              {resolveWeight(product)} kg/pc · Cat {categoryOf(resolveShipClass(product))}
             </Badge>
             <span className="flex items-center gap-1 text-sm text-muted-foreground">
               <Truck className="h-4 w-4" /> {product.shippingDays}

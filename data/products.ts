@@ -16,6 +16,10 @@ export interface Product {
   description: string;
   specs: { label: string; value: string }[];
   tags: string[];
+  /** Estimated per-unit weight in kg (for shipping). Optional — auto-estimated when absent. */
+  weight?: number;
+  /** Shipping class: "A" | "B" | a Category-C item key. Optional — auto-detected when absent. */
+  shipClass?: string;
 }
 
 const img = (seed: string) => `https://picsum.photos/seed/${seed}/600/600`;

@@ -89,3 +89,11 @@ model ProductCost {
   costPrice Int // BDT per unit
   updatedAt DateTime @updatedAt
 }
+
+/// Admin-editable shipping rate (per kg) keyed by method+class, e.g. "air_A",
+/// "ship_B", "air_sunglasses". Defaults live in lib/shipping.ts.
+model ShippingRate {
+  key       String   @id
+  perKg     Int
+  updatedAt DateTime @updatedAt
+}
