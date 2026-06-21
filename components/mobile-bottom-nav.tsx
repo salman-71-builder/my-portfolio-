@@ -17,7 +17,7 @@ export function MobileBottomNav() {
   ];
 
   return (
-    <nav className="glass fixed bottom-0 left-0 z-40 w-full border-t border-white/10 lg:hidden">
+    <nav className="fixed bottom-0 left-0 z-40 w-full border-t bg-background/95 backdrop-blur lg:hidden">
       <div className="grid grid-cols-4">
         {items.slice(0, 2).map((item) => {
           const Icon = item.icon;

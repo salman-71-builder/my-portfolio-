@@ -4,28 +4,28 @@
 
 @layer base {
   :root {
-    /* Futuristic dark theme — deep near-black + gold/red/neon-blue accents */
-    --background: 240 24% 4%; /* #0a0a0f */
-    --foreground: 0 0% 100%;
-    --card: 240 16% 8%; /* dark panel */
-    --card-foreground: 0 0% 100%;
-    --popover: 240 18% 7%;
-    --popover-foreground: 0 0% 100%;
-    --primary: 6 63% 46%; /* #c0392b */
+    /* Light, clean, minimal theme — white + soft gray, navy & orange accents */
+    --background: 0 0% 100%; /* #ffffff */
+    --foreground: 0 0% 10%; /* #1a1a1a */
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+    --primary: 6 63% 46%; /* #c0392b orange-red */
     --primary-foreground: 0 0% 100%;
-    --secondary: 51 100% 50%; /* gold */
-    --secondary-foreground: 0 0% 6%;
-    --muted: 240 12% 14%;
-    --muted-foreground: 240 10% 67%; /* #a0a0b0 */
-    --accent: 45 70% 11%; /* dark gold wash */
-    --accent-foreground: 51 100% 55%;
-    --destructive: 0 84% 60%;
+    --secondary: 240 20% 97%; /* #f5f5f8 light gray */
+    --secondary-foreground: 0 0% 10%;
+    --muted: 240 20% 97%; /* #f5f6f8 */
+    --muted-foreground: 0 0% 40%; /* #666666 */
+    --accent: 240 20% 96%; /* very light gray wash */
+    --accent-foreground: 6 63% 46%;
+    --destructive: 0 72% 51%;
     --destructive-foreground: 0 0% 100%;
-    --border: 240 12% 18%;
-    --input: 240 12% 16%;
-    --ring: 51 100% 50%;
+    --border: 0 0% 90%; /* #e5e5e5 */
+    --input: 0 0% 90%;
+    --ring: 6 63% 46%;
     --radius: 0.85rem;
-    --neon: 191 100% 50%; /* #00d4ff */
+    --navy: 219 56% 24%; /* #1a2f5e */
   }
 }
 
@@ -78,29 +78,29 @@
     color: transparent;
   }
 
-  /* glassmorphism */
+  /* frosted light surface (clean white, soft border + shadow) */
   .glass {
-    background: rgba(255, 255, 255, 0.05);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
   .glass-gold {
-    background: rgba(255, 255, 255, 0.04);
-    backdrop-filter: blur(14px);
-    -webkit-backdrop-filter: blur(14px);
-    border: 1px solid rgba(255, 215, 0, 0.22);
+    background: #ffffff;
+    border: 1px solid hsl(var(--border));
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   }
 
-  /* neon glows */
-  .glow-gold {
-    box-shadow: 0 0 22px rgba(255, 215, 0, 0.35);
-  }
-  .glow-blue {
-    box-shadow: 0 0 22px rgba(0, 212, 255, 0.4);
-  }
+  /* soft, subtle elevation (kept names for compatibility) */
+  .glow-gold,
+  .glow-blue,
   .glow-red {
-    box-shadow: 0 0 22px rgba(192, 57, 43, 0.45);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.06);
+  }
+  /* premium soft card shadow */
+  .soft-shadow {
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05), 0 8px 24px rgba(0, 0, 0, 0.04);
   }
 
   /* animated grid background */
@@ -170,53 +170,6 @@
   }
 }
 
-/* ---- custom gold cursor ---- */
-.cursor-dot,
-.cursor-ring {
-  position: fixed;
-  top: 0;
-  left: 0;
-  pointer-events: none;
-  z-index: 9999;
-  border-radius: 9999px;
-  will-change: transform;
-  margin-left: -4px;
-  margin-top: -4px;
-}
-.cursor-dot {
-  height: 8px;
-  width: 8px;
-  background: #ffd700;
-  box-shadow: 0 0 10px rgba(255, 215, 0, 0.9);
-}
-.cursor-ring {
-  height: 34px;
-  width: 34px;
-  margin-left: -17px;
-  margin-top: -17px;
-  border: 1.5px solid rgba(255, 215, 0, 0.5);
-  box-shadow: 0 0 14px rgba(0, 212, 255, 0.25);
-  transition: height 0.2s ease, width 0.2s ease, border-color 0.2s ease,
-    margin 0.2s ease, background 0.2s ease;
-}
-.cursor-ring--active {
-  height: 48px;
-  width: 48px;
-  margin-left: -24px;
-  margin-top: -24px;
-  border-color: rgba(0, 212, 255, 0.7);
-  background: rgba(0, 212, 255, 0.08);
-}
-/* hide the native cursor only when our custom one is active (fine pointers) */
-@media (pointer: fine) {
-  body:has(.cursor-dot) {
-    cursor: none;
-  }
-  body:has(.cursor-dot) a,
-  body:has(.cursor-dot) button {
-    cursor: none;
-  }
-}
 
 /* ---- 3D logo cube ---- */
 .logo3d-scene {
@@ -277,8 +230,8 @@
   align-items: center;
   gap: 0.18em;
   border-radius: 0.75rem;
-  background: #000;
-  padding: 0.35em 0.6em;
+  background: transparent;
+  padding: 0.2em 0.1em;
   overflow: hidden;
   transform-style: preserve-3d;
   transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1);
@@ -551,12 +504,12 @@ html {
   height: 10px;
 }
 ::-webkit-scrollbar-track {
-  background: #0a0a0f;
+  background: #f5f5f7;
 }
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(#ffd700, #c0392b);
+  background: #cfcfd4;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(#ffe23d, #d9442f);
+  background: #b5b5bd;
 }

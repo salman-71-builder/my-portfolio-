@@ -115,12 +115,12 @@ export function SearchBar({ className }: { className?: string }) {
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "glass-gold flex w-full items-stretch rounded-full text-white shadow-sm transition-shadow focus-within:glow-gold",
+        "flex w-full items-stretch rounded-full border bg-background text-foreground shadow-sm transition-colors focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-primary/10",
         className
       )}
     >
       {/* Category scope */}
-      <div className="hidden items-center border-r border-brand/20 sm:flex">
+      <div className="hidden items-center border-r sm:flex">
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
@@ -186,7 +186,7 @@ export function SearchBar({ className }: { className?: string }) {
         </button>
 
         {imageMenuOpen && (
-          <div className="glass absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl py-1 text-white shadow-xl">
+          <div className="absolute right-0 top-12 z-50 w-56 overflow-hidden rounded-xl border bg-popover py-1 text-popover-foreground shadow-xl">
             <p className="px-3 py-1.5 text-[11px] font-semibold uppercase tracking-wide text-muted-foreground">
               Search by image
             </p>

@@ -9,11 +9,11 @@ const stats = [
 
 export function StatsBar() {
   return (
-    <section className="glass border-y border-white/10">
-      <div className="container grid grid-cols-2 gap-4 py-8 lg:grid-cols-4">
+    <section className="border-y bg-secondary">
+      <div className="container grid grid-cols-2 gap-4 py-10 lg:grid-cols-4">
         {stats.map((s) => (
           <div key={s.label} className="text-center">
-            <p className="text-2xl font-extrabold text-gold sm:text-3xl lg:text-4xl">
+            <p className="text-2xl font-bold text-navy sm:text-3xl lg:text-4xl">
               {s.value !== null ? (
                 <CountUp value={s.value} suffix={s.suffix} />
               ) : (

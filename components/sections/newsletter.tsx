@@ -16,20 +16,19 @@ export function Newsletter() {
   }
 
   return (
-    <section className="relative overflow-hidden rounded-2xl gradient-brand p-8 text-white sm:p-12">
-      <div className="absolute inset-0 bg-chinese-pattern opacity-50" />
-      <div className="relative mx-auto max-w-2xl text-center">
-        <h2 className="text-2xl font-extrabold tracking-tight sm:text-3xl">
+    <section className="rounded-2xl border bg-secondary p-8 sm:p-12">
+      <div className="mx-auto max-w-2xl text-center">
+        <h2 className="text-2xl font-bold tracking-tight text-foreground sm:text-3xl">
           Get Weekly Deals &amp; Updates
         </h2>
-        <p className="mt-2 text-white/80">
+        <p className="mt-3 text-muted-foreground">
           Join 50,000+ buyers and never miss a flash deal or new arrival.
         </p>
 
         {done ? (
-          <div className="mt-6 flex items-center justify-center gap-2 rounded-xl bg-white/15 px-4 py-3 backdrop-blur">
-            <CheckCircle2 className="h-5 w-5 text-gold" />
-            <span className="font-medium">
+          <div className="mx-auto mt-6 flex max-w-md items-center justify-center gap-2 rounded-xl border bg-background px-4 py-3">
+            <CheckCircle2 className="h-5 w-5 text-green-600" />
+            <span className="font-medium text-foreground">
               You&apos;re subscribed! Check your inbox.
             </span>
           </div>
@@ -44,9 +43,9 @@ export function Newsletter() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="Enter your email address"
-              className="h-12 border-0 bg-white text-neutral-900 placeholder:text-neutral-500"
+              className="h-12 bg-background"
             />
-            <Button type="submit" variant="gold" size="lg" className="shrink-0">
+            <Button type="submit" size="lg" className="shrink-0">
               <Send className="h-4 w-4" /> Subscribe
             </Button>
           </form>

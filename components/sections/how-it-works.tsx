@@ -44,7 +44,7 @@ export function HowItWorks() {
           >
             <div className="relative z-10 mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-brand text-white shadow-lg ring-4 ring-accent">
               <Icon className="h-7 w-7" />
-              <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-gold text-xs font-extrabold text-neutral-900">
+              <span className="absolute -right-1 -top-1 flex h-6 w-6 items-center justify-center rounded-full bg-navy text-xs font-bold text-white">
                 {i + 1}
               </span>
             </div>

@@ -19,14 +19,14 @@ export function FeaturedProducts({ products }: { products: Product[] }) {
       <div className="absolute -top-14 right-0 hidden gap-2 sm:flex">
         <button
           onClick={() => scroll("left")}
-          className="glass flex h-9 w-9 items-center justify-center rounded-full text-white shadow-sm transition-colors hover:bg-brand hover:text-white"
+          className="flex h-9 w-9 items-center justify-center rounded-full border bg-background text-foreground shadow-sm transition-colors hover:bg-brand hover:text-white"
           aria-label="Scroll left"
         >
           <ChevronLeft className="h-5 w-5" />
         </button>
         <button
           onClick={() => scroll("right")}
-          className="glass flex h-9 w-9 items-center justify-center rounded-full text-white shadow-sm transition-colors hover:bg-brand hover:text-white"
+          className="flex h-9 w-9 items-center justify-center rounded-full border bg-background text-foreground shadow-sm transition-colors hover:bg-brand hover:text-white"
           aria-label="Scroll right"
         >
           <ChevronRight className="h-5 w-5" />

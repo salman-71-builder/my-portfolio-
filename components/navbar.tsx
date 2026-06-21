@@ -34,14 +34,14 @@ export function Navbar() {
   return (
     <header className="sticky top-0 z-50 w-full">
       {/* Top bar */}
-      <div className="gradient-brand text-white">
+      <div className="border-b bg-secondary text-muted-foreground">
         <div className="container flex h-9 items-center justify-between text-xs">
           <p className="flex items-center gap-2">
             <span>🚢 Free shipping on orders over ৳50,000</span>
           </p>
           <a
             href="tel:01700000000"
-            className="flex items-center gap-1 font-medium hover:text-gold"
+            className="flex items-center gap-1 font-medium hover:text-primary"
           >
             <Phone className="h-3.5 w-3.5" /> Call: 01700-000000
           </a>
@@ -49,7 +49,7 @@ export function Navbar() {
       </div>
 
       {/* Main bar */}
-      <div className="glass border-b border-white/10 supports-[backdrop-filter]:bg-white/5">
+      <div className="border-b bg-background/90 backdrop-blur supports-[backdrop-filter]:bg-background/80">
         <div className="container flex h-16 items-center gap-4">
           {/* Logo */}
           <Link
@@ -132,15 +132,17 @@ export function Navbar() {
         </div>
 
         {/* Nav links (desktop) */}
-        <nav className="hidden border-t border-white/10 lg:block">
-          <div className="container flex h-11 items-center gap-2">
+        <nav className="hidden border-t lg:block">
+          <div className="container flex h-11 items-center gap-1">
             {navLinks.map((link) => (
               <Link
                 key={link.href}
                 href={link.href}
                 className={cn(
-                  "neon-link px-2 py-1.5 text-sm font-medium transition-colors hover:text-gold",
-                  pathname === link.href ? "text-gold" : "text-white/80"
+                  "rounded-md px-3 py-1.5 text-sm font-medium transition-colors hover:bg-muted",
+                  pathname === link.href
+                    ? "text-primary"
+                    : "text-muted-foreground hover:text-foreground"
                 )}
               >
                 {link.label}

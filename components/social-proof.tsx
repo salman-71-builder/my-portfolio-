@@ -112,13 +112,13 @@ export function SocialProof() {
     <>
       {/* live viewer counter */}
       {viewers > 0 && (
-        <div className="glass pointer-events-none fixed bottom-20 right-3 z-30 flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-semibold text-white shadow-lg lg:bottom-4">
-          <span className="relative flex h-2.5 w-2.5">
-            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-red-500 opacity-75" />
-            <span className="relative inline-flex h-2.5 w-2.5 rounded-full bg-red-500" />
+        <div className="pointer-events-none fixed bottom-20 right-3 z-30 flex items-center gap-2 rounded-full border bg-background px-3 py-1.5 text-xs font-semibold text-foreground shadow-md lg:bottom-4">
+          <span className="relative flex h-2 w-2">
+            <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
+            <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
           </span>
           <span>
-            <span className="text-gold">{viewers}</span> people viewing now
+            <span className="text-primary">{viewers}</span> people viewing now
           </span>
         </div>
       )}
@@ -127,18 +127,20 @@ export function SocialProof() {
       {popup && (
         <div
           key={popup.id}
-          className="glass-gold fixed bottom-20 left-3 z-30 flex max-w-[19rem] animate-[fadeInUp_0.4s_ease] items-start gap-3 rounded-xl p-3 text-white shadow-2xl lg:bottom-4"
+          className="fixed bottom-20 left-3 z-30 flex max-w-[19rem] animate-[fadeInUp_0.4s_ease] items-start gap-3 rounded-xl border bg-background p-3 text-foreground shadow-lg lg:bottom-4"
         >
-          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-gold/20 text-gold">
+          <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
             <ShoppingBag className="h-4 w-4" />
           </div>
           <div className="min-w-0 flex-1 pr-4">
             <p className="text-sm leading-snug">
-              <span className="font-bold text-gold">{popup.name}</span> from{" "}
+              <span className="font-bold text-foreground">{popup.name}</span> from{" "}
               {popup.city} just ordered
             </p>
-            <p className="truncate text-sm font-semibold">{popup.product}</p>
-            <p className="mt-0.5 text-[11px] text-white/55">
+            <p className="truncate text-sm font-semibold text-foreground">
+              {popup.product}
+            </p>
+            <p className="mt-0.5 text-[11px] text-muted-foreground">
               {popup.mins} min ago · ✅ Verified order
             </p>
           </div>
@@ -146,7 +148,7 @@ export function SocialProof() {
             type="button"
             aria-label="Dismiss"
             onClick={() => setDismissed(true)}
-            className="absolute right-1.5 top-1.5 text-white/40 transition-colors hover:text-white"
+            className="absolute right-1.5 top-1.5 text-muted-foreground transition-colors hover:text-foreground"
           >
             <X className="h-3.5 w-3.5" />
           </button>

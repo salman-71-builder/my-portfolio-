@@ -81,17 +81,17 @@ export function PinnedShowcase() {
   if (reduced) {
     // Static, accessible fallback
     return (
-      <section className="bg-[#0a0604] py-16 text-white">
+      <section className="bg-secondary py-16 text-foreground">
         <div className="container space-y-10">
           {panels.map((p) => (
             <div key={p.step} className="flex items-start gap-4">
-              <p.Icon className="h-8 w-8 text-gold" />
+              <p.Icon className="h-8 w-8 text-primary" />
               <div>
-                <p className="text-sm font-semibold text-gold">
+                <p className="text-sm font-semibold text-primary">
                   {p.step} — {p.label}
                 </p>
-                <h3 className="text-2xl font-extrabold">{p.title}</h3>
-                <p className="mt-1 text-white/70">{p.desc}</p>
+                <h3 className="text-2xl font-bold">{p.title}</h3>
+                <p className="mt-1 text-muted-foreground">{p.desc}</p>
               </div>
             </div>
           ))}
@@ -103,24 +103,16 @@ export function PinnedShowcase() {
   return (
     <div
       ref={containerRef}
-      className="relative bg-[#0a0604] text-white"
+      className="relative bg-secondary text-foreground"
       style={{ height: `${panels.length * 100}vh` }}
     >
       <div
         ref={stageRef}
         className="flex h-screen items-center justify-center overflow-hidden"
       >
-        {/* glow */}
-        <div
-          className="pointer-events-none absolute inset-0"
-          style={{
-            background:
-              "radial-gradient(circle at 50% 50%, rgba(255,215,0,0.12), transparent 60%)",
-          }}
-        />
-        {/* rotating ring accent */}
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[60vmin] w-[60vmin] -translate-x-1/2 -translate-y-1/2 animate-[spin_28s_linear_infinite] rounded-full border border-gold/20" />
-        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[42vmin] w-[42vmin] -translate-x-1/2 -translate-y-1/2 animate-[spin_20s_linear_infinite_reverse] rounded-full border border-brand/30" />
+        {/* subtle ring accents */}
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[60vmin] w-[60vmin] -translate-x-1/2 -translate-y-1/2 animate-[spin_28s_linear_infinite] rounded-full border border-border" />
+        <div className="pointer-events-none absolute left-1/2 top-1/2 h-[42vmin] w-[42vmin] -translate-x-1/2 -translate-y-1/2 animate-[spin_20s_linear_infinite_reverse] rounded-full border border-border" />
 
         <div className="relative grid place-items-center">
           {panels.map((p, i) => (
@@ -131,19 +123,16 @@ export function PinnedShowcase() {
               }}
               className="col-start-1 row-start-1 max-w-2xl px-6 text-center"
             >
-              <span className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-gold to-brand text-black shadow-lg">
+              <span className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-2xl bg-navy text-white soft-shadow">
                 <p.Icon className="h-8 w-8" />
               </span>
-              <p className="text-sm font-bold uppercase tracking-[0.3em] text-gold">
+              <p className="text-sm font-bold uppercase tracking-[0.3em] text-primary">
                 {p.step} — {p.label}
               </p>
-              <h3
-                className="mt-3 text-3xl font-extrabold tracking-tight sm:text-5xl"
-                style={{ textShadow: "0 2px 24px rgba(255,215,0,0.25)" }}
-              >
+              <h3 className="mt-3 text-3xl font-bold tracking-tight text-foreground sm:text-5xl">
                 {p.title}
               </h3>
-              <p className="mx-auto mt-4 max-w-lg text-base text-white/70 sm:text-lg">
+              <p className="mx-auto mt-4 max-w-lg text-base text-muted-foreground sm:text-lg">
                 {p.desc}
               </p>
             </div>

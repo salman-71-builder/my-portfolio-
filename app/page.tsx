@@ -48,28 +48,21 @@ export default async function HomePage() {
       <section className="container py-6 sm:py-8">
         <Link
           href="/showroom"
-          className="group relative flex flex-col items-center justify-between gap-4 overflow-hidden rounded-2xl bg-[#0a0f1e] p-8 text-center text-white sm:flex-row sm:text-left"
+          className="group flex flex-col items-center justify-between gap-4 rounded-2xl border bg-card p-8 text-center soft-shadow transition-shadow hover:shadow-lg sm:flex-row sm:text-left"
         >
-          <div
-            className="pointer-events-none absolute inset-0 opacity-60"
-            style={{
-              background:
-                "radial-gradient(circle at 20% 30%, rgba(204,0,0,0.35), transparent 50%), radial-gradient(circle at 80% 70%, rgba(255,215,0,0.25), transparent 50%)",
-            }}
-          />
-          <div className="relative">
-            <span className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3 py-1 text-xs font-semibold text-gold">
+          <div>
+            <span className="inline-flex items-center gap-2 rounded-full border bg-secondary px-3 py-1 text-xs font-semibold text-muted-foreground">
               🕹️ New · Immersive
             </span>
-            <h2 className="mt-3 text-2xl font-extrabold sm:text-3xl">
+            <h2 className="mt-3 text-2xl font-bold text-foreground sm:text-3xl">
               Step inside our 3D Virtual Showroom
             </h2>
-            <p className="mt-1 max-w-xl text-white/75">
+            <p className="mt-1 max-w-xl text-muted-foreground">
               Walk through Electronics, Furniture, Fashion &amp; Gadgets rooms —
               click any product to shop. VR-headset compatible. 🥽
             </p>
           </div>
-          <span className="relative inline-flex shrink-0 items-center gap-2 rounded-xl bg-gold px-6 py-3 font-bold text-black transition-transform group-hover:scale-105">
+          <span className="inline-flex shrink-0 items-center gap-2 rounded-xl bg-primary px-6 py-3 font-semibold text-white transition-transform group-hover:scale-105">
             Enter Showroom →
           </span>
         </Link>
