@@ -130,3 +130,18 @@ model ShippingRate {
   perKg     Int
   updatedAt DateTime @updatedAt
 }
+
+/// Homepage hero banner, managed in /admin/banners.
+model Banner {
+  id        String   @id @default(cuid())
+  imageUrl  String
+  title     String?
+  subtitle  String?
+  ctaText   String?
+  ctaHref   String?
+  sortOrder Int      @default(0)
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+
+  @@index([sortOrder])
+}

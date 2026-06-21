@@ -3,8 +3,8 @@
 import * as React from "react";
 import { useRouter } from "next/navigation";
 import { Search, Camera, ImageIcon, Paperclip, X, Mic } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { useCategories } from "@/components/use-categories";
+import { useLang } from "@/components/language-provider";
 import { cn } from "@/lib/utils";
 
 /**
@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils";
 export function SearchBar({ className }: { className?: string }) {
   const router = useRouter();
   const categories = useCategories();
+  const { t } = useLang();
   const [query, setQuery] = React.useState("");
   const [category, setCategory] = React.useState("all");
   const [imageMenuOpen, setImageMenuOpen] = React.useState(false);
@@ -115,19 +116,19 @@ export function SearchBar({ className }: { className?: string }) {
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "flex w-full items-stretch rounded-full border bg-background text-foreground shadow-sm transition-colors focus-within:border-primary/40 focus-within:ring-2 focus-within:ring-primary/10",
+        "flex w-full items-stretch overflow-hidden rounded-md bg-white text-foreground shadow-sm ring-amber-400 transition-shadow focus-within:ring-2",
         className
       )}
     >
       {/* Category scope */}
-      <div className="hidden items-center border-r sm:flex">
+      <div className="hidden items-center border-r bg-secondary sm:flex">
         <select
           value={category}
           onChange={(e) => setCategory(e.target.value)}
-          className="h-full cursor-pointer rounded-l-full bg-transparent px-4 text-sm font-medium text-foreground focus:outline-none"
+          className="h-full cursor-pointer bg-transparent px-3 text-xs font-medium text-foreground focus:outline-none"
           aria-label="Search category"
         >
-          <option value="all">All Categories</option>
+          <option value="all">{t("all")}</option>
           {categories.map((c) => (
             <option key={c.id} value={c.slug}>
               {c.name}
@@ -142,8 +143,8 @@ export function SearchBar({ className }: { className?: string }) {
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search 10,000+ wholesale products from China…"
-          className="h-11 w-full bg-transparent px-4 text-sm focus:outline-none"
+          placeholder={t("search_placeholder")}
+          className="h-10 w-full bg-transparent px-3 text-sm text-foreground focus:outline-none"
           aria-label="Search products"
         />
         {imageHint && (
@@ -233,14 +234,14 @@ export function SearchBar({ className }: { className?: string }) {
       </div>
 
       {/* Submit */}
-      <Button
+      <button
         type="submit"
-        className="m-1 rounded-full px-5"
-        aria-label="Search"
+        className="flex items-center gap-1.5 bg-amber-400 px-4 text-sm font-semibold text-navy transition-colors hover:bg-amber-500"
+        aria-label={t("search")}
       >
-        <Search className="h-4 w-4" />
-        <span className="hidden md:inline">Search</span>
-      </Button>
+        <Search className="h-5 w-5" />
+        <span className="hidden md:inline">{t("search")}</span>
+      </button>
     </form>
   );
 }
