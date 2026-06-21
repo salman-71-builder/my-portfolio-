@@ -131,6 +131,20 @@ model ShippingRate {
   updatedAt DateTime @updatedAt
 }
 
+/// Site logo + brand colours (single row, id="default"). Managed in /admin/branding.
+/// Logo fields hold image data URLs (or hosted URLs).
+model BrandingSettings {
+  id           String   @id @default("default")
+  mainLogo     String?
+  iconLogo     String?
+  footerLogo   String?
+  loadingLogo  String?
+  invoiceLogo  String?
+  primaryColor String? // hex, e.g. #c0392b
+  navyColor    String? // hex, e.g. #1a2f5e
+  updatedAt    DateTime @updatedAt
+}
+
 /// Homepage hero banner, managed in /admin/banners.
 model Banner {
   id        String   @id @default(cuid())

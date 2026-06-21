@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { Sheet } from "@/components/ui/sheet";
 import { SearchBar } from "@/components/search-bar";
+import { BrandLogo } from "@/components/branding-provider";
 import { useCart } from "@/components/cart-provider";
 import { useWishlist } from "@/components/wishlist-provider";
 import { useCategories } from "@/components/use-categories";
@@ -50,9 +51,17 @@ export function Navbar() {
           <Link
             href="/"
             aria-label="ChinaCart home"
-            className="shrink-0 rounded px-1 py-1 text-xl font-extrabold tracking-tight hover:outline hover:outline-1 hover:outline-white/40"
+            className="shrink-0 rounded px-1 py-1 hover:outline hover:outline-1 hover:outline-white/40"
           >
-            China<span className="text-amber-400">Cart</span>
+            <BrandLogo
+              slot="mainLogo"
+              imgClassName="h-9 w-auto max-w-[160px] object-contain"
+              fallback={
+                <span className="text-xl font-extrabold tracking-tight">
+                  China<span className="text-amber-400">Cart</span>
+                </span>
+              }
+            />
           </Link>
 
           {/* Deliver to (desktop) */}

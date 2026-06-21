@@ -14,6 +14,7 @@ import {
   Truck,
   Wallet,
   Image as ImageIcon,
+  Palette,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderBell } from "@/components/admin/order-bell";
@@ -28,6 +29,7 @@ const navLinks = [
   { href: "/admin/products", label: "Cost Prices", icon: Tags },
   { href: "/admin/shipping", label: "Shipping", icon: Truck },
   { href: "/admin/banners", label: "Banners", icon: ImageIcon },
+  { href: "/admin/branding", label: "Branding", icon: Palette },
 ];
 
 export function AdminHeader() {

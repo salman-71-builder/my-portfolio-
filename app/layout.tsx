@@ -1,6 +1,9 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
+import { getBranding } from "@/lib/branding-server";
+import { brandColorCss } from "@/lib/branding";
+import { BrandingProvider } from "@/components/branding-provider";
 import { LanguageProvider } from "@/components/language-provider";
 import { CartProvider } from "@/components/cart-provider";
 import { WishlistProvider } from "@/components/wishlist-provider";
@@ -34,29 +37,37 @@ export const metadata: Metadata = {
   metadataBase: new URL("https://importchina.com.bd"),
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const branding = await getBranding();
+  const colorCss = brandColorCss(branding);
+
   return (
     <html lang="en" className={inter.variable}>
       <body className="min-h-screen font-sans">
-        <LanguageProvider>
-          <CartProvider>
-            <WishlistProvider>
-              <Navbar />
-              <main id="main-content" className="pb-16 lg:pb-0">
-                {children}
-              </main>
-              <Footer />
-              <CartDrawer />
-              <MobileBottomNav />
-              <ChatWidget />
-              <SocialProof />
-            </WishlistProvider>
-          </CartProvider>
-        </LanguageProvider>
+        {colorCss && (
+          <style dangerouslySetInnerHTML={{ __html: colorCss }} />
+        )}
+        <BrandingProvider branding={branding}>
+          <LanguageProvider>
+            <CartProvider>
+              <WishlistProvider>
+                <Navbar />
+                <main id="main-content" className="pb-16 lg:pb-0">
+                  {children}
+                </main>
+                <Footer />
+                <CartDrawer />
+                <MobileBottomNav />
+                <ChatWidget />
+                <SocialProof />
+              </WishlistProvider>
+            </CartProvider>
+          </LanguageProvider>
+        </BrandingProvider>
       </body>
     </html>
   );

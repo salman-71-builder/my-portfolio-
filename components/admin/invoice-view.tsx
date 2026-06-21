@@ -3,6 +3,7 @@
 import * as React from "react";
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BrandLogo } from "@/components/branding-provider";
 import { formatBDT } from "@/lib/utils";
 
 export interface InvoiceData {
@@ -41,9 +42,15 @@ export function InvoiceView({ data }: { data: InvoiceData }) {
         {/* header */}
         <div className="flex items-start justify-between">
           <div>
-            <p className="text-2xl font-extrabold tracking-tight">
-              China<span className="text-primary">Cart</span>
-            </p>
+            <BrandLogo
+              slot="invoiceLogo"
+              imgClassName="h-10 w-auto max-w-[180px] object-contain"
+              fallback={
+                <p className="text-2xl font-extrabold tracking-tight">
+                  China<span className="text-primary">Cart</span>
+                </p>
+              }
+            />
             <p className="mt-1 text-xs text-muted-foreground">
               House 12, Road 7, Gulshan-1, Dhaka 1212
               <br />

@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Facebook, Youtube, MessageCircle, MapPin, Mail, Phone } from "lucide-react";
 import { useCategories } from "@/components/use-categories";
 import { useLang } from "@/components/language-provider";
+import { BrandLogo } from "@/components/branding-provider";
 
 const paymentMethods = ["bKash", "Nagad", "Visa", "Mastercard", "Bank"];
 
@@ -122,9 +123,17 @@ export function Footer() {
       {/* Bottom strip */}
       <div className="bg-[#0f1d3d] text-white/70">
         <div className="container flex flex-col items-center justify-between gap-3 py-6 text-xs md:flex-row">
-          <p>
-            China<span className="font-bold text-amber-400">Cart</span> · © 2025 —
-            Bangladesh&apos;s #1 Chinese wholesale platform
+          <p className="flex items-center gap-2">
+            <BrandLogo
+              slot="footerLogo"
+              imgClassName="h-6 w-auto max-w-[120px] object-contain"
+              fallback={
+                <span>
+                  China<span className="font-bold text-amber-400">Cart</span>
+                </span>
+              }
+            />
+            <span>· © 2025 — Bangladesh&apos;s #1 Chinese wholesale platform</span>
           </p>
           <div className="flex flex-wrap items-center gap-2">
             {paymentMethods.map((m) => (

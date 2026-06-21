@@ -37,10 +37,10 @@ const config: Config = {
           950: "#3A100D",
         },
         navy: {
-          DEFAULT: "#1a2f5e",
+          DEFAULT: "hsl(var(--navy))",
           50: "#EAEEF6",
           100: "#CBD5E8",
-          500: "#1a2f5e",
+          500: "hsl(var(--navy))",
           600: "#16284F",
           700: "#101F3D",
         },

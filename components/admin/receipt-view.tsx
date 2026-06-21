@@ -2,6 +2,7 @@
 
 import { Printer } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { BrandLogo } from "@/components/branding-provider";
 import { formatTaka } from "@/lib/finance";
 import { methodLabel } from "@/lib/payments";
 
@@ -36,10 +37,16 @@ export function ReceiptView({ data }: { data: ReceiptData }) {
       </div>
 
       <div className="finance-print rounded-2xl border bg-card p-8 soft-shadow">
-        <div className="text-center">
-          <p className="text-2xl font-extrabold tracking-tight">
-            China<span className="text-primary">Cart</span>
-          </p>
+        <div className="flex flex-col items-center text-center">
+          <BrandLogo
+            slot="invoiceLogo"
+            imgClassName="h-9 w-auto max-w-[160px] object-contain"
+            fallback={
+              <p className="text-2xl font-extrabold tracking-tight">
+                China<span className="text-primary">Cart</span>
+              </p>
+            }
+          />
           <p className="mt-1 text-xs text-muted-foreground">Payment Receipt</p>
         </div>
 
