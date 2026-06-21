@@ -38,8 +38,25 @@ model Order {
   shippingFee Int
   total       Int
   status      String      @default("pending")
+  paid        Boolean     @default(false)
   items       OrderItem[]
+  events      OrderEvent[]
   createdAt   DateTime    @default(now())
+
+  @@index([email])
+  @@index([createdAt])
+}
+
+/// Status-change + internal-note timeline for an order.
+model OrderEvent {
+  id        String   @id @default(cuid())
+  order     Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId   String
+  status    String? // set for status changes
+  note      String? // set for internal notes
+  createdAt DateTime @default(now())
+
+  @@index([orderId])
 }
 
 model OrderItem {

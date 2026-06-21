@@ -88,6 +88,8 @@ async function main() {
       }
       const shippingFee = subtotal > 50000 ? 0 : randInt(500, 2000);
       const total = subtotal + shippingFee;
+      const status = rand(STATUSES);
+      const paid = status === "delivered" ? true : Math.random() > 0.5;
 
       await prisma.order.create({
         data: {
@@ -100,7 +102,8 @@ async function main() {
           subtotal,
           shippingFee,
           total,
-          status: rand(STATUSES),
+          status,
+          paid,
           createdAt,
           items: { create: items },
         },

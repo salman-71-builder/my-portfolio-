@@ -3,12 +3,23 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { Boxes, LogOut, LayoutDashboard, LineChart, Tags } from "lucide-react";
+import {
+  Boxes,
+  LogOut,
+  LayoutDashboard,
+  LineChart,
+  Tags,
+  ShoppingBag,
+  Users,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { OrderBell } from "@/components/admin/order-bell";
 import { cn } from "@/lib/utils";
 
 const navLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
+  { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/finance", label: "Finance", icon: LineChart },
   { href: "/admin/products", label: "Cost Prices", icon: Tags },
 ];
@@ -68,7 +79,8 @@ export function AdminHeader() {
         </div>
 
         <div className="flex items-center gap-2">
-          <Button asChild variant="ghost" size="sm">
+          <OrderBell />
+          <Button asChild variant="ghost" size="sm" className="hidden sm:inline-flex">
             <Link href="/" target="_blank">
               View Site
             </Link>

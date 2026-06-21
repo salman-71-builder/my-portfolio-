@@ -110,7 +110,8 @@ export function orderCOGS(
 }
 
 export function isActive(order: FinanceOrder): boolean {
-  return order.status !== "cancelled";
+  // cancelled & returned orders don't count toward revenue
+  return order.status !== "cancelled" && order.status !== "returned";
 }
 
 /** Per-order financial summary (selling price, cost, profit, margin). */

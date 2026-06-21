@@ -61,7 +61,9 @@ export default async function AdminDashboardPage() {
 
   const { orders, error } = await loadOrders();
 
-  const active = orders.filter((o) => o.status !== "cancelled");
+  const active = orders.filter(
+    (o) => o.status !== "cancelled" && o.status !== "returned"
+  );
   const revenue = active.reduce((s, o) => s + o.total, 0);
   const count = orders.length;
   const aov = active.length ? Math.round(revenue / active.length) : 0;

@@ -102,6 +102,22 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - API: `app/api/admin/login`, `app/api/admin/logout`, `app/api/admin/orders` (PATCH status, admin-only). Statuses in `lib/order-status.ts`.
 - New-order email via `lib/email.ts` (Resend HTTP API if `RESEND_API_KEY`+`ADMIN_EMAIL` set; safe no-op otherwise), called from `app/api/orders`.
 
+## Order management (`/admin/orders`)
+
+- Admin-only. `app/admin/orders/page.tsx` (server) loads orders+items → `components/admin/orders-manager.tsx` (client): stat cards (today/pending/to-ship/delivered/cancelled/revenue), status filter chips with counts, search (id/name/phone/product), collapsible date-range + amount-range filters, pagination, per-row quick status select, bulk-select → print labels, CSV export, refresh.
+- Statuses live in `lib/order-status.ts` — 9-stage lifecycle (pending→confirmed→processing→packed→shipped→out_for_delivery→delivered, plus cancelled/returned) with label/emoji/badge meta. Old 5 values stay valid. `isRevenueStatus()` excludes cancelled+returned (finance + dashboard use it).
+- Order detail `app/admin/orders/[id]` → `components/admin/order-detail-admin.tsx`: full products + price breakdown, customer/contact, status updater (records an `OrderEvent`), timeline+notes, mark paid/unpaid, cancel, refund/return, duplicate, links to invoice & label, per-customer Call/WhatsApp/Email deep links.
+- **Invoice** `app/admin/orders/[id]/invoice` (`invoice-view.tsx`): print-to-PDF invoice with logo, itemized totals, Paid/Unpaid stamp. **Shipping labels** `app/admin/orders/labels?ids=a,b,c` (`label-sheet.tsx`): printable labels with a real Code128 barcode (`lib/barcode.ts`, no deps), COD amount, bulk print.
+- New-order **notifications**: `components/admin/order-bell.tsx` (in the admin header) polls `/api/admin/orders` (GET stats) every 30s, shows a red count badge for orders newer than last-seen (localStorage) and plays a WebAudio chime. Admin email on new order already fires from `app/api/orders` via `lib/email.ts`.
+- APIs (admin-only): `/api/admin/orders` PATCH (status→event, or paid) + GET (poll stats); `/api/admin/order-events` POST (note); `/api/admin/orders/duplicate` POST. DB models `OrderEvent` + `Order.paid` (`prisma/schema.prisma`).
+
+## Customer management (`/admin/customers`)
+
+- Customers are **derived from orders** (no separate table) — `lib/customers.ts` (pure): `aggregateCustomers()` groups orders by email → name/phone/spend/orders/AOV/join+last dates/active; VIP tiers (gold/silver/bronze medals by spend rank); `customerInsights()` + `growthSeries()`; BD contact helpers (`intlPhone`, `waLink`, `telLink`, `smsLink`, `mailtoLink`); message templates + `fillTemplate`; stable url-safe customer id via `encodeCustomerId`/`decodeCustomerId` (base64 of email).
+- `components/admin/customers-manager.tsx`: insight cards (total/new-this-month/returning/dormant), CSS growth bar chart, top-districts + biggest-spender, All/VIP tabs (top 10/50/100), search, sort (spend/orders/recent/joined/name), pagination, avatars, VIP medals, CSV export, bulk message (template → mailto BCC / copy emails).
+- Profile `app/admin/customers/[id]` → `components/admin/customer-profile.tsx`: info + stats (orders/spent/AOV/member-since), active/VIP badges, full order history (links to order detail), Call/SMS/WhatsApp/Email with pre-filled template message.
+- Comms note: per-customer Call/SMS/WhatsApp/Email use device deep links (`tel:`/`sms:`/`wa.me`/`mailto:`); automated SMS/WhatsApp blasts + scheduled sends need an external gateway and are intentionally not wired.
+
 ## Finance dashboard (`/admin/finance`)
 
 - Admin-only (same `isAdmin()` gate). `app/admin/finance/page.tsx` (server, `force-dynamic`) loads orders + `Expense` + `ProductCost` rows, attaches each order item's category from the bundled catalog, and renders `components/admin/finance-dashboard.tsx` (client). DB errors degrade to a friendly notice.

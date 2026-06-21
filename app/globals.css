@@ -158,6 +158,18 @@
     transform: scaleX(1);
   }
 
+  .animate-swing {
+    transform-origin: top center;
+    animation: swing 1s ease-in-out infinite;
+  }
+  @keyframes swing {
+    0%, 100% { transform: rotate(0deg); }
+    20% { transform: rotate(14deg); }
+    40% { transform: rotate(-10deg); }
+    60% { transform: rotate(6deg); }
+    80% { transform: rotate(-4deg); }
+  }
+
   @keyframes fadeInUp {
     from {
       opacity: 0;
