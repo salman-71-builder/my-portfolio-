@@ -30,7 +30,8 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 
 ## Architecture
 
-- `app/` — App Router pages: `/`, `/products`, `/products/[id]`, `/categories`, `/how-it-works`, `/about`, `/contact`, `/auth`, `/suppliers`. Root layout wires the cart provider, navbar, footer, cart drawer and mobile bottom nav.
+- `app/` — App Router pages: `/`, `/products`, `/products/[id]`, `/categories`, `/how-it-works`, `/about`, `/contact`, `/auth`, `/suppliers`. Root layout wires the language provider, cart provider, navbar, footer, cart drawer and mobile bottom nav.
+- **Amazon-style chrome**: `navbar` is a navy (`bg-navy`) top bar — logo, big centered `search-bar` (white, gray category dropdown, amber Search button), language toggle, account, wishlist, cart-with-count — plus a secondary `#22407a` strip with an "All" menu + quick category links. `footer` is the Amazon-style dark-navy footer (Back-to-top bar, link columns, payments). `components/language-provider.tsx` is a lightweight EN/বাংলা i18n (`useLang().t()`, localStorage-persisted) used across the chrome. Homepage = `sections/hero-carousel` (auto-sliding) + white "card" rows (categories, deals, best sellers, new arrivals, trending) on a `#f3f3f3` background. `components/recently-viewed.tsx` (+ `lib/recently-viewed.ts`, localStorage) tracks/renders recently-viewed products on the home + product pages.
 - `components/ui/` — dependency-light shadcn-style primitives (Button, Card, Badge, Input, Label, Separator, Tabs, Slider, Sheet, Dialog).
 - `components/sections/` — home page sections (hero, stats, category grid, featured/flash/new products, how-it-works, why-choose-us, suppliers showcase, testimonials, newsletter).
 - `components/` — shared pieces: navbar, footer, search-bar (text + image search), product-card, cart-provider/cart-drawer (localStorage), product-detail, image-gallery, filter-sidebar, products-browser, etc.

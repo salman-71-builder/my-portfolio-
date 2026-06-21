@@ -7,6 +7,10 @@ import { BulkCalculator } from "@/components/bulk-calculator";
 import { ProductCard } from "@/components/product-card";
 import { SectionHeading } from "@/components/section-heading";
 import {
+  RecentlyViewed,
+  RecentlyViewedTracker,
+} from "@/components/recently-viewed";
+import {
   getProductById,
   getRelatedProducts,
   getCategoryBySlug,
@@ -70,10 +74,16 @@ export default async function ProductDetailPage({
         <span className="line-clamp-1 text-foreground">{product.name}</span>
       </nav>
 
+      <RecentlyViewedTracker product={product} />
+
       <ProductDetail product={product} supplier={supplier} />
 
       <section className="mt-12 lg:max-w-md">
         <BulkCalculator product={product} rates={rates} />
+      </section>
+
+      <section className="mt-12">
+        <RecentlyViewed excludeId={product.id} />
       </section>
 
       {related.length > 0 && (
