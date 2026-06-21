@@ -7,6 +7,13 @@ import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { prisma } from "@/lib/prisma";
 import { formatBDT } from "@/lib/utils";
+import {
+  summarize,
+  PAY_STATUS_META,
+  methodLabel,
+  planLabel,
+  type PaymentRow,
+} from "@/lib/payments";
 
 export const dynamic = "force-dynamic";
 
@@ -22,10 +29,21 @@ export default async function OrderConfirmationPage({
 }) {
   const order = await prisma.order.findUnique({
     where: { id: params.id },
-    include: { items: true },
+    include: { items: true, payments: { orderBy: { date: "asc" } } },
   });
 
   if (!order) notFound();
+
+  const paymentRows: PaymentRow[] = order.payments.map((p) => ({
+    id: p.id,
+    amount: p.amount,
+    method: p.method,
+    txnId: p.txnId,
+    note: p.note,
+    date: p.date.toISOString(),
+  }));
+  const pay = summarize(order.total, paymentRows);
+  const payMeta = PAY_STATUS_META[pay.status];
 
   return (
     <div className="container max-w-3xl py-12">
@@ -140,24 +158,61 @@ export default async function OrderConfirmationPage({
           </div>
         </div>
 
-        {/* Payment */}
+        {/* Payment status */}
         <div className="rounded-2xl border bg-card p-6 shadow-sm">
-          <h2 className="font-bold">Payment</h2>
-          <p className="mt-3 text-sm text-muted-foreground">
-            Method:{" "}
-            <span className="font-medium text-foreground">
-              {order.paymentMethod}
+          <div className="flex items-center justify-between">
+            <h2 className="font-bold">Payment</h2>
+            <span className={`inline-flex items-center gap-1 rounded-full border px-2.5 py-0.5 text-xs font-semibold ${payMeta.badge}`}>
+              {payMeta.emoji} {payMeta.label}
             </span>
+          </div>
+
+          <div className="mt-3 space-y-1.5 text-sm">
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Total</span>
+              <span className="font-semibold">{formatBDT(order.total)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Paid</span>
+              <span className="font-semibold text-green-600">{formatBDT(pay.paid)}</span>
+            </div>
+            <div className="flex justify-between">
+              <span className="text-muted-foreground">Remaining</span>
+              <span className={`font-semibold ${pay.remaining > 0 ? "text-red-600" : "text-green-600"}`}>
+                {formatBDT(pay.remaining)}
+              </span>
+            </div>
+          </div>
+
+          <div className="mt-3 h-2.5 w-full overflow-hidden rounded-full bg-muted">
+            <div className={`h-full rounded-full ${payMeta.bar}`} style={{ width: `${pay.percent}%` }} />
+          </div>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {pay.percent}% paid · Plan: {planLabel(order.paymentPlan)}
           </p>
-          <p className="mt-1 text-sm text-muted-foreground">
-            Status:{" "}
-            <span className="font-medium capitalize text-amber-600">
-              {order.status}
-            </span>
-          </p>
-          {order.note && (
-            <p className="mt-2 text-sm text-muted-foreground">
-              Note: <span className="text-foreground">{order.note}</span>
+
+          {paymentRows.length > 0 && (
+            <div className="mt-4 border-t pt-3">
+              <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                Payment history
+              </p>
+              <ul className="space-y-1.5 text-sm">
+                {paymentRows.map((p) => (
+                  <li key={p.id} className="flex justify-between">
+                    <span className="text-muted-foreground">
+                      {new Date(p.date).toLocaleDateString("en-GB")} · {methodLabel(p.method)}
+                    </span>
+                    <span className="font-medium">{formatBDT(p.amount)}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
+          {pay.remaining > 0 && (
+            <p className="mt-3 rounded-lg bg-amber-50 px-3 py-2 text-xs text-amber-800">
+              Remaining {formatBDT(pay.remaining)} due. Pay via bKash/Nagad/bank or
+              cash on delivery — contact us to complete your payment.
             </p>
           )}
         </div>

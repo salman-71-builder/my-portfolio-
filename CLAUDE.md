@@ -118,6 +118,16 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - New-order **notifications**: `components/admin/order-bell.tsx` (in the admin header) polls `/api/admin/orders` (GET stats) every 30s, shows a red count badge for orders newer than last-seen (localStorage) and plays a WebAudio chime. Admin email on new order already fires from `app/api/orders` via `lib/email.ts`.
 - APIs (admin-only): `/api/admin/orders` PATCH (status→event, or paid) + GET (poll stats); `/api/admin/order-events` POST (note); `/api/admin/orders/duplicate` POST. DB models `OrderEvent` + `Order.paid` (`prisma/schema.prisma`).
 
+## Partial payments & installments (`/admin/payments`)
+
+- `lib/payments.ts` (pure): BD payment methods (bKash/Nagad/Rocket/Bank/COD/Cash/Upay/SureCash/Other) with colours; `summarize(total,payments)` → paid/remaining/percent/status (unpaid/partial/paid) + `PAY_STATUS_META`; payment **plans** (full, 30/70, 50/50, 3-installments, COD, custom) via `buildInstallments()`; `installmentStatuses()` derives paid/overdue from cumulative payments; `reminderMessage()`.
+- DB models `Payment` + `Installment`, `Order.paymentPlan`. Adding/removing a payment recomputes `Order.paid` (sum ≥ total) and logs an `OrderEvent`.
+- `components/admin/payment-panel.tsx` (mounted on the order detail page): payment summary (total/paid/remaining + % bar + status), plan selector (`/api/admin/orders/payment-plan` regenerates installments), installment list (paid ✅/due ⏳/overdue ⚠️), **Add Payment** form (amount/method/date/txnId/note → `/api/admin/payments`), payment history with per-payment **receipt** + delete, and WhatsApp/SMS/Email **reminder** deep links.
+- **Receipt** `app/admin/orders/[id]/receipt?p=<paymentId>` (`receipt-view.tsx`): print-to-PDF receipt (logo, amount, method, txnId, remaining balance).
+- **Payments dashboard** (`payments-manager.tsx`): collected-today/this-month, total due, overdue count, collection-by-method pie (Recharts), outstanding summary, and a filter/search/sort list of orders by balance with overdue highlighting + due dates.
+- Customer-facing read-only payment status (total/paid/remaining + % bar + history + plan) on the order page `app/orders/[id]`. APIs `/api/admin/payments` (POST/DELETE) and `/api/admin/orders/payment-plan` (POST) are admin-only.
+- Note: online "Pay Now" needs a payment gateway (bKash/SSLCommerz) and a customer account portal — intentionally deferred; reminders use device deep links (no automated SMS/WhatsApp gateway).
+
 ## Customer management (`/admin/customers`)
 
 - Customers are **derived from orders** (no separate table) — `lib/customers.ts` (pure): `aggregateCustomers()` groups orders by email → name/phone/spend/orders/AOV/join+last dates/active; VIP tiers (gold/silver/bronze medals by spend rank); `customerInsights()` + `growthSeries()`; BD contact helpers (`intlPhone`, `waLink`, `telLink`, `smsLink`, `mailtoLink`); message templates + `fillTemplate`; stable url-safe customer id via `encodeCustomerId`/`decodeCustomerId` (base64 of email).

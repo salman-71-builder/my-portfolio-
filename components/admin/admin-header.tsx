@@ -12,6 +12,7 @@ import {
   ShoppingBag,
   Users,
   Truck,
+  Wallet,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { OrderBell } from "@/components/admin/order-bell";
@@ -20,6 +21,7 @@ import { cn } from "@/lib/utils";
 const navLinks = [
   { href: "/admin", label: "Dashboard", icon: LayoutDashboard },
   { href: "/admin/orders", label: "Orders", icon: ShoppingBag },
+  { href: "/admin/payments", label: "Payments", icon: Wallet },
   { href: "/admin/customers", label: "Customers", icon: Users },
   { href: "/admin/finance", label: "Finance", icon: LineChart },
   { href: "/admin/products", label: "Cost Prices", icon: Tags },
