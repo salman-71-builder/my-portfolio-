@@ -183,7 +183,7 @@ export function ChatWidget() {
       <button
         onClick={() => setOpen((o) => !o)}
         aria-label="Open ChinaCart AI Assistant"
-        className="fixed bottom-20 right-4 z-[120] flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand to-gold-600 text-white shadow-xl ring-2 ring-gold transition-transform hover:scale-105 lg:bottom-6 lg:right-6"
+        className="no-print fixed bottom-20 right-4 z-[120] flex h-14 w-14 items-center justify-center rounded-full bg-gradient-to-br from-brand to-gold-600 text-white shadow-xl ring-2 ring-gold transition-transform hover:scale-105 lg:bottom-6 lg:right-6"
       >
         {open ? <X className="h-6 w-6" /> : <Bot className="h-7 w-7" />}
         {!open && (

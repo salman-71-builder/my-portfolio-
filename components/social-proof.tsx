@@ -112,7 +112,7 @@ export function SocialProof() {
     <>
       {/* live viewer counter */}
       {viewers > 0 && (
-        <div className="pointer-events-none fixed bottom-20 right-3 z-30 flex items-center gap-2 rounded-full border bg-background px-3 py-1.5 text-xs font-semibold text-foreground shadow-md lg:bottom-4">
+        <div className="no-print pointer-events-none fixed bottom-20 right-3 z-30 flex items-center gap-2 rounded-full border bg-background px-3 py-1.5 text-xs font-semibold text-foreground shadow-md lg:bottom-4">
           <span className="relative flex h-2 w-2">
             <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-500 opacity-75" />
             <span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
@@ -127,7 +127,7 @@ export function SocialProof() {
       {popup && (
         <div
           key={popup.id}
-          className="fixed bottom-20 left-3 z-30 flex max-w-[19rem] animate-[fadeInUp_0.4s_ease] items-start gap-3 rounded-xl border bg-background p-3 text-foreground shadow-lg lg:bottom-4"
+          className="no-print fixed bottom-20 left-3 z-30 flex max-w-[19rem] animate-[fadeInUp_0.4s_ease] items-start gap-3 rounded-xl border bg-background p-3 text-foreground shadow-lg lg:bottom-4"
         >
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-secondary text-primary">
             <ShoppingBag className="h-4 w-4" />

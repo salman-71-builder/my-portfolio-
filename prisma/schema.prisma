@@ -52,3 +52,23 @@ model OrderItem {
   unitPrice Int
   quantity  Int
 }
+
+/// Manually-logged business expenses (operating costs) for the finance dashboard.
+model Expense {
+  id        String   @id @default(cuid())
+  category  String // product_cost | shipping | customs | marketing | packaging | salaries | other
+  amount    Int // BDT, whole taka
+  note      String?
+  date      DateTime // when the expense occurred
+  createdAt DateTime @default(now())
+
+  @@index([date])
+}
+
+/// Optional per-product cost-price override (COGS). When absent, cost is
+/// estimated as a fixed ratio of the selling price (see lib/finance.ts).
+model ProductCost {
+  productId String   @id
+  costPrice Int // BDT per unit
+  updatedAt DateTime @updatedAt
+}

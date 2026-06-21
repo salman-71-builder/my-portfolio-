@@ -498,6 +498,32 @@ html {
   }
 }
 
+/* ---- Print (Month-End Report → PDF) ---- */
+@media print {
+  .no-print,
+  header,
+  footer {
+    display: none !important;
+  }
+  .print-only {
+    display: block !important;
+  }
+  body {
+    background: #fff !important;
+  }
+  .soft-shadow {
+    box-shadow: none !important;
+  }
+  /* keep cards/charts from splitting awkwardly across pages */
+  .finance-print .rounded-2xl,
+  .finance-print .rounded-xl {
+    break-inside: avoid;
+  }
+  main {
+    padding-top: 0 !important;
+  }
+}
+
 /* Custom scrollbar */
 ::-webkit-scrollbar {
   width: 10px;

@@ -19,6 +19,7 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - `npm run vercel-build` — Vercel build hook: also runs `prisma db push` to sync the schema to Postgres
 - `npm run lint` — ESLint (`next lint`)
 - `npm run db:push` — sync the Prisma schema to the database (needs `DATABASE_URL`)
+- `npm run seed` — seed demo orders + expenses for the finance dashboard (needs `DATABASE_URL`; wipes & reseeds finance data)
 
 ## Deployment (Vercel)
 
@@ -100,6 +101,15 @@ This repository hosts **Import China** — a B2B wholesale sourcing e-commerce w
 - `app/admin/page.tsx` (server, `force-dynamic`) shows sales/revenue stats + `components/admin/orders-table.tsx` (client: search, status filter, expandable details, inline status updater). DB errors degrade to a friendly notice.
 - API: `app/api/admin/login`, `app/api/admin/logout`, `app/api/admin/orders` (PATCH status, admin-only). Statuses in `lib/order-status.ts`.
 - New-order email via `lib/email.ts` (Resend HTTP API if `RESEND_API_KEY`+`ADMIN_EMAIL` set; safe no-op otherwise), called from `app/api/orders`.
+
+## Finance dashboard (`/admin/finance`)
+
+- Admin-only (same `isAdmin()` gate). `app/admin/finance/page.tsx` (server, `force-dynamic`) loads orders + `Expense` + `ProductCost` rows, attaches each order item's category from the bundled catalog, and renders `components/admin/finance-dashboard.tsx` (client). DB errors degrade to a friendly notice.
+- `lib/finance.ts` — **pure shared money math** (no db/server imports): `formatTaka` (BDT lakh grouping ৳1,50,000) + `formatTakaCompact`, expense categories/colours, `DEFAULT_COST_RATIO` (cost = real `ProductCost` override else a fixed fraction of selling price), `summarize()` (revenue/COGS/expenses → grouped P&L, net profit, margin over a `[start,end)` window), `namedRange()`, `orderFinance()`, `pctChange()`.
+- Money model: Revenue = non-cancelled order totals; COGS = per-item cost×qty (auto); Net Profit = Revenue − COGS − operating expenses. P&L groups into Revenue / Cost of Products (COGS + `product_cost` expenses) / Shipping (shipping+customs) / Other.
+- Dashboard features: period filters (today/week/month/last month/year/all + custom range) with vs-previous-period arrows; overview cards; 12-month revenue+profit line, profit bar, expense pie, daily-sales, best-sellers & category bars (Recharts, lazy `ssr:false`); monthly P&L with side-by-side month compare; most/least-profitable products; key metrics (customers, repeat %, orders, pending/completed, refunds); per-order financial table (selling/cost/profit/margin + profit filter); smart insights; CSV export + **Month-End Report** via `window.print()` (print CSS hides chrome — see `.no-print`/`.print-only` in `globals.css`).
+- Expense CRUD: `components/admin/expense-manager.tsx` → `app/api/admin/expenses` (GET/POST/PATCH/DELETE). Per-product cost overrides: `app/api/admin/product-costs` (GET/POST/DELETE). Both admin-only.
+- DB models `Expense` and `ProductCost` (`prisma/schema.prisma`). Seed demo orders+expenses with `npm run seed` (`scripts/seed-finance.mjs`, needs `DATABASE_URL`; wipes & reseeds finance data — never run on production data).
 
 ## Conventions
 
