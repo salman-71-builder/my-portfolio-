@@ -145,6 +145,25 @@ model BrandingSettings {
   updatedAt    DateTime @updatedAt
 }
 
+/// Checkout payment configuration (single row, id="default").
+model PaymentSettings {
+  id                String   @id @default("default")
+  minAdvancePct     Int      @default(30)
+  bkashEnabled      Boolean  @default(true)
+  nagadEnabled      Boolean  @default(true)
+  rocketEnabled     Boolean  @default(true)
+  bankEnabled       Boolean  @default(true)
+  bkashNumber       String?
+  nagadNumber       String?
+  rocketNumber      String?
+  bankName          String?
+  bankAccountName   String?
+  bankAccountNumber String?
+  bankBranch        String?
+  bankRouting       String?
+  updatedAt         DateTime @updatedAt
+}
+
 /// Homepage hero banner, managed in /admin/banners.
 model Banner {
   id        String   @id @default(cuid())

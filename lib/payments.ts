@@ -129,20 +129,51 @@ export const PAYMENT_PLANS: PlanDef[] = [
     dueOffsets: [0, 15],
   },
   {
+    key: "70_30",
+    label: "70% advance + 30% on delivery",
+    splits: [70, 30],
+    splitLabels: ["Advance (70%)", "On Delivery (30%)"],
+    dueOffsets: [0, 15],
+  },
+  {
     key: "installment_3",
     label: "Pay in 3 installments",
     splits: [34, 33, 33],
     splitLabels: ["Installment 1", "Installment 2", "Installment 3"],
     dueOffsets: [0, 15, 30],
   },
-  {
-    key: "cod",
-    label: "Cash on Delivery (COD)",
-    splits: [100],
-    splitLabels: ["On Delivery"],
-    dueOffsets: [15],
-  },
 ];
+
+// ---- advance-payment rules (checkout) --------------------------------------
+// RULE: no full Cash-on-Delivery. A minimum advance (default 30%) is required;
+// the remainder is collected as COD.
+
+export const DEFAULT_MIN_ADVANCE_PCT = 30;
+
+/** Map an advance percentage to the stored Order.paymentPlan key. */
+export function planForAdvancePct(pct: number): string {
+  if (pct >= 100) return "full";
+  if (pct === 30) return "30_70";
+  if (pct === 50) return "50_50";
+  if (pct === 70) return "70_30";
+  return "custom";
+}
+
+/** Minimum advance amount in taka for a given total + min percentage. */
+export function minAdvanceAmount(total: number, minPct: number): number {
+  return Math.ceil((total * minPct) / 100);
+}
+
+/** Standard advance options shown at checkout (>= minPct only). */
+export function advanceOptions(total: number, minPct: number) {
+  return [30, 50, 70, 100]
+    .filter((p) => p >= minPct)
+    .map((p) => {
+      const advance =
+        p >= 100 ? total : Math.round((total * p) / 100);
+      return { pct: p, advance, cod: total - advance };
+    });
+}
 
 export function planLabel(key: string | null | undefined): string {
   if (!key) return "Not set";

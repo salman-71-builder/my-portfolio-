@@ -28,6 +28,7 @@ const navLinks = [
   { href: "/admin/finance", label: "Finance", icon: LineChart },
   { href: "/admin/products", label: "Cost Prices", icon: Tags },
   { href: "/admin/shipping", label: "Shipping", icon: Truck },
+  { href: "/admin/payment-settings", label: "Payment Setup", icon: Wallet },
   { href: "/admin/banners", label: "Banners", icon: ImageIcon },
   { href: "/admin/branding", label: "Branding", icon: Palette },
 ];

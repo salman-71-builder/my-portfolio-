@@ -139,6 +139,32 @@ export function PaymentPanel({
     }
   }
 
+  async function markCodCollected() {
+    if (sum.remaining <= 0) return;
+    if (!confirm(`Mark ${formatTaka(sum.remaining)} COD as collected?`)) return;
+    setBusy("cod");
+    try {
+      const res = await fetch("/api/admin/payments", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          orderId,
+          amount: sum.remaining,
+          method: "cod",
+          note: "COD collected on delivery",
+          date: new Date().toISOString().slice(0, 10),
+        }),
+      });
+      const data = await res.json();
+      if (!res.ok || !data.payment) throw new Error();
+      setPayments((p) => [data.payment, ...p]);
+    } catch {
+      alert("Could not record COD collection.");
+    } finally {
+      setBusy(null);
+    }
+  }
+
   const reminder = reminderMessage(customer.name, orderId, sum.remaining);
 
   return (
@@ -229,6 +255,12 @@ export function PaymentPanel({
         {!adding && (
           <Button size="sm" onClick={() => setAdding(true)}>
             <Plus className="h-4 w-4" /> Add Payment
+          </Button>
+        )}
+        {sum.remaining > 0 && (
+          <Button size="sm" variant="outline" onClick={markCodCollected} disabled={busy === "cod"}>
+            {busy === "cod" ? <Loader2 className="h-4 w-4 animate-spin" /> : <Check className="h-4 w-4 text-green-600" />}
+            Mark COD Collected ({formatTaka(sum.remaining)})
           </Button>
         )}
         {sum.remaining > 0 && (
