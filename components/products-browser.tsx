@@ -269,12 +269,12 @@ export function ProductsBrowser({ categories }: { categories: Category[] }) {
       <div className="flex flex-col gap-6 lg:flex-row">
         {/* Sidebar (desktop) */}
         <aside className="hidden w-64 shrink-0 lg:block">
-          <div className="sticky top-44 rounded-xl border bg-card p-5 shadow-sm">
+          <div className="sticky top-24 rounded-2xl border bg-card p-5 soft-shadow">
             <div className="mb-4 flex items-center justify-between">
-              <h2 className="font-bold">Filters</h2>
+              <h2 className="heading-accent font-bold">Filters</h2>
               <button
                 onClick={() => setFilters(defaultFilters("all"))}
-                className="text-xs text-brand hover:underline"
+                className="text-xs text-primary hover:underline"
               >
                 Reset
               </button>

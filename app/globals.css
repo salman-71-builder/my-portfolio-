@@ -48,6 +48,21 @@
 }
 
 @layer utilities {
+  /* burnt-orange decorative underline under section headings */
+  .heading-accent {
+    position: relative;
+    padding-bottom: 0.45rem;
+  }
+  .heading-accent::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    height: 3px;
+    width: 2.5rem;
+    border-radius: 9999px;
+    background: hsl(var(--primary));
+  }
   .no-scrollbar::-webkit-scrollbar {
     display: none;
   }

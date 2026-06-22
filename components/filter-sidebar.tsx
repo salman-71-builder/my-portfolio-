@@ -3,6 +3,7 @@
 import { Star } from "lucide-react";
 import { Slider } from "@/components/ui/slider";
 import { Separator } from "@/components/ui/separator";
+import { DynamicIcon } from "@/components/dynamic-icon";
 import type { Category } from "@/data/categories";
 import { formatBDT, cn } from "@/lib/utils";
 
@@ -46,35 +47,51 @@ export function FilterSidebar({
     <div className="space-y-6">
       {/* Category */}
       <div>
-        <h3 className="mb-3 text-sm font-bold uppercase tracking-wide">
+        <h3 className="heading-accent mb-3 text-sm font-bold uppercase tracking-wide">
           Category
         </h3>
-        <div className="space-y-1">
+        <div className="no-scrollbar max-h-72 space-y-0.5 overflow-y-auto pr-1 [scroll-behavior:smooth]">
           <button
             onClick={() => set("category", "all")}
             className={cn(
-              "block w-full rounded-md px-2 py-1.5 text-left text-sm transition-colors",
+              "flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-all",
               filters.category === "all"
-                ? "bg-accent font-semibold text-brand"
-                : "hover:bg-muted"
+                ? "bg-accent font-semibold text-primary"
+                : "text-foreground hover:bg-muted"
             )}
           >
+            <span className="flex h-6 w-6 items-center justify-center rounded-md bg-secondary text-primary">
+              <DynamicIcon name="LayoutGrid" className="h-3.5 w-3.5" />
+            </span>
             All Categories
           </button>
-          {categories.map((c) => (
-            <button
-              key={c.id}
-              onClick={() => set("category", c.slug)}
-              className={cn(
-                "flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm transition-colors",
-                filters.category === c.slug
-                  ? "bg-accent font-semibold text-brand"
-                  : "hover:bg-muted"
-              )}
-            >
-              {c.name}
-            </button>
-          ))}
+          {categories.map((c) => {
+            const active = filters.category === c.slug;
+            return (
+              <button
+                key={c.id}
+                onClick={() => set("category", c.slug)}
+                className={cn(
+                  "group flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left text-sm transition-all",
+                  active
+                    ? "bg-accent font-semibold text-primary"
+                    : "text-foreground hover:bg-muted"
+                )}
+              >
+                <span
+                  className={cn(
+                    "flex h-6 w-6 items-center justify-center rounded-md transition-colors",
+                    active
+                      ? "bg-primary text-white"
+                      : "bg-secondary text-primary group-hover:bg-primary/10"
+                  )}
+                >
+                  <DynamicIcon name={c.icon} className="h-3.5 w-3.5" />
+                </span>
+                <span className="flex-1 truncate">{c.name}</span>
+              </button>
+            );
+          })}
         </div>
       </div>
 
@@ -148,7 +165,7 @@ export function FilterSidebar({
                 "Any rating"
               ) : (
                 <span className="flex items-center gap-1">
-                  <Star className="h-3.5 w-3.5 fill-gold text-gold" /> {r} &
+                  <Star className="h-3.5 w-3.5 fill-amber-500 text-amber-500" /> {r} &
                   up
                 </span>
               )}

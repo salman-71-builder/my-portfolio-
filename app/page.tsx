@@ -34,7 +34,7 @@ function ProductSection({
   return (
     <ScrollReveal as="section" className="rounded-md border bg-card p-4">
       <RevealHeading className="mb-3 flex items-baseline justify-between">
-        <h2 className="text-lg font-bold sm:text-xl">{title}</h2>
+        <h2 className="heading-accent text-lg font-bold sm:text-xl">{title}</h2>
         <Link href={href} className="text-sm font-medium text-primary hover:underline">
           See more
         </Link>
@@ -100,7 +100,7 @@ export default async function HomePage() {
         {/* 6. How it works */}
         <ScrollReveal as="section" className="rounded-md border bg-card p-4">
           <RevealHeading className="mb-3">
-            <h2 className="text-lg font-bold sm:text-xl">How It Works</h2>
+            <h2 className="heading-accent text-lg font-bold sm:text-xl">How It Works</h2>
           </RevealHeading>
           <HowItWorks />
         </ScrollReveal>
@@ -113,7 +113,7 @@ export default async function HomePage() {
         {/* 8. Testimonials */}
         <ScrollReveal as="section" className="rounded-md border bg-card p-4">
           <RevealHeading className="mb-3">
-            <h2 className="text-lg font-bold sm:text-xl">What Our Buyers Say</h2>
+            <h2 className="heading-accent text-lg font-bold sm:text-xl">What Our Buyers Say</h2>
           </RevealHeading>
           <TestimonialSlider />
         </ScrollReveal>
@@ -126,7 +126,7 @@ export default async function HomePage() {
         {/* 10. Shop by category */}
         <ScrollReveal as="section" className="rounded-md border bg-card p-4">
           <RevealHeading className="mb-3 flex items-baseline justify-between">
-            <h2 className="text-lg font-bold sm:text-xl">Shop by Category</h2>
+            <h2 className="heading-accent text-lg font-bold sm:text-xl">Shop by Category</h2>
             <Link href="/categories" className="text-sm font-medium text-primary hover:underline">
               See more
             </Link>
