@@ -2,12 +2,16 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/prisma";
 import { isAdmin } from "@/lib/admin-auth";
 import { getPaymentSettings } from "@/lib/payment-settings-server";
+import { bkashConfigured } from "@/lib/bkash";
 
 export const dynamic = "force-dynamic";
 
 // GET — public (checkout reads enabled methods, numbers, min advance %)
 export async function GET() {
-  return NextResponse.json({ settings: await getPaymentSettings() });
+  return NextResponse.json({
+    settings: await getPaymentSettings(),
+    gateway: { bkash: bkashConfigured() },
+  });
 }
 
 // POST — admin only (update settings)

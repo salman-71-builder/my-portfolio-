@@ -1,9 +1,10 @@
 "use client";
 
 import * as React from "react";
+import { Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { Loader2, ShoppingBag, ShieldCheck, AlertTriangle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -21,12 +22,15 @@ import {
 const FREE_SHIPPING_THRESHOLD = 50000;
 const FLAT_SHIPPING_FEE = 500;
 
-export default function CheckoutPage() {
+function CheckoutForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const payStatus = searchParams.get("pay");
   const { items, subtotal, loading, refresh } = useCart();
   const [submitting, setSubmitting] = React.useState(false);
   const [error, setError] = React.useState<string | null>(null);
   const [settings, setSettings] = React.useState<PaymentSettings>(DEFAULT_PAYMENT_SETTINGS);
+  const [bkashAuto, setBkashAuto] = React.useState(false);
 
   // payment selection
   const [choice, setChoice] = React.useState<string>(""); // "30" | "50" | ... | "custom"
@@ -43,6 +47,7 @@ export default function CheckoutPage() {
           const ms = enabledMethods(d.settings);
           if (ms[0]) setMethod(ms[0].key);
         }
+        setBkashAuto(Boolean(d.gateway?.bkash));
       })
       .catch(() => {});
   }, []);
@@ -66,6 +71,7 @@ export default function CheckoutPage() {
   const remaining = Math.max(0, total - advanceAmount);
   const methods = enabledMethods(settings);
   const activeMethod = methods.find((m) => m.key === method);
+  const isBkashAuto = method === "bkash" && bkashAuto;
   const methodNumber =
     activeMethod && activeMethod.settingKey
       ? (settings[activeMethod.settingKey] as string | null)
@@ -83,24 +89,43 @@ export default function CheckoutPage() {
       setError("Advance cannot exceed the order total.");
       return;
     }
-    if (txnId.trim().length < 4) {
+    if (!isBkashAuto && txnId.trim().length < 4) {
       setError("Enter the Transaction ID / reference from your payment.");
       return;
     }
 
     setSubmitting(true);
     const form = new FormData(e.currentTarget);
-    const payload = {
-      ...Object.fromEntries(form.entries()),
-      paymentMethod: method,
-      advanceAmount,
-      txnId: txnId.trim(),
-    };
+    const base = Object.fromEntries(form.entries());
+
     try {
+      // Automated bKash: create a PGW payment and redirect to bKash
+      if (isBkashAuto) {
+        const res = await fetch("/api/bkash/create", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ ...base, advanceAmount }),
+        });
+        const data = await res.json();
+        if (!res.ok || !data.bkashURL) {
+          setError(data.error ?? "Could not start bKash payment.");
+          setSubmitting(false);
+          return;
+        }
+        window.location.href = data.bkashURL;
+        return;
+      }
+
+      // Manual confirmation (TrxID)
       const res = await fetch("/api/orders", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+        body: JSON.stringify({
+          ...base,
+          paymentMethod: method,
+          advanceAmount,
+          txnId: txnId.trim(),
+        }),
       });
       const data = await res.json();
       if (!res.ok) {
@@ -137,6 +162,17 @@ export default function CheckoutPage() {
         A minimum {minPct}% advance confirms your order — the rest is Cash on
         Delivery.
       </p>
+
+      {payStatus && payStatus !== "success" && (
+        <p className="mt-4 flex items-center gap-2 rounded-lg border border-amber-200 bg-amber-50 px-3 py-2 text-sm text-amber-800">
+          <AlertTriangle className="h-4 w-4 shrink-0" />
+          {payStatus === "cancelled"
+            ? "bKash payment was cancelled. Your cart is intact — try again."
+            : payStatus === "expired"
+              ? "That checkout session expired. Please place your order again."
+              : "bKash payment didn't complete. Please try again."}
+        </p>
+      )}
 
       <form
         id="checkout-form"
@@ -244,7 +280,16 @@ export default function CheckoutPage() {
 
             {/* instructions */}
             <div className="rounded-xl border bg-secondary/50 p-3 text-sm">
-              {method === "bank" ? (
+              {isBkashAuto ? (
+                <div className="space-y-0.5">
+                  <p className="font-semibold">Secure bKash checkout</p>
+                  <p className="text-xs text-muted-foreground">
+                    You&apos;ll be redirected to bKash to pay {formatBDT(advanceAmount)} with
+                    your PIN. Your order is confirmed automatically once payment
+                    succeeds — no TrxID needed.
+                  </p>
+                </div>
+              ) : method === "bank" ? (
                 <div className="space-y-0.5">
                   <p className="font-semibold">Transfer {formatBDT(advanceAmount)} to:</p>
                   <p>Bank: {settings.bankName}</p>
@@ -263,10 +308,12 @@ export default function CheckoutPage() {
                   </p>
                 </div>
               )}
-              <div className="mt-3">
-                <Label htmlFor="txn">{method === "bank" ? "Transfer reference / TrxID" : "Transaction ID (TrxID)"}</Label>
-                <Input id="txn" value={txnId} onChange={(e) => setTxnId(e.target.value)} placeholder="e.g. ABC123XYZ" className="mt-1.5" />
-              </div>
+              {!isBkashAuto && (
+                <div className="mt-3">
+                  <Label htmlFor="txn">{method === "bank" ? "Transfer reference / TrxID" : "Transaction ID (TrxID)"}</Label>
+                  <Input id="txn" value={txnId} onChange={(e) => setTxnId(e.target.value)} placeholder="e.g. ABC123XYZ" className="mt-1.5" />
+                </div>
+              )}
             </div>
           </div>
 
@@ -323,7 +370,9 @@ export default function CheckoutPage() {
 
           <Button type="submit" form="checkout-form" size="lg" className="mt-5 w-full" disabled={submitting || loading}>
             {submitting ? (
-              <><Loader2 className="h-4 w-4 animate-spin" /> Placing Order…</>
+              <><Loader2 className="h-4 w-4 animate-spin" /> Processing…</>
+            ) : isBkashAuto ? (
+              `Pay ${formatBDT(advanceAmount)} with bKash`
             ) : (
               `Pay ${formatBDT(advanceAmount)} & Confirm`
             )}
@@ -334,5 +383,19 @@ export default function CheckoutPage() {
         </aside>
       </form>
     </div>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="container py-20 text-center text-muted-foreground">
+          Loading checkout…
+        </div>
+      }
+    >
+      <CheckoutForm />
+    </Suspense>
   );
 }

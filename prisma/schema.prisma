@@ -145,6 +145,22 @@ model BrandingSettings {
   updatedAt    DateTime @updatedAt
 }
 
+/// A checkout in progress, persisted while the customer is on the bKash PGW
+/// page so the order can be created when bKash redirects back. Short-lived.
+model PendingCheckout {
+  id             String   @id @default(cuid())
+  name           String
+  email          String
+  phone          String
+  address        String
+  city           String
+  note           String?
+  advanceAmount  Int
+  method         String   @default("bkash")
+  bkashPaymentID String?
+  createdAt      DateTime @default(now())
+}
+
 /// Checkout payment configuration (single row, id="default").
 model PaymentSettings {
   id                String   @id @default("default")
