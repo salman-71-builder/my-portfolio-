@@ -129,7 +129,7 @@ export function Footer() {
               imgClassName="h-6 w-auto max-w-[120px] object-contain"
               fallback={
                 <span>
-                  China<span className="font-bold text-amber-400">Cart</span>
+                  China<span className="font-bold text-primary">Cart</span>
                 </span>
               }
             />

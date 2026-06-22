@@ -22,7 +22,7 @@ export function StarRating({
             className={cn(
               px,
               i <= Math.round(rating)
-                ? "fill-gold text-gold"
+                ? "fill-amber-500 text-amber-500"
                 : "fill-muted text-muted"
             )}
           />

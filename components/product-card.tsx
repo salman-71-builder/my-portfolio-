@@ -53,7 +53,7 @@ export function ProductCard({ product }: { product: Product }) {
             </span>
           )}
           {product.isNew && (
-            <span className="absolute right-10 top-2 rounded bg-navy px-1.5 py-0.5 text-[10px] font-bold text-white">
+            <span className="absolute right-10 top-2 rounded bg-accent px-1.5 py-0.5 text-[10px] font-bold text-primary">
               NEW
             </span>
           )}
@@ -79,7 +79,7 @@ export function ProductCard({ product }: { product: Product }) {
 
       <div className="mt-3 flex flex-1 flex-col">
         <Link href={`/products/${product.id}`}>
-          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm leading-snug text-foreground hover:text-[#1a6fc4]">
+          <h3 className="line-clamp-2 min-h-[2.5rem] text-sm leading-snug text-foreground transition-colors hover:text-primary">
             {product.name}
           </h3>
         </Link>
@@ -91,7 +91,7 @@ export function ProductCard({ product }: { product: Product }) {
 
         {/* price */}
         <div className="mt-1.5 flex items-end gap-2">
-          <span className="text-lg font-bold text-foreground">
+          <span className="text-lg font-bold text-primary">
             {formatBDT(product.priceMin)}
           </span>
           {original && (
@@ -113,7 +113,7 @@ export function ProductCard({ product }: { product: Product }) {
         <div className="mt-auto pt-3">
           <button
             onClick={() => addItem(product)}
-            className="flex w-full items-center justify-center gap-1.5 rounded-full bg-amber-400 py-2 text-sm font-semibold text-navy transition-colors hover:bg-amber-500"
+            className="flex w-full items-center justify-center gap-1.5 rounded-full bg-primary py-2 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
           >
             <ShoppingCart className="h-4 w-4" />
             {t("add_to_cart")}

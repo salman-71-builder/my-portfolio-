@@ -33,7 +33,7 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
 
   return (
     <div
-      className="relative overflow-hidden bg-navy"
+      className="relative overflow-hidden bg-secondary"
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => {
         setPaused(false);
@@ -67,25 +67,27 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
                   }}
                 />
               ) : (
-                <div className={`absolute inset-0 bg-gradient-to-r ${grad}`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${grad}`} />
               )}
-              {/* readability scrim */}
-              <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+              {/* readability scrim (only over photos) */}
+              {s.imageUrl && (
+                <div className="absolute inset-0 bg-gradient-to-r from-black/55 via-black/25 to-transparent" />
+              )}
 
               <div className="container relative flex h-full flex-col justify-center">
                 <div
-                  className="max-w-xl text-white"
+                  className={`max-w-xl ${s.imageUrl ? "text-white" : "text-navy"}`}
                   style={{
                     transform: active ? `translateX(${tilt.x * 0.5}px)` : undefined,
                   }}
                 >
                   {s.title && (
-                    <h1 className="text-2xl font-bold leading-tight drop-shadow sm:text-4xl lg:text-5xl">
+                    <h1 className={`text-2xl font-bold leading-tight sm:text-4xl lg:text-5xl ${s.imageUrl ? "drop-shadow" : ""}`}>
                       {s.title}
                     </h1>
                   )}
                   {s.subtitle && (
-                    <p className="mt-2 text-sm text-white/90 drop-shadow sm:text-base">
+                    <p className={`mt-2 text-sm sm:text-base ${s.imageUrl ? "text-white/90 drop-shadow" : "text-navy/70"}`}>
                       {s.subtitle}
                     </p>
                   )}
@@ -93,7 +95,7 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
                     <Magnetic className="mt-5 inline-block">
                       <Link
                         href={s.ctaHref}
-                        className="inline-flex rounded-full bg-amber-400 px-6 py-2.5 text-sm font-semibold text-navy shadow-lg transition-colors hover:bg-amber-500"
+                        className="inline-flex rounded-full bg-primary px-6 py-2.5 text-sm font-semibold text-white shadow-lg transition-colors hover:bg-brand-600"
                       >
                         {s.ctaText}
                       </Link>

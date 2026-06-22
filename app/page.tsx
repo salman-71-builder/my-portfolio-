@@ -35,7 +35,7 @@ function ProductSection({
     <ScrollReveal as="section" className="rounded-md border bg-card p-4">
       <RevealHeading className="mb-3 flex items-baseline justify-between">
         <h2 className="text-lg font-bold sm:text-xl">{title}</h2>
-        <Link href={href} className="text-sm font-medium text-[#1a6fc4] hover:underline">
+        <Link href={href} className="text-sm font-medium text-primary hover:underline">
           See more
         </Link>
       </RevealHeading>
@@ -61,7 +61,7 @@ export default async function HomePage() {
   const newArrivals = arrivals.slice(0, 8);
 
   return (
-    <div className="bg-[#f3f3f3]">
+    <div className="bg-[#f5f5f5]">
       {/* 1. Cover banner */}
       <HeroCarousel banners={banners} />
 
@@ -127,7 +127,7 @@ export default async function HomePage() {
         <ScrollReveal as="section" className="rounded-md border bg-card p-4">
           <RevealHeading className="mb-3 flex items-baseline justify-between">
             <h2 className="text-lg font-bold sm:text-xl">Shop by Category</h2>
-            <Link href="/categories" className="text-sm font-medium text-[#1a6fc4] hover:underline">
+            <Link href="/categories" className="text-sm font-medium text-primary hover:underline">
               See more
             </Link>
           </RevealHeading>

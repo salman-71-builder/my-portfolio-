@@ -358,7 +358,7 @@ function LogoImg({
       className={`font-extrabold tracking-tight ${big ? "text-3xl" : "text-lg"} ${dark ? "text-white" : "text-foreground"}`}
       style={dark ? undefined : { color: undefined }}
     >
-      China<span className="text-amber-400">Cart</span>
+      China<span className="text-primary">Cart</span>
     </span>
   );
 }

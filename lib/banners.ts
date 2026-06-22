@@ -45,9 +45,10 @@ export const DEFAULT_BANNERS: Banner[] = [
   },
 ];
 
-/** Gradient used for banners without an uploaded image (cycled by index). */
+/** Soft warm gradient for banners without an uploaded image (cycled by index).
+ *  These are light → the carousel renders dark navy text over them. */
 export const BANNER_GRADIENTS = [
-  "from-[#1a2f5e] to-[#22407a]",
-  "from-[#7a1f17] to-[#c0392b]",
-  "from-[#0f3d2e] to-[#1b7a52]",
+  "from-[#f8d7d0] to-[#fff3ee]",
+  "from-[#fff3ee] to-[#fbe2d8]",
+  "from-[#fde4dc] to-[#f6d0c6]",
 ];

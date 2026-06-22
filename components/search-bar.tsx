@@ -116,7 +116,7 @@ export function SearchBar({ className }: { className?: string }) {
     <form
       onSubmit={handleSubmit}
       className={cn(
-        "flex w-full items-stretch overflow-hidden rounded-md bg-white text-foreground shadow-sm ring-amber-400 transition-shadow focus-within:ring-2",
+        "flex w-full items-stretch overflow-hidden rounded-md border border-border bg-white text-foreground shadow-sm transition-shadow focus-within:ring-2 focus-within:ring-primary/40",
         className
       )}
     >
@@ -236,7 +236,7 @@ export function SearchBar({ className }: { className?: string }) {
       {/* Submit */}
       <button
         type="submit"
-        className="flex items-center gap-1.5 bg-amber-400 px-4 text-sm font-semibold text-navy transition-colors hover:bg-amber-500"
+        className="flex items-center gap-1.5 bg-primary px-4 text-sm font-semibold text-white transition-colors hover:bg-brand-600"
         aria-label={t("search")}
       >
         <Search className="h-5 w-5" />
