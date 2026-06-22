@@ -2,118 +2,142 @@ import Link from "next/link";
 import { HeroCarousel } from "@/components/sections/hero-carousel";
 import { TrustBar } from "@/components/sections/trust-bar";
 import { CategoryGrid } from "@/components/sections/category-grid";
-import { ShippingShowcase } from "@/components/sections/shipping-showcase";
-import { FeaturedProducts } from "@/components/sections/featured-products";
-import { FlashDeals } from "@/components/sections/flash-deals";
 import { HowItWorks } from "@/components/sections/how-it-works";
 import { WhyChinaCart } from "@/components/sections/why-chinacart";
 import { SuppliersShowcase } from "@/components/sections/suppliers-showcase";
 import { TestimonialSlider } from "@/components/sections/testimonial-slider";
 import { Newsletter } from "@/components/sections/newsletter";
 import { RecentlyViewed } from "@/components/recently-viewed";
+import { ProductCard } from "@/components/product-card";
+import { ScrollReveal, RevealHeading, StaggerGrid } from "@/components/scroll-reveal";
 import { getActiveBanners } from "@/lib/banners-server";
 import {
   getFeaturedProducts,
-  getFlashDeals,
   getNewProducts,
   getCategories,
 } from "@/lib/catalog";
+import type { Product } from "@/data/products";
 
 export const dynamic = "force-dynamic";
 
-function Section({
+const GRID = "grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4";
+
+function ProductSection({
   title,
   href,
-  children,
+  products,
 }: {
   title: string;
-  href?: string;
-  children: React.ReactNode;
+  href: string;
+  products: Product[];
 }) {
   return (
-    <section className="rounded-md border bg-card p-4">
-      <div className="mb-3 flex items-baseline justify-between">
+    <ScrollReveal as="section" className="rounded-md border bg-card p-4">
+      <RevealHeading className="mb-3 flex items-baseline justify-between">
         <h2 className="text-lg font-bold sm:text-xl">{title}</h2>
-        {href && (
-          <Link href={href} className="text-sm font-medium text-[#1a6fc4] hover:underline">
-            See more
-          </Link>
-        )}
-      </div>
-      {children}
-    </section>
+        <Link href={href} className="text-sm font-medium text-[#1a6fc4] hover:underline">
+          See more
+        </Link>
+      </RevealHeading>
+      <StaggerGrid className={GRID}>
+        {products.map((p) => (
+          <ProductCard key={p.id} product={p} />
+        ))}
+      </StaggerGrid>
+    </ScrollReveal>
   );
 }
 
 export default async function HomePage() {
-  const [banners, categories, featured, flashDeals, arrivals] = await Promise.all([
+  const [banners, categories, featured, arrivals] = await Promise.all([
     getActiveBanners(),
     getCategories(),
     getFeaturedProducts(12),
-    getFlashDeals(6),
     getNewProducts(12),
   ]);
 
-  const trending = [...featured].reverse();
+  const trending = [...featured].reverse().slice(0, 8);
+  const bestSellers = featured.slice(0, 8);
+  const newArrivals = arrivals.slice(0, 8);
 
   return (
     <div className="bg-[#f3f3f3]">
-      {/* 1. Cover banner (admin-managed) */}
+      {/* 1. Cover banner */}
       <HeroCarousel banners={banners} />
 
       <div className="container space-y-4 py-4">
         {/* 2. Trust badges */}
-        <TrustBar />
+        <ScrollReveal>
+          <TrustBar />
+        </ScrollReveal>
 
-        {/* 3. Shop by category */}
-        <Section title="Shop by Category" href="/categories">
-          <CategoryGrid categories={categories} />
-        </Section>
+        {/* 3. Trending products */}
+        <ProductSection
+          title="Trending in Bangladesh 🇧🇩"
+          href="/products"
+          products={trending}
+        />
 
-        {/* 4. China → Bangladesh shipping route */}
-        <ShippingShowcase />
+        {/* 4. Best sellers */}
+        <ProductSection
+          title="Best Sellers"
+          href="/products?sort=popular"
+          products={bestSellers}
+        />
 
-        {/* 5. Featured / trending */}
-        <Section title="Trending in Bangladesh 🇧🇩" href="/products">
-          <FeaturedProducts products={trending} />
-        </Section>
+        {/* 5. Featured / new arrivals */}
+        <ProductSection
+          title="New Arrivals"
+          href="/products?sort=newest"
+          products={newArrivals}
+        />
 
-        {/* 6. Flash deals */}
-        {flashDeals.length > 0 && <FlashDeals products={flashDeals} />}
+        {/* recently viewed */}
+        <ScrollReveal>
+          <RecentlyViewed />
+        </ScrollReveal>
 
-        {/* 7. Best sellers */}
-        <Section title="Best Sellers" href="/products?sort=popular">
-          <FeaturedProducts products={featured} />
-        </Section>
-
-        {/* New arrivals */}
-        {arrivals.length > 0 && (
-          <Section title="New Arrivals" href="/products?sort=newest">
-            <FeaturedProducts products={arrivals} />
-          </Section>
-        )}
-
-        {/* Recently viewed */}
-        <RecentlyViewed />
-
-        {/* 8. How it works */}
-        <Section title="How It Works">
+        {/* 6. How it works */}
+        <ScrollReveal as="section" className="rounded-md border bg-card p-4">
+          <RevealHeading className="mb-3">
+            <h2 className="text-lg font-bold sm:text-xl">How It Works</h2>
+          </RevealHeading>
           <HowItWorks />
-        </Section>
+        </ScrollReveal>
 
-        {/* 9. Why ChinaCart (comparison) */}
-        <WhyChinaCart />
+        {/* 7. Why ChinaCart */}
+        <ScrollReveal>
+          <WhyChinaCart />
+        </ScrollReveal>
 
-        {/* 10. Testimonials */}
-        <Section title="What Our Buyers Say">
+        {/* 8. Testimonials */}
+        <ScrollReveal as="section" className="rounded-md border bg-card p-4">
+          <RevealHeading className="mb-3">
+            <h2 className="text-lg font-bold sm:text-xl">What Our Buyers Say</h2>
+          </RevealHeading>
           <TestimonialSlider />
-        </Section>
+        </ScrollReveal>
 
-        {/* 11. Suppliers */}
-        <SuppliersShowcase />
+        {/* 9. Suppliers */}
+        <ScrollReveal>
+          <SuppliersShowcase />
+        </ScrollReveal>
 
-        {/* 12. Newsletter */}
-        <Newsletter />
+        {/* 10. Shop by category */}
+        <ScrollReveal as="section" className="rounded-md border bg-card p-4">
+          <RevealHeading className="mb-3 flex items-baseline justify-between">
+            <h2 className="text-lg font-bold sm:text-xl">Shop by Category</h2>
+            <Link href="/categories" className="text-sm font-medium text-[#1a6fc4] hover:underline">
+              See more
+            </Link>
+          </RevealHeading>
+          <CategoryGrid categories={categories} />
+        </ScrollReveal>
+
+        {/* 11. Newsletter */}
+        <ScrollReveal>
+          <Newsletter />
+        </ScrollReveal>
       </div>
     </div>
   );
