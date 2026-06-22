@@ -13,6 +13,7 @@ import { useCart } from "@/components/cart-provider";
 import { useWishlist } from "@/components/wishlist-provider";
 import { useLang } from "@/components/language-provider";
 import { TiltCard } from "@/components/tilt-card";
+import { ParallaxImage } from "@/components/parallax-image";
 import { formatBDT, formatPriceRange, cn } from "@/lib/utils";
 import type { Product } from "@/data/products";
 
@@ -37,13 +38,15 @@ export function ProductCard({ product }: { product: Product }) {
     <div className="group flex h-full flex-col rounded-md border bg-card p-3 transition-shadow hover:shadow-md hover:shadow-navy/10">
       <Link href={`/products/${product.id}`} className="relative block">
         <div className="relative aspect-square overflow-hidden rounded bg-white">
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            fill
-            sizes="(max-width: 768px) 50vw, 25vw"
-            className="object-cover transition-transform duration-300 group-hover:scale-[1.03]"
-          />
+          <ParallaxImage className="absolute inset-0">
+            <Image
+              src={product.images[0]}
+              alt={product.name}
+              fill
+              sizes="(max-width: 768px) 50vw, 25vw"
+              className="object-cover transition-transform duration-300 group-hover:scale-[1.05]"
+            />
+          </ParallaxImage>
           {product.discount > 0 && (
             <span className="absolute left-2 top-2 rounded bg-primary px-1.5 py-0.5 text-xs font-bold text-white">
               -{product.discount}%
