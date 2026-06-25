@@ -4,10 +4,54 @@ import { StatCard } from "../components/StatCard";
 import { AnimatedWarehouseScene } from "../animations/AnimatedWarehouseScene";
 import { AnimatedConnectionScene } from "../animations/AnimatedConnectionScene";
 import { ParticleBurst } from "../components/ParticleBurst";
+import { ParticleText } from "../components/ae/ParticleText";
+import { RollingNumber } from "../components/ae/RollingNumber";
 import {
   punchSpring, snapSpring, overshootScale, letterSpacingSnap,
   driftY, textGlow, breatheOp,
 } from "../utils/energy";
+
+const BN_DIGITS = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
+
+// Stat card whose number rolls in like an odometer.
+const RollingStat: React.FC<{ value: string; label: string; startFrame: number }> = ({
+  value, label, startFrame,
+}) => {
+  const frame = useCurrentFrame();
+  const { fps } = useVideoConfig();
+  const sc = punchSpring(frame, fps, startFrame);
+  const scale = overshootScale(sc);
+  const tilt = Math.sin(frame * 0.06 + startFrame * 0.4) * 3;
+  if (frame < startFrame) return null;
+  return (
+    <div style={{
+      opacity: sc,
+      transform: `scale(${scale}) rotate(${tilt}deg)`,
+      transformOrigin: "center",
+      background: C.cardBg,
+      border: `2px solid ${C.cardBorder}`,
+      borderRadius: 22, padding: "26px 34px",
+      display: "flex", flexDirection: "column",
+      alignItems: "center", gap: 8,
+      backdropFilter: "blur(12px)",
+      boxShadow: `0 0 36px rgba(0,229,255,0.15), inset 0 0 20px rgba(0,229,255,0.04)`,
+      minWidth: 220,
+    }}>
+      <RollingNumber
+        value={value}
+        startFrame={startFrame + 4}
+        digitSet={BN_DIGITS}
+        digitHeight={62}
+        fontSize={50}
+        color={C.cyan}
+        glow={C.cyan}
+      />
+      <div style={{ color: C.muted, fontSize: 21, textAlign: "center", fontFamily: "'Hind Siliguri', sans-serif", fontWeight: 600 }}>
+        {label}
+      </div>
+    </div>
+  );
+};
 
 const TRUST_BADGES = [
   { icon: "🏆", text: "৭ বছরের অভিজ্ঞতা" },
@@ -24,15 +68,15 @@ export const Scene6Brand: React.FC = () => {
 
   // MEGA burst on entry
   // Light burst opacity
-  const burstOp = interpolate(frame, [0, 8, 50, 70], [0, 0.5, 0.35, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const burstOp = interpolate(frame, [88, 96, 140, 165], [0, 0.5, 0.35, 0], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-  // Logo SLAMS in at frame 6
-  const logoSc = punchSpring(frame, fps, 6);
+  // Particles assemble into the logo first, then the solid logo SLAMS in at 92
+  const logoSc = punchSpring(frame, fps, 92);
   const logoScale = overshootScale(logoSc);
-  const underlineW = interpolate(frame, [22, 48], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const underlineW = interpolate(frame, [108, 134], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   // "China" and "Cart" have separate offsets for stagger
-  const cartSc = snapSpring(frame, fps, 14);
+  const cartSc = snapSpring(frame, fps, 100);
   const cartScale = overshootScale(cartSc);
 
   // Trust badges
@@ -63,9 +107,27 @@ export const Scene6Brand: React.FC = () => {
         pointerEvents: "none",
       }} />
 
-      {/* MEGA particle burst on brand reveal */}
-      <ParticleBurst startFrame={6} x={960} y={360} count={30} colors={[C.cyan, "#00B4D8", C.white, C.gold]} radius={400} />
-      <ParticleBurst startFrame={10} x={960} y={360} count={20} colors={[C.cyan, C.white]} radius={250} />
+      {/* Particles fly in and FORM the "ChinaCart" wordmark, then burst into the logo */}
+      {frame < 100 && (
+        <div style={{ position: "absolute", top: "14%", left: 0, right: 0, height: 220, zIndex: 4 }}>
+          <ParticleText
+            text="ChinaCart"
+            width={1920}
+            height={220}
+            startFrame={0}
+            formDuration={58}
+            holdDuration={22}
+            explodeDuration={22}
+            fontSize={150}
+            colors={[C.cyan, "#00B4D8", C.white, C.gold]}
+            sampleGap={7}
+          />
+        </div>
+      )}
+
+      {/* MEGA particle burst as the solid logo lands */}
+      <ParticleBurst startFrame={92} x={960} y={360} count={30} colors={[C.cyan, "#00B4D8", C.white, C.gold]} radius={400} />
+      <ParticleBurst startFrame={96} x={960} y={360} count={20} colors={[C.cyan, C.white]} radius={250} />
 
       {/* Logo */}
       <div style={{
@@ -101,15 +163,15 @@ export const Scene6Brand: React.FC = () => {
         }} />
       </div>
 
-      {/* Stats */}
+      {/* Stats — numeric values roll in like an odometer (AE) */}
       <div style={{
         position: "absolute", top: "46%", left: "50%",
         transform: "translateX(-50%)",
-        display: "flex", gap: 28,
+        display: "flex", gap: 28, alignItems: "flex-start",
       }}>
-        <StatCard value="৭+" label="বছরের অভিজ্ঞতা" startFrame={65} />
-        <StatCard value="১,০০,০০০+" label="সন্তুষ্ট ইমপোর্টার" startFrame={100} />
-        <StatCard value="নিজস্ব" label="চায়না ওয়্যারহাউস ও টিম" startFrame={135} />
+        <RollingStat value="৭+" label="বছরের অভিজ্ঞতা" startFrame={150} />
+        <RollingStat value="১,০০,০০০+" label="সন্তুষ্ট ইমপোর্টার" startFrame={172} />
+        <StatCard value="নিজস্ব" label="চায়না ওয়্যারহাউস ও টিম" startFrame={196} />
       </div>
 
       {/* AI images */}

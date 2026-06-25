@@ -7,6 +7,14 @@ import { Scene5Trust } from "./scenes/Scene5Trust";
 import { Scene6Brand } from "./scenes/Scene6Brand";
 import { Scene7HowItWorks } from "./scenes/Scene7HowItWorks";
 import { Scene8GrandClose } from "./scenes/Scene8GrandClose";
+import { LiquidTransition } from "./components/ae/LiquidTransition";
+
+// Ink/liquid blob wipe centered on a scene cut (peaks at the cut frame).
+const LiquidCut: React.FC<{ atFrame: number; color: string }> = ({ atFrame, color }) => (
+  <div style={{ position: "absolute", inset: 0, zIndex: 300, pointerEvents: "none" }}>
+    <LiquidTransition startFrame={atFrame - 29} durationInFrames={58} color={color} />
+  </div>
+);
 
 // Segment timing (global frames)
 // S1: 0–299     (300f)  THE BAIT
@@ -60,6 +68,15 @@ export const ChinaCartFullAd: React.FC = () => {
       <ImpactBlack atFrame={2737} />
       <ImpactBlack atFrame={3219} />
       <ImpactBlack atFrame={3611} />
+
+      {/* Liquid ink-wipe blobs over each cut, tinted to the incoming scene's mood */}
+      <LiquidCut atFrame={300}  color="#00E5FF" />
+      <LiquidCut atFrame={842}  color="#FF2D2D" />
+      <LiquidCut atFrame={1534} color="#00E5FF" />
+      <LiquidCut atFrame={2316} color="#00C853" />
+      <LiquidCut atFrame={2738} color="#00E5FF" />
+      <LiquidCut atFrame={3220} color="#00E5FF" />
+      <LiquidCut atFrame={3612} color="#FFD700" />
     </AbsoluteFill>
   );
 };

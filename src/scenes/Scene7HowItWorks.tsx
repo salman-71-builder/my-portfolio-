@@ -3,10 +3,14 @@ import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { AnimatedCustomerScene } from "../animations/AnimatedCustomerScene";
 import { ParticleBurst } from "../components/ParticleBurst";
+import { RollingNumber } from "../components/ae/RollingNumber";
+import { WaveReveal } from "../components/ae/WaveReveal";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
   driftY, textGlow, breatheOp, impactFlash,
 } from "../utils/energy";
+
+const BN_DIGITS = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
 
 const STEPS = [
   { num: "১", icon: "🌐", title: "ওয়েবসাইট ভিজিট করুন", sub: "chinacart.com.bd", startFrame: 35 },
@@ -98,7 +102,18 @@ export const Scene7HowItWorks: React.FC = () => {
                     color: "#000", fontSize: 28, fontWeight: 900,
                     boxShadow: `0 0 20px ${C.cyan}`,
                     filter: `drop-shadow(0 0 12px ${C.cyan})`,
-                  }}>{s.num}</div>
+                    overflow: "hidden",
+                  }}>
+                    {/* Step number rolls into place (AE odometer) */}
+                    <RollingNumber
+                      value={s.num}
+                      startFrame={s.startFrame}
+                      digitSet={BN_DIGITS}
+                      digitHeight={40}
+                      fontSize={30}
+                      color="#000"
+                    />
+                  </div>
                   <div style={{ fontSize: 56 }}>{s.icon}</div>
                   <div style={{
                     color: C.white, fontSize: 26, fontWeight: 900, textAlign: "center",
@@ -123,8 +138,12 @@ export const Scene7HowItWorks: React.FC = () => {
           })}
         </div>
 
-        {/* AI image */}
-        <AnimatedCustomerScene width={720} height={230} />
+        {/* Customer scene revealed behind an advancing wavy mask (AE mask reveal) */}
+        <div style={{ position: "relative", width: 720, height: 230 }}>
+          <WaveReveal startFrame={210} durationInFrames={44} width={720} height={230}>
+            <AnimatedCustomerScene width={720} height={230} />
+          </WaveReveal>
+        </div>
       </div>
 
       {/* Burst on each step */}

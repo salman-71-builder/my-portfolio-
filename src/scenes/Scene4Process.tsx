@@ -4,10 +4,18 @@ import { TimelineNode } from "../components/TimelineNode";
 import { AnimatedWarehouseScene } from "../animations/AnimatedWarehouseScene";
 import { AnimatedCustomsScene } from "../animations/AnimatedCustomsScene";
 import { ParticleBurst } from "../components/ParticleBurst";
+import { BezierTravel } from "../components/ae/BezierTravel";
+import { CubicSeg } from "../utils/bezier";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
   driftY, textGlow, breatheOp, impactFlash,
 } from "../utils/energy";
+
+// Curved China → Bangladesh journey arc (two cubic segments).
+const JOURNEY: CubicSeg[] = [
+  [{ x: 150, y: 110 }, { x: 520, y: -30 }, { x: 800, y: 60 }, { x: 960, y: 95 }],
+  [{ x: 960, y: 95 }, { x: 1120, y: 130 }, { x: 1460, y: 0 }, { x: 1770, y: 110 }],
+];
 
 const NODES = [
   { icon: "📋", title: "ডকুমেন্টেশন",       frame: 30 },
@@ -55,6 +63,22 @@ export const Scene4Process: React.FC = () => {
 
       {/* Particle burst on entry */}
       <ParticleBurst startFrame={2} x={960} y={540} count={20} colors={[C.cyan, C.white, "#00B4D8"]} radius={300} />
+
+      {/* Package travels a curved bezier path China → Bangladesh (AE motion path) */}
+      <svg width="1920" height="170" viewBox="0 0 1920 170"
+        style={{ position: "absolute", top: 6, left: 0, zIndex: 3, opacity: 0.9, pointerEvents: "none" }}>
+        <text x="150" y="100" textAnchor="middle" fontSize="40">🇨🇳</text>
+        <text x="1770" y="100" textAnchor="middle" fontSize="40">🇧🇩</text>
+        <BezierTravel
+          segments={JOURNEY}
+          startFrame={14}
+          durationInFrames={340}
+          trailColor={C.cyan}
+          trailWidth={3}
+          emoji="📦"
+          emojiSize={42}
+        />
+      </svg>
 
       <div style={{
         position: "absolute", inset: 0,

@@ -2,6 +2,7 @@ import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { AnimatedCustomerScene } from "../animations/AnimatedCustomerScene";
 import { ParticleBurst } from "../components/ParticleBurst";
+import { CardFlip3D } from "../components/ae/CardFlip3D";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
   driftY, textGlow, breatheOp, impactFlash,
@@ -50,17 +51,33 @@ export const Scene5Trust: React.FC = () => {
         display: "flex", flexDirection: "column",
         alignItems: "center", justifyContent: "center", gap: 24,
       }}>
-        <div style={{
-          color: C.red, fontSize: 46, fontWeight: 900,
-          textShadow: textGlow(frame, C.red, 16, 8),
-          filter: `drop-shadow(0 0 18px ${C.red})`,
-          transform: `rotate(-3deg) translateY(${driftY(frame, 0)}px)`,
-        }}>
-          চটকদার বিজ্ঞাপন
-        </div>
-        <div style={{ fontSize: 90, filter: `drop-shadow(0 0 20px ${C.red})` }}>✗</div>
-        <div style={{ color: "#FF9999", fontSize: 26, textAlign: "center", padding: "0 36px", fontWeight: 700 }}>
-          মিথ্যা প্রতিশ্রুতি<br />আর্থিক ক্ষতি
+        {/* 3D flip: the glossy promise flips over to reveal the ugly reality */}
+        <div style={{ transform: `translateY(${driftY(frame, 0)}px)` }}>
+          <CardFlip3D
+            startFrame={36}
+            durationInFrames={42}
+            width={400}
+            height={300}
+            frontBorder={C.gold}
+            frontBg="linear-gradient(135deg,#2e2000,#1a1000)"
+            backBorder={C.red}
+            backBg="linear-gradient(135deg,#2a0000,#140000)"
+            front={
+              <div style={{ textAlign: "center", padding: "0 24px" }}>
+                <div style={{ fontSize: 56 }}>🚀</div>
+                <div style={{ color: C.gold, fontSize: 34, fontWeight: 900, marginTop: 10 }}>১০ দিনে ডেলিভারি!</div>
+                <div style={{ color: C.white, fontSize: 22, fontWeight: 700, marginTop: 8 }}>১০০% গ্যারান্টি</div>
+                <div style={{ fontSize: 24, marginTop: 8 }}>⭐⭐⭐⭐⭐</div>
+              </div>
+            }
+            back={
+              <div style={{ textAlign: "center", padding: "0 24px" }}>
+                <div style={{ fontSize: 70, filter: `drop-shadow(0 0 20px ${C.red})` }}>✗</div>
+                <div style={{ color: C.red, fontSize: 32, fontWeight: 900, marginTop: 6 }}>বাস্তবে ৪৫–৬০ দিন</div>
+                <div style={{ color: "#FF9999", fontSize: 22, fontWeight: 700, marginTop: 8 }}>মিথ্যা প্রতিশ্রুতি · আর্থিক ক্ষতি</div>
+              </div>
+            }
+          />
         </div>
       </div>
 

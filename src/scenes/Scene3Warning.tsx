@@ -2,10 +2,19 @@ import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { AnimatedScamScene } from "../animations/AnimatedScamScene";
 import { ParticleBurst } from "../components/ParticleBurst";
+import { BlobMorph } from "../components/ae/BlobMorph";
+import { TextMorph } from "../components/ae/TextMorph";
+import { GlitchMorph } from "../components/ae/GlitchMorph";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
   driftY, textGlow, breatheOp,
 } from "../utils/energy";
+
+// circle → warning shield → skull (flubber cycles + loops)
+const SHAPE_CIRCLE = "M 200,80 A 120,120 0 1,1 200,320 A 120,120 0 1,1 200,80";
+const SHAPE_SHIELD = "M 200,60 L 320,110 L 320,210 Q 320,310 200,360 Q 80,310 80,210 L 80,110 Z";
+const SHAPE_SKULL =
+  "M 130,120 Q 200,70 270,120 Q 310,160 300,220 Q 295,262 258,276 L 254,322 L 146,322 L 142,276 Q 105,262 100,220 Q 90,160 130,120 Z";
 
 const BULLETS = [
   { text: "১০ দিন? বাস্তবে ৪৫-৬০ দিন সময় লাগে", startFrame: 90 },
@@ -85,10 +94,6 @@ export const Scene3Warning: React.FC = () => {
   const vigOp = interpolate(frame, [0, 18], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const bgBreath = breatheOp(frame, 0.1, 0.05, 0.1);
 
-  // WARNING text slam at frame 20
-  const warnSc = punchSpring(frame, fps, 20);
-  const warnScale = overshootScale(warnSc);
-
   return (
     <div style={{
       width: "100%", height: "100%",
@@ -133,6 +138,21 @@ export const Scene3Warning: React.FC = () => {
         </div>
       </div>
 
+      {/* Morphing danger sigil behind the cross: circle → shield → skull */}
+      {frame >= 22 && (
+        <svg width="320" height="320" viewBox="0 0 400 400"
+          style={{ position: "absolute", top: "27%", left: "50%", transform: "translate(-50%,-50%)", zIndex: 5, opacity: 0.5 }}>
+          <BlobMorph
+            shapes={[SHAPE_CIRCLE, SHAPE_SHIELD, SHAPE_SKULL]}
+            framesPerStep={48}
+            fill="none"
+            stroke={C.red}
+            strokeWidth={5}
+            style={{ filter: `drop-shadow(0 0 14px ${C.red})` }}
+          />
+        </svg>
+      )}
+
       {/* Red cross */}
       {frame >= 28 && <RedCross startFrame={28} />}
 
@@ -142,19 +162,25 @@ export const Scene3Warning: React.FC = () => {
       {/* Burst when cross appears */}
       <ParticleBurst startFrame={28} x={960} y={380} count={20} colors={[C.red, "#FF6666", C.white]} radius={180} />
 
-      {/* WARNING header */}
+      {/* WARNING header — each char slams in (AE text animator) + RGB-split glitch */}
       {frame >= 20 && (
         <div style={{
-          position: "absolute", top: 38, left: "50%",
-          transform: `translateX(-50%) scale(${warnScale}) translateY(${driftY(frame, 0)}px)`,
-          opacity: warnSc, zIndex: 15,
-          color: C.red, fontSize: 52, fontWeight: 900,
-          letterSpacing: letterSpacingSnap(warnSc),
-          textShadow: textGlow(frame, C.red, 20, 10),
+          position: "absolute", top: 30, left: 0, right: 0,
+          transform: `translateY(${driftY(frame, 0)}px)`,
+          zIndex: 15,
           filter: `drop-shadow(0 0 20px ${C.red})`,
-          whiteSpace: "nowrap",
         }}>
-          ⚠ সাবধান! ⚠
+          <GlitchMorph startFrame={20} intensity={14}>
+            <TextMorph
+              text="⚠ প্রতারণা! ⚠"
+              startFrame={20}
+              stagger={3}
+              charDuration={16}
+              fontSize={56}
+              color={C.red}
+              glow={C.red}
+            />
+          </GlitchMorph>
         </div>
       )}
 

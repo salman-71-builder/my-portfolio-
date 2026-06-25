@@ -3,10 +3,14 @@ import { C } from "../constants/colors";
 import { ProcessCard } from "../components/ProcessCard";
 import { AnimatedBankScene } from "../animations/AnimatedBankScene";
 import { ParticleBurst } from "../components/ParticleBurst";
+import { RollingNumber } from "../components/ae/RollingNumber";
+import { WaveReveal } from "../components/ae/WaveReveal";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
   driftY, textGlow, breatheOp, impactFlash,
 } from "../utils/energy";
+
+const BN_DIGITS = ["০", "১", "২", "৩", "৪", "৫", "৬", "৭", "৮", "৯"];
 
 const STEPS = [
   { icon: "🏦", title: "ব্যাংকে LC ওপেন", frame: 55 },
@@ -86,6 +90,22 @@ export const Scene2RealityCheck: React.FC = () => {
           }} />
         </div>
 
+        {/* Real-timeline odometer — the true duration rolls into place */}
+        {frame >= 185 && (
+          <div style={{
+            display: "flex", alignItems: "center", gap: 14,
+            background: C.cardBg, border: `1.5px solid ${C.cardBorder}`,
+            borderRadius: 14, padding: "10px 24px", alignSelf: "flex-start",
+            backdropFilter: "blur(10px)",
+          }}>
+            <span style={{ color: C.muted, fontSize: 28, fontWeight: 700 }}>প্রকৃত সময়:</span>
+            <RollingNumber value="৪৫" startFrame={188} digitSet={BN_DIGITS} digitHeight={42} fontSize={36} color={C.cyan} glow={C.cyan} />
+            <span style={{ color: C.cyan, fontSize: 36, fontWeight: 900 }}>–</span>
+            <RollingNumber value="৬০" startFrame={196} digitSet={BN_DIGITS} digitHeight={42} fontSize={36} color={C.cyan} glow={C.cyan} />
+            <span style={{ color: C.muted, fontSize: 28, fontWeight: 700 }}>দিন</span>
+          </div>
+        )}
+
         <div style={{ display: "flex", alignItems: "center", gap: 40, flex: 1 }}>
           {/* Staggered process cards */}
           <div style={{ display: "flex", flexWrap: "wrap", gap: 20, flex: 1, alignContent: "flex-start" }}>
@@ -93,7 +113,12 @@ export const Scene2RealityCheck: React.FC = () => {
               <ProcessCard key={i} icon={s.icon} title={s.title} startFrame={s.frame} showArrow={i < STEPS.length - 1} />
             ))}
           </div>
-          <AnimatedBankScene width={460} height={340} />
+          {/* Bank scene revealed behind an advancing wavy mask (AE mask reveal) */}
+          <div style={{ position: "relative", width: 460, height: 340, flexShrink: 0 }}>
+            <WaveReveal startFrame={20} durationInFrames={46} width={460} height={340}>
+              <AnimatedBankScene width={460} height={340} />
+            </WaveReveal>
+          </div>
         </div>
       </div>
 

@@ -2,10 +2,18 @@ import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { AnimatedConnectionScene } from "../animations/AnimatedConnectionScene";
 import { ParticleBurst } from "../components/ParticleBurst";
+import { ParticleText } from "../components/ae/ParticleText";
+import { BezierTravel } from "../components/ae/BezierTravel";
+import { CubicSeg } from "../utils/bezier";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
   driftY, textGlow, breatheOp, impactFlash,
 } from "../utils/energy";
+
+// China → Bangladesh map arc (quadratic M20,60 Q350,10 680,60 expressed as a cubic).
+const MAP_ARC: CubicSeg[] = [
+  [{ x: 20, y: 60 }, { x: 240, y: 26.7 }, { x: 460, y: 26.7 }, { x: 680, y: 60 }],
+];
 
 const SERVICES_LEFT  = ["প্রোডাক্ট সোর্সিং", "LC প্রসেসিং", "কাস্টমস ক্লিয়ারেন্স"];
 const SERVICES_RIGHT = ["কোয়ালিটি কন্ট্রোল", "শিপমেন্ট ট্র্যাকিং", "ওয়্যারহাউস ডেলিভারি"];
@@ -44,8 +52,7 @@ export const Scene8GrandClose: React.FC = () => {
   const bannerW = interpolate(frame, [2, 20], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const bannerTextSc = punchSpring(frame, fps, 18);
 
-  // Map path
-  const pathProgress = interpolate(frame, [55, 175], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Map path width
   const pathLen = 700;
 
   // Services
@@ -108,21 +115,19 @@ export const Scene8GrandClose: React.FC = () => {
       }}>
         <span style={{ fontSize: 52, filter: "drop-shadow(0 0 12px rgba(255,200,0,0.6))", transform: `translateY(${driftY(frame, 0)}px)` }}>🇨🇳</span>
         <svg width={pathLen} height={120} viewBox={`0 0 ${pathLen} 120`} style={{ overflow: "visible" }}>
-          {/* Static dotted path */}
+          {/* Faint guide path */}
           <path d={`M 20 60 Q 350 10 680 60`} fill="none" stroke={C.cyan} strokeWidth={2}
-            strokeDasharray="10 8" opacity={0.3} />
-          {/* Animated draw path */}
-          <path d={`M 20 60 Q 350 10 680 60`} fill="none" stroke={C.cyan} strokeWidth={5}
-            strokeDasharray={pathLen} strokeDashoffset={pathLen * (1 - pathProgress)}
-            strokeLinecap="round"
-            style={{ filter: `drop-shadow(0 0 10px ${C.cyan})` }} />
-          {/* Package emoji along path */}
-          {pathProgress > 0.02 && (() => {
-            const t = pathProgress;
-            const px = 20 * (1-t)*(1-t) + 2 * 350 * (1-t) * t + 680 * t * t;
-            const py = 60 * (1-t)*(1-t) + 2 * 10 * (1-t) * t + 60 * t * t;
-            return <text x={px - 18} y={py + 14} fontSize={36} style={{ filter: "drop-shadow(0 0 8px rgba(255,215,0,0.8))" }}>📦</text>;
-          })()}
+            strokeDasharray="10 8" opacity={0.25} />
+          {/* Package follows the curve, rotating to face travel direction (AE motion path) */}
+          <BezierTravel
+            segments={MAP_ARC}
+            startFrame={55}
+            durationInFrames={120}
+            trailColor={C.cyan}
+            trailWidth={5}
+            emoji="📦"
+            emojiSize={36}
+          />
         </svg>
         <span style={{ fontSize: 52, filter: "drop-shadow(0 0 12px rgba(0,200,83,0.6))", transform: `translateY(${driftY(frame, 30)}px)` }}>🇧🇩</span>
       </div>
@@ -199,6 +204,22 @@ export const Scene8GrandClose: React.FC = () => {
       {/* MEGA burst on CTA reveal */}
       <ParticleBurst startFrame={388} x={960} y={800} count={28} colors={[C.cyan, C.gold, C.white, C.green]} radius={350} />
       <ParticleBurst startFrame={395} x={960} y={800} count={18} colors={[C.gold, C.white]} radius={200} />
+
+      {/* After the explosion, particles RE-FORM the ChinaCart wordmark above the CTA */}
+      <div style={{ position: "absolute", top: 360, left: 0, right: 0, height: 180, zIndex: 19 }}>
+        <ParticleText
+          text="ChinaCart"
+          width={1920}
+          height={180}
+          startFrame={398}
+          formDuration={46}
+          holdDuration={150}
+          explodeDuration={40}
+          fontSize={120}
+          colors={[C.cyan, C.gold, C.white]}
+          sampleGap={8}
+        />
+      </div>
 
       {/* Confetti rain */}
       {Array.from({ length: 70 }, (_, i) => <Confetti key={i} idx={i} />)}

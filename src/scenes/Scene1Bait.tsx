@@ -2,10 +2,12 @@ import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { AnimatedHookScene } from "../animations/AnimatedHookScene";
 import { ParticleBurst } from "../components/ParticleBurst";
+import { ParticleText } from "../components/ae/ParticleText";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
   driftY, textGlow, breatheOp, impactFlash,
 } from "../utils/energy";
+import { easeOutBack } from "../utils/easing";
 
 // 60 gold particles — dense cloud
 const PARTICLES = Array.from({ length: 60 }, (_, i) => ({
@@ -26,12 +28,14 @@ const FakeAdCard: React.FC = () => {
   const pulse = 1 + Math.sin(frame * 0.22) * 0.05;
   const tilt = Math.sin(frame * 0.04) * 2.5;
   const drift = driftY(frame, 10);
+  // AE 3D-layer flip entrance — card swings in on the Y axis.
+  const flipDeg = interpolate(easeOutBack(sc), [0, 1], [95, 0]);
 
   if (frame < 30) return null;
 
   return (
     <div style={{
-      transform: `scale(${scale}) translateY(${drift}px) rotate(${-2.5 + tilt}deg)`,
+      transform: `perspective(1400px) rotateY(${flipDeg}deg) scale(${scale}) translateY(${drift}px) rotate(${-2.5 + tilt}deg)`,
       transformOrigin: "center",
       opacity: sc,
       position: "relative",
@@ -127,6 +131,22 @@ export const Scene1Bait: React.FC = () => {
           }} />
         );
       })}
+
+      {/* Gold particles fly in and FORM "১০ দিনে", hold, then explode (AE Particular) */}
+      <div style={{ position: "absolute", top: 40, left: 0, right: 0, height: 200, zIndex: 3 }}>
+        <ParticleText
+          text="১০ দিনে!"
+          width={1920}
+          height={200}
+          startFrame={2}
+          formDuration={70}
+          holdDuration={40}
+          explodeDuration={45}
+          fontSize={130}
+          colors={[C.gold, "#FF8C00", C.white]}
+          sampleGap={8}
+        />
+      </div>
 
       {/* Particle burst when ad card slams in */}
       <ParticleBurst startFrame={30} x={960} y={480} count={22} colors={[C.gold, "#FF8C00", C.white]} radius={250} />
