@@ -1,7 +1,8 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { StatCard } from "../components/StatCard";
-import { AiImageCard } from "../components/AiImageCard";
+import { AnimatedWarehouseScene } from "../animations/AnimatedWarehouseScene";
+import { AnimatedConnectionScene } from "../animations/AnimatedConnectionScene";
 import { ParticleBurst } from "../components/ParticleBurst";
 import {
   punchSpring, snapSpring, overshootScale, letterSpacingSnap,
@@ -117,8 +118,8 @@ export const Scene6Brand: React.FC = () => {
         transform: "translateX(-50%)",
         display: "flex", gap: 28,
       }}>
-        <AiImageCard label="China warehouse exterior, aerial wide shot" startFrame={210} width={440} height={235} slideFrom="left" />
-        <AiImageCard label="Team Bangladesh China professionals collaborative office" startFrame={228} width={440} height={235} slideFrom="right" />
+        <AnimatedWarehouseScene width={440} height={235} />
+        <AnimatedConnectionScene width={440} height={235} />
       </div>
 
       {/* Trust badges */}

@@ -1,7 +1,7 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { ProcessCard } from "../components/ProcessCard";
-import { AiImageCard } from "../components/AiImageCard";
+import { AnimatedBankScene } from "../animations/AnimatedBankScene";
 import { ParticleBurst } from "../components/ParticleBurst";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
@@ -93,12 +93,7 @@ export const Scene2RealityCheck: React.FC = () => {
               <ProcessCard key={i} icon={s.icon} title={s.title} startFrame={s.frame} showArrow={i < STEPS.length - 1} />
             ))}
           </div>
-          <AiImageCard
-            label="Import/export office Bangladesh, LC documents, professional warm lighting"
-            startFrame={200}
-            width={460} height={340}
-            slideFrom="right"
-          />
+          <AnimatedBankScene width={460} height={340} />
         </div>
       </div>
 

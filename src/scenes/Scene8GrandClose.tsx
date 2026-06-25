@@ -1,6 +1,6 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
-import { AiImageCard } from "../components/AiImageCard";
+import { AnimatedConnectionScene } from "../animations/AnimatedConnectionScene";
 import { ParticleBurst } from "../components/ParticleBurst";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
@@ -154,7 +154,7 @@ export const Scene8GrandClose: React.FC = () => {
 
       {/* AI image background */}
       <div style={{ position: "absolute", inset: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.15 }}>
-        <AiImageCard label="China Bangladesh skyline split golden light beam cinematic" startFrame={340} width={1800} height={1000} slideFrom="bottom" />
+        <AnimatedConnectionScene width={1800} height={1000} />
       </div>
 
       {/* CTA CARD */}

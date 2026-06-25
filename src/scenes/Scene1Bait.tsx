@@ -1,6 +1,6 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
-import { AiImageCard } from "../components/AiImageCard";
+import { AnimatedHookScene } from "../animations/AnimatedHookScene";
 import { ParticleBurst } from "../components/ParticleBurst";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
@@ -138,12 +138,7 @@ export const Scene1Bait: React.FC = () => {
         gap: 64, padding: "0 80px", paddingBottom: 160,
       }}>
         <FakeAdCard />
-        <AiImageCard
-          label="AI Image: Excited Bangladeshi businessman amazed at phone, dark blue studio"
-          startFrame={75}
-          width={480} height={360}
-          slideFrom="right"
-        />
+        <AnimatedHookScene width={480} height={360} />
       </div>
 
       {/* Tagline slams in */}

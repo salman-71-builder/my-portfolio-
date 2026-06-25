@@ -1,6 +1,6 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
-import { AiImageCard } from "../components/AiImageCard";
+import { AnimatedScamScene } from "../animations/AnimatedScamScene";
 import { ParticleBurst } from "../components/ParticleBurst";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
@@ -188,13 +188,7 @@ export const Scene3Warning: React.FC = () => {
 
       {/* AI image — red tinted */}
       <div style={{ position: "absolute", right: 70, bottom: 100, zIndex: 16 }}>
-        <AiImageCard
-          label="Stressed man, wrong delivery, broken products, red dramatic lighting"
-          startFrame={295}
-          width={400} height={270}
-          slideFrom="right"
-          tint="rgba(180,0,0,0.18)"
-        />
+        <AnimatedScamScene width={400} height={270} />
       </div>
 
       {/* Burst on each bullet */}

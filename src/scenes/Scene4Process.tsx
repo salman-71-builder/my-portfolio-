@@ -1,7 +1,8 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { TimelineNode } from "../components/TimelineNode";
-import { AiImageCard } from "../components/AiImageCard";
+import { AnimatedWarehouseScene } from "../animations/AnimatedWarehouseScene";
+import { AnimatedCustomsScene } from "../animations/AnimatedCustomsScene";
 import { ParticleBurst } from "../components/ParticleBurst";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
@@ -83,14 +84,8 @@ export const Scene4Process: React.FC = () => {
 
         {/* AI image cards */}
         <div style={{ display: "flex", flexDirection: "column", gap: 28, paddingTop: 72, flexShrink: 0 }}>
-          <AiImageCard
-            label="Modern warehouse quality check, blue uniforms, professional bright"
-            startFrame={420} width={460} height={280} slideFrom="right"
-          />
-          <AiImageCard
-            label="Bangladesh customs clearance office, official documents"
-            startFrame={500} width={460} height={260} slideFrom="right"
-          />
+          <AnimatedWarehouseScene width={460} height={280} />
+          <AnimatedCustomsScene width={460} height={260} />
         </div>
       </div>
 

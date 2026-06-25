@@ -1,6 +1,6 @@
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
-import { AiImageCard } from "../components/AiImageCard";
+import { AnimatedCustomerScene } from "../animations/AnimatedCustomerScene";
 import { ParticleBurst } from "../components/ParticleBurst";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
@@ -124,10 +124,7 @@ export const Scene5Trust: React.FC = () => {
                 marginLeft: "auto", marginRight: "auto",
               }} />
             </div>
-            <AiImageCard
-              label="Confident Bangladeshi businessman handshake trust, dark blue gold tones"
-              startFrame={165} width={620} height={300} slideFrom="bottom"
-            />
+            <AnimatedCustomerScene width={620} height={300} />
           </div>
         )}
       </div>

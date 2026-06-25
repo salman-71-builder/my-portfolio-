@@ -1,7 +1,7 @@
 import React from "react";
 import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
-import { AiImageCard } from "../components/AiImageCard";
+import { AnimatedCustomerScene } from "../animations/AnimatedCustomerScene";
 import { ParticleBurst } from "../components/ParticleBurst";
 import {
   punchSpring, overshootScale, letterSpacingSnap,
@@ -124,10 +124,7 @@ export const Scene7HowItWorks: React.FC = () => {
         </div>
 
         {/* AI image */}
-        <AiImageCard
-          label="Person on laptop ordering products, ecommerce website, Bangladeshi home/office, warm lighting"
-          startFrame={250} width={720} height={230} slideFrom="bottom"
-        />
+        <AnimatedCustomerScene width={720} height={230} />
       </div>
 
       {/* Burst on each step */}
