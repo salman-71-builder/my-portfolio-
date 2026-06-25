@@ -1,25 +1,34 @@
-import { useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
+import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { ProcessCard } from "../components/ProcessCard";
 import { AiImageCard } from "../components/AiImageCard";
+import { ParticleBurst } from "../components/ParticleBurst";
+import {
+  punchSpring, overshootScale, letterSpacingSnap,
+  driftY, textGlow, breatheOp, impactFlash,
+} from "../utils/energy";
 
 const STEPS = [
-  { icon: "🏦", title: "ব্যাংকে LC ওপেন", frame: 70 },
-  { icon: "🔍", title: "প্রোডাক্ট সোর্সিং", frame: 110 },
-  { icon: "💳", title: "পারচেজ অর্ডার", frame: 150 },
-  { icon: "⏳", title: "প্রসেসিং সময়", frame: 190 },
+  { icon: "🏦", title: "ব্যাংকে LC ওপেন", frame: 55 },
+  { icon: "🔍", title: "প্রোডাক্ট সোর্সিং", frame: 90 },
+  { icon: "💳", title: "পারচেজ অর্ডার", frame: 125 },
+  { icon: "⏳", title: "প্রসেসিং সময়", frame: 160 },
 ];
 
 export const Scene2RealityCheck: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  // Wipe reveal
-  const wipe = interpolate(frame, [0, 20], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const flash = impactFlash(frame, 0);
+  const bgBreath = breatheOp(frame, 0.06, 0.03, 0.07);
 
-  // Title
-  const titleSc = spring({ frame: frame - 25, fps, config: { damping: 10, stiffness: 200, mass: 0.8 }, durationInFrames: 20 });
-  const underlineW = interpolate(frame, [40, 65], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  // Wipe instant
+  const wipe = interpolate(frame, [2, 14], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+
+  // Title SLAMS
+  const titleSc = punchSpring(frame, fps, 18);
+  const titleScale = overshootScale(titleSc);
+  const underlineW = interpolate(frame, [30, 50], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
     <div style={{
@@ -30,13 +39,20 @@ export const Scene2RealityCheck: React.FC = () => {
     }}>
       {/* Blueprint grid */}
       <div style={{
-        position: "absolute", inset: 0,
-        backgroundImage: `linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px)`,
+        position: "absolute", inset: 0, opacity: wipe,
+        backgroundImage: `linear-gradient(rgba(0,229,255,0.05) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,229,255,0.05) 1px, transparent 1px)`,
         backgroundSize: "60px 60px",
       }} />
 
-      {/* Wipe overlay */}
+      {/* Cyan breathe glow */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: `radial-gradient(ellipse 55% 40% at 50% 50%, rgba(0,229,255,${bgBreath}) 0%, transparent 70%)`,
+        pointerEvents: "none",
+      }} />
+
+      {/* Wipe reveal */}
       <div style={{
         position: "absolute", inset: 0,
         clipPath: `inset(0 ${(1 - wipe) * 100}% 0 0)`,
@@ -44,47 +60,57 @@ export const Scene2RealityCheck: React.FC = () => {
         zIndex: 0,
       }} />
 
-      {/* Content */}
       <div style={{
         position: "absolute", inset: 0,
         display: "flex", flexDirection: "column",
-        padding: "60px 100px", gap: 40,
-        opacity: wipe,
+        padding: "50px 90px", gap: 36, opacity: wipe,
       }}>
         {/* Title */}
-        <div style={{ transform: `scale(${titleSc})`, opacity: titleSc, alignSelf: "flex-start" }}>
-          <div style={{ color: C.white, fontSize: 56, fontWeight: 800 }}>আসল প্রক্রিয়া জানুন</div>
+        <div style={{
+          transform: `scale(${titleScale}) translateY(${driftY(frame, 20)}px)`,
+          opacity: titleSc, alignSelf: "flex-start",
+        }}>
           <div style={{
-            marginTop: 8, height: 4, width: `${underlineW}%`,
-            background: `linear-gradient(90deg, ${C.cyan}, #0099BB)`,
-            borderRadius: 3, boxShadow: `0 0 10px ${C.cyan}`,
+            color: C.white, fontSize: 60, fontWeight: 900,
+            letterSpacing: letterSpacingSnap(titleSc),
+            textShadow: textGlow(frame, C.cyan, 12, 5),
+            filter: `drop-shadow(0 0 18px ${C.cyan})`,
+          }}>
+            আসল প্রক্রিয়া জানুন
+          </div>
+          <div style={{
+            marginTop: 8, height: 5, width: `${underlineW}%`,
+            background: `linear-gradient(90deg, ${C.cyan}, #00B4D8)`,
+            borderRadius: 3,
+            boxShadow: `0 0 14px ${C.cyan}, 0 0 30px rgba(0,229,255,0.4)`,
           }} />
         </div>
 
-        {/* Process cards + AI image row */}
         <div style={{ display: "flex", alignItems: "center", gap: 40, flex: 1 }}>
-          {/* Process flow */}
-          <div style={{ display: "flex", flexWrap: "wrap", gap: 16, flex: 1 }}>
+          {/* Staggered process cards */}
+          <div style={{ display: "flex", flexWrap: "wrap", gap: 20, flex: 1, alignContent: "flex-start" }}>
             {STEPS.map((s, i) => (
-              <ProcessCard
-                key={i}
-                icon={s.icon}
-                title={s.title}
-                startFrame={s.frame}
-                showArrow={i < STEPS.length - 1}
-              />
+              <ProcessCard key={i} icon={s.icon} title={s.title} startFrame={s.frame} showArrow={i < STEPS.length - 1} />
             ))}
           </div>
-          {/* AI image */}
           <AiImageCard
             label="Import/export office Bangladesh, LC documents, professional warm lighting"
-            startFrame={220}
-            width={460}
-            height={320}
+            startFrame={200}
+            width={460} height={340}
             slideFrom="right"
           />
         </div>
       </div>
+
+      {/* Burst when first card hits */}
+      <ParticleBurst startFrame={55} x={300} y={480} count={14} colors={[C.cyan, C.white]} radius={140} />
+
+      {/* Impact flash */}
+      <div style={{
+        position: "absolute", inset: 0,
+        backgroundColor: `rgba(0,229,255,${flash * 0.35})`,
+        pointerEvents: "none", zIndex: 99,
+      }} />
     </div>
   );
 };

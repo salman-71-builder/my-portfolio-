@@ -1,5 +1,8 @@
-import { useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
+import { useCurrentFrame, useVideoConfig } from "remotion";
 import { C } from "../constants/colors";
+import {
+  punchSpring, overshootScale, letterSpacingSnap, driftY, textGlow,
+} from "../utils/energy";
 
 interface ProcessCardProps {
   icon: string;
@@ -11,42 +14,40 @@ interface ProcessCardProps {
 }
 
 export const ProcessCard: React.FC<ProcessCardProps> = ({
-  icon,
-  title,
-  subtitle,
-  startFrame,
-  showArrow = false,
-  accentColor = C.cyan,
+  icon, title, subtitle, startFrame, showArrow = false, accentColor = C.cyan,
 }) => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const sc = spring({ frame: frame - startFrame, fps, config: { damping: 10, stiffness: 200, mass: 0.8 }, durationInFrames: 25 });
-  const yOff = interpolate(sc, [0, 1], [40, 0]);
+  const sc = punchSpring(frame, fps, startFrame);
+  const scale = overshootScale(sc);
+  const drift = driftY(frame, startFrame);
+  const tilt = Math.sin(frame * 0.05 + startFrame * 0.3) * 2.5;
 
   if (frame < startFrame) return null;
 
   return (
-    <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-      <div
-        style={{
-          opacity: sc,
-          transform: `translateY(${yOff}px) scale(${0.6 + sc * 0.4})`,
-          background: C.cardBg,
-          border: `1.5px solid ${accentColor}44`,
-          borderRadius: 16,
-          padding: "20px 28px",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center",
-          gap: 10,
-          minWidth: 180,
-          backdropFilter: "blur(8px)",
-          boxShadow: `0 0 24px ${accentColor}22`,
-        }}
-      >
-        <div style={{ fontSize: 44 }}>{icon}</div>
-        <div style={{ color: C.white, fontSize: 22, fontWeight: 700, textAlign: "center", fontFamily: "'Hind Siliguri', sans-serif" }}>
+    <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+      <div style={{
+        opacity: sc,
+        transform: `scale(${scale}) translateY(${drift}px) rotate(${tilt}deg)`,
+        transformOrigin: "center",
+        background: C.cardBg,
+        border: `1.5px solid ${accentColor}55`,
+        borderRadius: 18, padding: "18px 24px",
+        display: "flex", flexDirection: "column",
+        alignItems: "center", gap: 10,
+        minWidth: 180,
+        backdropFilter: "blur(10px)",
+        boxShadow: `0 0 28px ${accentColor}28, inset 0 0 20px ${accentColor}08`,
+      }}>
+        <div style={{ fontSize: 44, filter: `drop-shadow(0 0 10px ${accentColor})` }}>{icon}</div>
+        <div style={{
+          color: C.white, fontSize: 22, fontWeight: 900, textAlign: "center",
+          fontFamily: "'Hind Siliguri', sans-serif",
+          letterSpacing: letterSpacingSnap(sc),
+          textShadow: textGlow(frame, accentColor, 8, 3),
+        }}>
           {title}
         </div>
         {subtitle && (
@@ -57,11 +58,12 @@ export const ProcessCard: React.FC<ProcessCardProps> = ({
       </div>
       {showArrow && (
         <div style={{
-          opacity: interpolate(frame, [startFrame + 15, startFrame + 25], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" }),
-          color: accentColor,
-          fontSize: 32,
-          fontWeight: 900,
-        }}>→</div>
+          color: accentColor, fontSize: 32, fontWeight: 900,
+          opacity: sc, filter: `drop-shadow(0 0 10px ${accentColor})`,
+          transform: `scale(${1 + Math.sin(frame * 0.15) * 0.06})`,
+        }}>
+          →
+        </div>
       )}
     </div>
   );

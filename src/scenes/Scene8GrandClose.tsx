@@ -1,30 +1,34 @@
-import { useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
+import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { AiImageCard } from "../components/AiImageCard";
+import { ParticleBurst } from "../components/ParticleBurst";
+import {
+  punchSpring, overshootScale, letterSpacingSnap,
+  driftY, textGlow, breatheOp, impactFlash,
+} from "../utils/energy";
 
-const SERVICES_LEFT = ["প্রোডাক্ট সোর্সিং", "LC প্রসেসিং", "কাস্টমস ক্লিয়ারেন্স"];
+const SERVICES_LEFT  = ["প্রোডাক্ট সোর্সিং", "LC প্রসেসিং", "কাস্টমস ক্লিয়ারেন্স"];
 const SERVICES_RIGHT = ["কোয়ালিটি কন্ট্রোল", "শিপমেন্ট ট্র্যাকিং", "ওয়্যারহাউস ডেলিভারি"];
 
-// Simple confetti particle
 const Confetti: React.FC<{ idx: number }> = ({ idx }) => {
   const frame = useCurrentFrame();
   const startF = 540 + (idx * 11) % 60;
   if (frame < startF) return null;
   const elapsed = frame - startF;
   const x = ((idx * 197 + 83) % 1820) + 50;
-  const y = -30 + elapsed * (3 + (idx % 4));
-  const rot = elapsed * (5 + (idx % 8));
-  const colors = [C.cyan, C.gold, C.white, "#A0C4FF", C.green];
-  const color = colors[idx % colors.length];
+  const y = -30 + elapsed * (3.5 + (idx % 4) * 0.8);
   if (y > 1120) return null;
+  const colors = [C.cyan, C.gold, C.white, "#A0C4FF", C.green];
   return (
     <div style={{
       position: "absolute", left: x, top: y,
       width: 10, height: 10,
-      backgroundColor: color,
-      transform: `rotate(${rot}deg)`,
+      backgroundColor: colors[idx % colors.length],
+      transform: `rotate(${elapsed * (6 + idx % 8)}deg)`,
       borderRadius: idx % 2 === 0 ? "50%" : 2,
-      opacity: Math.max(0, 1 - elapsed / 100),
+      opacity: Math.max(0, 1 - elapsed / 90),
+      boxShadow: `0 0 6px ${colors[idx % colors.length]}`,
+      zIndex: 22,
     }} />
   );
 };
@@ -33,29 +37,32 @@ export const Scene8GrandClose: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
+  const flash = impactFlash(frame, 0);
+  const bgBreath = breatheOp(frame, 0.08, 0.05, 0.08);
+
   // Banner sweep
-  const bannerW = interpolate(frame, [0, 25], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const bannerW = interpolate(frame, [2, 20], [0, 100], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const bannerTextSc = punchSpring(frame, fps, 18);
 
   // Map path
-  const pathProgress = interpolate(frame, [60, 180], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const pathProgress = interpolate(frame, [55, 175], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
   const pathLen = 700;
 
   // Services
-  const servicesOp = interpolate(frame, [180, 200], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const servicesOp = interpolate(frame, [178, 196], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
-  // CTA card
-  const ctaSc = spring({ frame: frame - 390, fps, config: { damping: 9, stiffness: 200, mass: 0.8 }, durationInFrames: 25 });
-  const ctaGlow = 20 + Math.sin(frame * 0.15) * 8;
-  const ctaPulse = 1 + Math.sin(frame * 0.12) * 0.015;
+  // CTA card SLAMS in
+  const ctaSc = punchSpring(frame, fps, 388);
+  const ctaScale = overshootScale(ctaSc);
+  const ctaPulse = 1 + Math.sin(frame * 0.14) * 0.018;
+  const urlGlow = 22 + Math.sin(frame * 0.16) * 10;
 
   // Thank you
-  const thankOp = interpolate(frame, [590, 615], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const thankOp = interpolate(frame, [590, 612], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+  const thankSc = punchSpring(frame, fps, 590);
 
-  // Final fade to black
-  const finalFade = interpolate(frame, [640, 690], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
-
-  // URL glow last
-  const urlGlow = ctaGlow;
+  // Fade to black
+  const finalFade = interpolate(frame, [642, 690], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
   return (
     <div style={{
@@ -64,72 +71,80 @@ export const Scene8GrandClose: React.FC = () => {
       position: "relative", overflow: "hidden",
       fontFamily: "'Hind Siliguri', sans-serif",
     }}>
-      {/* Top banner */}
+      {/* Breathe glow */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: `radial-gradient(ellipse 60% 45% at 50% 50%, rgba(0,229,255,${bgBreath}) 0%, transparent 70%)`,
+        pointerEvents: "none",
+      }} />
+
+      {/* Top banner sweep */}
       <div style={{
         position: "absolute", top: 0, left: 0, height: 72,
         width: `${bannerW}%`,
-        background: `linear-gradient(90deg, #003B6F, ${C.cyan}, #0077B6)`,
+        background: `linear-gradient(90deg, #003B6F, ${C.cyan}, #0077B6, ${C.cyan})`,
+        backgroundSize: "200% 100%",
+        animation: "none",
         display: "flex", alignItems: "center", justifyContent: "center",
-        overflow: "hidden",
-        zIndex: 5,
+        overflow: "hidden", zIndex: 5,
+        boxShadow: `0 0 24px ${C.cyan}`,
       }}>
-        <div style={{ color: C.white, fontSize: 28, fontWeight: 700, whiteSpace: "nowrap" }}>
+        <div style={{
+          color: C.white, fontSize: 28, fontWeight: 900,
+          whiteSpace: "nowrap",
+          transform: `scale(${overshootScale(bannerTextSc)})`,
+          opacity: bannerTextSc,
+          letterSpacing: letterSpacingSnap(bannerTextSc),
+          textShadow: textGlow(frame, C.cyan, 10, 4),
+        }}>
           চায়না থেকে বাংলাদেশ — সহজ, নিরাপদ, বিশ্বস্ত
         </div>
       </div>
 
       {/* Map journey */}
       <div style={{
-        position: "absolute", top: 90, left: "50%", transform: "translateX(-50%)",
+        position: "absolute", top: 88, left: "50%", transform: "translateX(-50%)",
         display: "flex", alignItems: "center", gap: 0, zIndex: 4,
       }}>
-        <span style={{ fontSize: 52 }}>🇨🇳</span>
+        <span style={{ fontSize: 52, filter: "drop-shadow(0 0 12px rgba(255,200,0,0.6))", transform: `translateY(${driftY(frame, 0)}px)` }}>🇨🇳</span>
         <svg width={pathLen} height={120} viewBox={`0 0 ${pathLen} 120`} style={{ overflow: "visible" }}>
-          <path
-            d={`M 20 60 Q 350 10 680 60`}
-            fill="none"
-            stroke={C.cyan}
-            strokeWidth={3}
-            strokeDasharray="12 8"
-            strokeDashoffset={0}
-            opacity={0.6}
-          />
-          <path
-            d={`M 20 60 Q 350 10 680 60`}
-            fill="none"
-            stroke={C.cyan}
-            strokeWidth={4}
-            strokeDasharray={pathLen}
-            strokeDashoffset={pathLen * (1 - pathProgress)}
+          {/* Static dotted path */}
+          <path d={`M 20 60 Q 350 10 680 60`} fill="none" stroke={C.cyan} strokeWidth={2}
+            strokeDasharray="10 8" opacity={0.3} />
+          {/* Animated draw path */}
+          <path d={`M 20 60 Q 350 10 680 60`} fill="none" stroke={C.cyan} strokeWidth={5}
+            strokeDasharray={pathLen} strokeDashoffset={pathLen * (1 - pathProgress)}
             strokeLinecap="round"
-          />
-          {/* Package traveller */}
-          {pathProgress > 0 && (() => {
-            // Approximate position along quadratic bezier
+            style={{ filter: `drop-shadow(0 0 10px ${C.cyan})` }} />
+          {/* Package emoji along path */}
+          {pathProgress > 0.02 && (() => {
             const t = pathProgress;
-            const px = 20 * (1 - t) * (1 - t) + 2 * 350 * (1 - t) * t + 680 * t * t;
-            const py = 60 * (1 - t) * (1 - t) + 2 * 10 * (1 - t) * t + 60 * t * t;
-            return (
-              <text x={px - 16} y={py + 12} fontSize={32} style={{ userSelect: "none" }}>📦</text>
-            );
+            const px = 20 * (1-t)*(1-t) + 2 * 350 * (1-t) * t + 680 * t * t;
+            const py = 60 * (1-t)*(1-t) + 2 * 10 * (1-t) * t + 60 * t * t;
+            return <text x={px - 18} y={py + 14} fontSize={36} style={{ filter: "drop-shadow(0 0 8px rgba(255,215,0,0.8))" }}>📦</text>;
           })()}
         </svg>
-        <span style={{ fontSize: 52 }}>🇧🇩</span>
+        <span style={{ fontSize: 52, filter: "drop-shadow(0 0 12px rgba(0,200,83,0.6))", transform: `translateY(${driftY(frame, 30)}px)` }}>🇧🇩</span>
       </div>
 
-      {/* Services columns */}
+      {/* Services */}
       <div style={{
-        position: "absolute", top: 240, left: "50%", transform: "translateX(-50%)",
+        position: "absolute", top: 235, left: "50%", transform: "translateX(-50%)",
         display: "flex", gap: 80, opacity: servicesOp, zIndex: 4,
       }}>
         {[SERVICES_LEFT, SERVICES_RIGHT].map((col, ci) => (
-          <div key={ci} style={{ display: "flex", flexDirection: "column", gap: 14 }}>
+          <div key={ci} style={{ display: "flex", flexDirection: "column", gap: 16 }}>
             {col.map((item, ii) => {
-              const rowOp = interpolate(frame, [180 + (ci * 3 + ii) * 15, 195 + (ci * 3 + ii) * 15], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+              const sc = punchSpring(frame, fps, 180 + (ci * 3 + ii) * 14);
               return (
-                <div key={ii} style={{ display: "flex", alignItems: "center", gap: 14, opacity: rowOp }}>
-                  <span style={{ color: C.green, fontSize: 28 }}>✅</span>
-                  <span style={{ color: C.white, fontSize: 26, fontWeight: 500 }}>{item}</span>
+                <div key={ii} style={{
+                  display: "flex", alignItems: "center", gap: 14,
+                  opacity: sc,
+                  transform: `translateX(${interpolate(sc, [0, 1], [ci === 0 ? -100 : 100, 0])}px) scale(${overshootScale(sc)})`,
+                  transformOrigin: ci === 0 ? "left center" : "right center",
+                }}>
+                  <span style={{ color: C.green, fontSize: 28, filter: `drop-shadow(0 0 10px ${C.green})` }}>✅</span>
+                  <span style={{ color: C.white, fontSize: 26, fontWeight: 700 }}>{item}</span>
                 </div>
               );
             })}
@@ -138,52 +153,65 @@ export const Scene8GrandClose: React.FC = () => {
       </div>
 
       {/* AI image background */}
-      <div style={{ position: "absolute", inset: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.18 }}>
-        <AiImageCard
-          label="China Bangladesh skyline split, golden light beam cinematic"
-          startFrame={340}
-          width={1800}
-          height={1000}
-          slideFrom="bottom"
-        />
+      <div style={{ position: "absolute", inset: 0, zIndex: 1, display: "flex", alignItems: "center", justifyContent: "center", opacity: 0.15 }}>
+        <AiImageCard label="China Bangladesh skyline split golden light beam cinematic" startFrame={340} width={1800} height={1000} slideFrom="bottom" />
       </div>
 
-      {/* CTA card */}
-      {frame >= 390 && (
+      {/* CTA CARD */}
+      {frame >= 388 && (
         <div style={{
-          position: "absolute", bottom: 120, left: "50%",
-          transform: `translateX(-50%) scale(${ctaSc * ctaPulse})`,
+          position: "absolute", bottom: 105, left: "50%",
+          transform: `translateX(-50%) scale(${ctaScale * ctaPulse}) translateY(${driftY(frame, 60)}px)`,
           opacity: ctaSc, zIndex: 20,
-          background: "rgba(5,15,35,0.92)",
-          border: `2px solid ${C.cyan}`,
-          borderRadius: 24, padding: "36px 64px",
+          background: "rgba(4,12,30,0.94)",
+          border: `2.5px solid ${C.cyan}`,
+          borderRadius: 26, padding: "34px 60px",
           textAlign: "center",
-          boxShadow: `0 0 ${ctaGlow}px rgba(0,229,255,0.5), 0 0 ${ctaGlow * 2}px rgba(0,229,255,0.2)`,
-          backdropFilter: "blur(12px)",
+          boxShadow: `0 0 ${urlGlow}px rgba(0,229,255,0.55), 0 0 ${urlGlow * 2.5}px rgba(0,229,255,0.22)`,
+          backdropFilter: "blur(14px)",
         }}>
-          <div style={{ color: C.white, fontSize: 56, fontWeight: 900, marginBottom: 8 }}>🛒 ChinaCart</div>
-          <div style={{ color: C.cyan, fontSize: 30, fontWeight: 700, marginBottom: 16 }}>আজই শুরু করুন</div>
           <div style={{
-            color: C.cyan, fontSize: 44, fontWeight: 900,
-            textShadow: `0 0 ${urlGlow}px rgba(0,229,255,0.9)`,
+            color: C.white, fontSize: 58, fontWeight: 900, marginBottom: 6,
+            textShadow: textGlow(frame, C.cyan, 12, 5),
+            letterSpacing: letterSpacingSnap(ctaSc),
+          }}>
+            🛒 ChinaCart
+          </div>
+          <div style={{
+            color: C.cyan, fontSize: 32, fontWeight: 700, marginBottom: 14,
+            filter: `drop-shadow(0 0 12px ${C.cyan})`,
+          }}>
+            আজই শুরু করুন
+          </div>
+          <div style={{
+            color: C.cyan, fontSize: 46, fontWeight: 900,
+            textShadow: `0 0 ${urlGlow}px rgba(0,229,255,1), 0 0 ${urlGlow * 2}px rgba(0,229,255,0.5)`,
+            filter: `drop-shadow(0 0 18px ${C.cyan})`,
             marginBottom: 12,
           }}>
             🌐 chinacart.com.bd
           </div>
-          <div style={{ height: 2, background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)`, marginBottom: 16 }} />
+          <div style={{ height: 2, background: `linear-gradient(90deg, transparent, ${C.cyan}, transparent)`, marginBottom: 14 }} />
           <div style={{ color: C.muted, fontSize: 24 }}>বিশ্বস্ত ইমপোর্ট পার্টনার</div>
         </div>
       )}
 
-      {/* Confetti */}
-      {Array.from({ length: 60 }, (_, i) => <Confetti key={i} idx={i} />)}
+      {/* MEGA burst on CTA reveal */}
+      <ParticleBurst startFrame={388} x={960} y={800} count={28} colors={[C.cyan, C.gold, C.white, C.green]} radius={350} />
+      <ParticleBurst startFrame={395} x={960} y={800} count={18} colors={[C.gold, C.white]} radius={200} />
+
+      {/* Confetti rain */}
+      {Array.from({ length: 70 }, (_, i) => <Confetti key={i} idx={i} />)}
 
       {/* Thank you */}
       <div style={{
-        position: "absolute", top: 30, left: "50%", transform: "translateX(-50%)",
-        opacity: thankOp, zIndex: 25,
-        color: C.white, fontSize: 38, fontWeight: 600, whiteSpace: "nowrap",
-        textShadow: "0 2px 12px rgba(0,0,0,0.8)",
+        position: "absolute", top: 28, left: "50%",
+        transform: `translateX(-50%) scale(${overshootScale(thankSc)}) translateY(${driftY(frame, 80)}px)`,
+        opacity: thankOp,
+        zIndex: 25, color: C.white, fontSize: 40, fontWeight: 900,
+        whiteSpace: "nowrap",
+        textShadow: textGlow(frame, C.gold, 14, 6),
+        filter: `drop-shadow(0 0 14px ${C.gold})`,
       }}>
         ধন্যবাদ 🙏 আসসালামু আলাইকুম
       </div>
@@ -194,19 +222,28 @@ export const Scene8GrandClose: React.FC = () => {
         opacity: finalFade, zIndex: 30, pointerEvents: "none",
       }} />
 
-      {/* Last visible: URL */}
+      {/* Last glow: URL */}
       <div style={{
         position: "absolute", inset: 0, zIndex: 31,
         display: "flex", alignItems: "center", justifyContent: "center",
-        opacity: Math.max(0, finalFade - 0.1),
+        opacity: Math.max(0, (finalFade - 0.15) / 0.85),
       }}>
         <div style={{
-          color: C.cyan, fontSize: 52, fontWeight: 900,
-          textShadow: `0 0 30px rgba(0,229,255,0.9)`,
+          color: C.cyan, fontSize: 56, fontWeight: 900,
+          textShadow: `0 0 40px rgba(0,229,255,1), 0 0 80px rgba(0,229,255,0.5)`,
+          filter: `drop-shadow(0 0 24px ${C.cyan})`,
+          letterSpacing: "0.04em",
         }}>
           chinacart.com.bd
         </div>
       </div>
+
+      {/* Impact flash */}
+      <div style={{
+        position: "absolute", inset: 0,
+        backgroundColor: `rgba(0,229,255,${flash * 0.4})`,
+        pointerEvents: "none", zIndex: 99,
+      }} />
     </div>
   );
 };

@@ -1,19 +1,28 @@
 import React from "react";
-import { useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
+import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
 import { AiImageCard } from "../components/AiImageCard";
+import { ParticleBurst } from "../components/ParticleBurst";
+import {
+  punchSpring, overshootScale, letterSpacingSnap,
+  driftY, textGlow, breatheOp, impactFlash,
+} from "../utils/energy";
 
 const STEPS = [
-  { num: "১", icon: "🌐", title: "ওয়েবসাইট ভিজিট করুন", sub: "chinacart.com.bd", startFrame: 40 },
-  { num: "২", icon: "💳", title: "বাংলা টাকায় অর্ডার করুন", sub: "সহজ পেমেন্ট", startFrame: 110 },
-  { num: "৩", icon: "✅", title: "আমরা বাকি সব করব", sub: "সোর্সিং → QC → ডেলিভারি", startFrame: 180 },
+  { num: "১", icon: "🌐", title: "ওয়েবসাইট ভিজিট করুন", sub: "chinacart.com.bd", startFrame: 35 },
+  { num: "২", icon: "💳", title: "বাংলা টাকায় অর্ডার করুন", sub: "সহজ পেমেন্ট", startFrame: 100 },
+  { num: "৩", icon: "✅", title: "আমরা বাকি সব করব", sub: "সোর্সিং → QC → ডেলিভারি", startFrame: 165 },
 ];
 
 export const Scene7HowItWorks: React.FC = () => {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const titleSc = spring({ frame: frame - 5, fps, config: { damping: 10, stiffness: 200, mass: 0.8 }, durationInFrames: 20 });
+  const flash = impactFlash(frame, 0);
+  const bgBreath = breatheOp(frame, 0.07, 0.04, 0.08);
+
+  const titleSc = punchSpring(frame, fps, 8);
+  const titleScale = overshootScale(titleSc);
 
   return (
     <div style={{
@@ -25,54 +34,89 @@ export const Scene7HowItWorks: React.FC = () => {
       {/* Blueprint grid */}
       <div style={{
         position: "absolute", inset: 0,
-        backgroundImage: `linear-gradient(rgba(0,229,255,0.03) 1px, transparent 1px),
-          linear-gradient(90deg, rgba(0,229,255,0.03) 1px, transparent 1px)`,
+        backgroundImage: `linear-gradient(rgba(0,229,255,0.04) 1px, transparent 1px),
+          linear-gradient(90deg, rgba(0,229,255,0.04) 1px, transparent 1px)`,
         backgroundSize: "60px 60px",
       }} />
+
+      {/* Breathe glow */}
+      <div style={{
+        position: "absolute", inset: 0,
+        background: `radial-gradient(ellipse 60% 45% at 50% 50%, rgba(0,229,255,${bgBreath}) 0%, transparent 70%)`,
+        pointerEvents: "none",
+      }} />
+
+      <ParticleBurst startFrame={0} x={960} y={540} count={18} colors={[C.cyan, C.white, "#00B4D8"]} radius={280} />
 
       <div style={{
         position: "absolute", inset: 0,
         display: "flex", flexDirection: "column",
-        alignItems: "center", padding: "60px 80px", gap: 48,
+        alignItems: "center", padding: "52px 70px", gap: 48,
       }}>
         {/* Title */}
-        <div style={{ transform: `scale(${titleSc})`, opacity: titleSc }}>
-          <div style={{ color: C.white, fontSize: 56, fontWeight: 800, textAlign: "center" }}>কীভাবে কাজ করে?</div>
+        <div style={{
+          transform: `scale(${titleScale}) translateY(${driftY(frame, 10)}px)`,
+          opacity: titleSc,
+        }}>
+          <div style={{
+            color: C.white, fontSize: 60, fontWeight: 900, textAlign: "center",
+            letterSpacing: letterSpacingSnap(titleSc),
+            textShadow: textGlow(frame, C.cyan, 14, 6),
+            filter: `drop-shadow(0 0 18px ${C.cyan})`,
+          }}>
+            কীভাবে কাজ করে?
+          </div>
         </div>
 
-        {/* 3-step horizontal flow */}
-        <div style={{ display: "flex", alignItems: "center", gap: 28, width: "100%" }}>
+        {/* 3-step flow */}
+        <div style={{ display: "flex", alignItems: "center", gap: 24, width: "100%" }}>
           {STEPS.map((s, i) => {
-            const sc = spring({ frame: frame - s.startFrame, fps, config: { damping: 10, stiffness: 200, mass: 0.8 }, durationInFrames: 22 });
-            const arrowOp = interpolate(frame, [s.startFrame + 18, s.startFrame + 30], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
+            const sc = punchSpring(frame, fps, s.startFrame);
+            const scale = overshootScale(sc);
+            const tilt = (i === 0 ? -3 : i === 2 ? 3 : 0);
+            const arrowOp = interpolate(frame, [s.startFrame + 16, s.startFrame + 26], [0, 1], { extrapolateLeft: "clamp", extrapolateRight: "clamp" });
 
             return (
               <React.Fragment key={i}>
                 <div style={{
-                  flex: 1, opacity: sc,
-                  transform: `scale(${0.6 + sc * 0.4}) translateY(${interpolate(sc, [0, 1], [30, 0])}px)`,
+                  flex: 1,
+                  opacity: sc,
+                  transform: `scale(${scale}) translateY(${driftY(frame, i * 20)}px) rotate(${tilt}deg)`,
+                  transformOrigin: "center",
                   background: C.cardBg,
-                  border: `1.5px solid ${C.cardBorder}`,
-                  borderRadius: 20, padding: "28px 24px",
+                  border: `2px solid ${C.cardBorder}`,
+                  borderRadius: 22, padding: "30px 22px",
                   display: "flex", flexDirection: "column",
-                  alignItems: "center", gap: 14,
-                  backdropFilter: "blur(8px)",
-                  boxShadow: `0 0 28px rgba(0,229,255,0.1)`,
+                  alignItems: "center", gap: 16,
+                  backdropFilter: "blur(10px)",
+                  boxShadow: `0 0 32px rgba(0,229,255,0.14)`,
                 }}>
-                  {/* Number circle */}
                   <div style={{
-                    width: 52, height: 52, borderRadius: "50%",
-                    backgroundColor: C.cyan,
+                    width: 56, height: 56, borderRadius: "50%",
+                    background: `linear-gradient(135deg, ${C.cyan}, #00B4D8)`,
                     display: "flex", alignItems: "center", justifyContent: "center",
-                    color: "#000", fontSize: 26, fontWeight: 900,
-                    boxShadow: `0 0 16px ${C.cyan}`,
+                    color: "#000", fontSize: 28, fontWeight: 900,
+                    boxShadow: `0 0 20px ${C.cyan}`,
+                    filter: `drop-shadow(0 0 12px ${C.cyan})`,
                   }}>{s.num}</div>
-                  <div style={{ fontSize: 52 }}>{s.icon}</div>
-                  <div style={{ color: C.white, fontSize: 26, fontWeight: 700, textAlign: "center" }}>{s.title}</div>
-                  <div style={{ color: C.cyan, fontSize: 20, textAlign: "center" }}>{s.sub}</div>
+                  <div style={{ fontSize: 56 }}>{s.icon}</div>
+                  <div style={{
+                    color: C.white, fontSize: 26, fontWeight: 900, textAlign: "center",
+                    letterSpacing: letterSpacingSnap(sc),
+                  }}>{s.title}</div>
+                  <div style={{
+                    color: C.cyan, fontSize: 20, textAlign: "center",
+                    textShadow: textGlow(frame, C.cyan, 8, 4),
+                    filter: `drop-shadow(0 0 8px ${C.cyan})`,
+                  }}>{s.sub}</div>
                 </div>
                 {i < STEPS.length - 1 && (
-                  <div style={{ color: C.cyan, fontSize: 44, fontWeight: 900, opacity: arrowOp, flexShrink: 0 }}>→</div>
+                  <div style={{
+                    color: C.cyan, fontSize: 48, fontWeight: 900,
+                    opacity: arrowOp, flexShrink: 0,
+                    filter: `drop-shadow(0 0 14px ${C.cyan})`,
+                    transform: `scale(${1 + Math.sin(frame * 0.15) * 0.06})`,
+                  }}>→</div>
                 )}
               </React.Fragment>
             );
@@ -82,12 +126,21 @@ export const Scene7HowItWorks: React.FC = () => {
         {/* AI image */}
         <AiImageCard
           label="Person on laptop ordering products, ecommerce website, Bangladeshi home/office, warm lighting"
-          startFrame={260}
-          width={700}
-          height={240}
-          slideFrom="bottom"
+          startFrame={250} width={720} height={230} slideFrom="bottom"
         />
       </div>
+
+      {/* Burst on each step */}
+      <ParticleBurst startFrame={35}  x={360}  y={560} count={12} colors={[C.cyan, C.white]} radius={100} />
+      <ParticleBurst startFrame={100} x={960}  y={560} count={12} colors={[C.cyan, C.white]} radius={100} />
+      <ParticleBurst startFrame={165} x={1560} y={560} count={12} colors={[C.cyan, C.green]} radius={100} />
+
+      {/* Impact flash */}
+      <div style={{
+        position: "absolute", inset: 0,
+        backgroundColor: `rgba(0,229,255,${flash * 0.3})`,
+        pointerEvents: "none", zIndex: 99,
+      }} />
     </div>
   );
 };

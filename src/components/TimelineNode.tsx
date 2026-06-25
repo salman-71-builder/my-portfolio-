@@ -1,5 +1,6 @@
-import { useCurrentFrame, useVideoConfig, interpolate, spring } from "remotion";
+import { useCurrentFrame, useVideoConfig, interpolate } from "remotion";
 import { C } from "../constants/colors";
+import { punchSpring, overshootScale, letterSpacingSnap, driftY, textGlow } from "../utils/energy";
 
 interface TimelineNodeProps {
   icon: string;
@@ -12,55 +13,62 @@ export const TimelineNode: React.FC<TimelineNodeProps> = ({ icon, title, startFr
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();
 
-  const sc = spring({ frame: frame - startFrame, fps, config: { damping: 10, stiffness: 220, mass: 0.7 }, durationInFrames: 20 });
-  const cardX = interpolate(sc, [0, 1], [60, 0]);
+  const sc = punchSpring(frame, fps, startFrame);
+  const scale = overshootScale(sc);
+  const cardX = interpolate(sc, [0, 1], [80, 0]);
 
-  // Line draws in after card
-  const lineProgress = interpolate(frame, [startFrame + 20, startFrame + 55], [0, 1], {
+  const lineProgress = interpolate(frame, [startFrame + 16, startFrame + 48], [0, 1], {
     extrapolateLeft: "clamp", extrapolateRight: "clamp",
   });
+
+  const dotGlow = 12 + Math.sin(frame * 0.12 + startFrame * 0.2) * 5;
 
   if (frame < startFrame) return null;
 
   return (
     <div style={{ display: "flex", gap: 0, alignItems: "flex-start" }}>
-      {/* Left axis: dot + line */}
+      {/* Axis */}
       <div style={{ display: "flex", flexDirection: "column", alignItems: "center", width: 48, flexShrink: 0 }}>
         <div style={{
-          width: 24, height: 24, borderRadius: "50%",
-          backgroundColor: C.cyan,
-          boxShadow: `0 0 12px ${C.cyan}`,
-          transform: `scale(${sc})`,
-          flexShrink: 0,
-          marginTop: 14,
+          width: 26, height: 26, borderRadius: "50%",
+          background: `radial-gradient(circle, #FFFFFF, ${C.cyan})`,
+          boxShadow: `0 0 ${dotGlow}px ${C.cyan}, 0 0 ${dotGlow * 2}px rgba(0,229,255,0.4)`,
+          transform: `scale(${scale})`,
+          marginTop: 12, flexShrink: 0,
         }} />
         {!isLast && (
           <div style={{
             width: 3, marginTop: 4,
-            height: `${lineProgress * 64}px`,
-            background: `linear-gradient(to bottom, ${C.cyan}, ${C.cyan}44)`,
+            height: `${lineProgress * 62}px`,
+            background: `linear-gradient(to bottom, ${C.cyan}, ${C.cyan}33)`,
             borderRadius: 2,
+            boxShadow: `0 0 6px ${C.cyan}`,
           }} />
         )}
       </div>
+
       {/* Card */}
       <div style={{
         opacity: sc,
-        transform: `translateX(${cardX}px)`,
-        marginLeft: 16,
-        marginBottom: 8,
+        transform: `translateX(${cardX}px) scale(${0.9 + sc * 0.1}) translateY(${driftY(frame, startFrame * 0.3)}px)`,
+        marginLeft: 16, marginBottom: 6,
         background: C.cardBg,
-        border: `1px solid ${C.cardBorder}`,
-        borderRadius: 14,
-        padding: "14px 24px",
-        display: "flex",
-        alignItems: "center",
-        gap: 14,
-        backdropFilter: "blur(8px)",
+        border: `1.5px solid ${C.cardBorder}`,
+        borderRadius: 14, padding: "12px 22px",
+        display: "flex", alignItems: "center", gap: 14,
+        backdropFilter: "blur(10px)",
         minWidth: 340,
+        boxShadow: `0 0 20px rgba(0,229,255,0.1)`,
       }}>
-        <span style={{ fontSize: 32 }}>{icon}</span>
-        <span style={{ color: C.white, fontSize: 24, fontWeight: 600, fontFamily: "'Hind Siliguri', sans-serif" }}>{title}</span>
+        <span style={{ fontSize: 30, filter: `drop-shadow(0 0 8px ${C.cyan})` }}>{icon}</span>
+        <span style={{
+          color: C.white, fontSize: 24, fontWeight: 900,
+          fontFamily: "'Hind Siliguri', sans-serif",
+          letterSpacing: letterSpacingSnap(sc),
+          textShadow: textGlow(frame, C.cyan, 6, 2),
+        }}>
+          {title}
+        </span>
       </div>
     </div>
   );
