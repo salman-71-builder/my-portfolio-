@@ -1,6 +1,7 @@
 import "./index.css";
 import { Composition } from "remotion";
 import { ChinaCartAd } from "./ChinaCartAd";
+import { ChinaCartFullAd } from "./ChinaCartFullAd";
 
 // Load Hind Siliguri (Bengali) from Google Fonts
 const loadFont = () => {
@@ -22,6 +23,14 @@ export const RemotionRoot: React.FC = () => {
         id="ChinaCartAd"
         component={ChinaCartAd}
         durationInFrames={240}
+        fps={30}
+        width={1920}
+        height={1080}
+      />
+      <Composition
+        id="ChinaCartFullAd"
+        component={ChinaCartFullAd}
+        durationInFrames={4500}
         fps={30}
         width={1920}
         height={1080}
